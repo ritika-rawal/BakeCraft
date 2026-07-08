@@ -1,0 +1,62 @@
+:root {
+  --bg: #FDF2F4;
+  --pink-soft: #FCE4EC;
+  --rose-deep: #8B2942;
+  --rose-mid: #C86B85;
+  --text-dark: #2A1B22;
+  --text-muted: #7A6670;
+  --card-bg: #FDEEF1;
+  --font-display: 'Fraunces', serif;
+  --font-body: 'Work Sans', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text-dark);
+  line-height: 1.6;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-display);
+  color: var(--text-dark);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.btn-primary {
+  background: var(--rose-deep);
+  color: #fff;
+  padding: 14px 28px;
+  border-radius: 30px;
+  font-weight: 500;
+  font-size: 15px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background: var(--pink-soft);
+  color: var(--rose-deep);
+  padding: 14px 28px;
+  border-radius: 30px;
+  font-weight: 500;
+  font-size: 15px;
+  border: none;
+  cursor: pointer;
+}
