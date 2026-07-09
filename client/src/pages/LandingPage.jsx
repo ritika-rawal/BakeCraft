@@ -1,7 +1,8 @@
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
+import HowItWorks from '../components/HowItWorks';
 import InnovationSection from '../components/InnovationSection';
-import FeaturedProducts from '../components/FeaturedProducts';
+import FeaturedBakers from '../components/FeaturedBakers';
 import About from '../components/About';
 import Footer from '../components/Footer';
 
@@ -10,8 +11,9 @@ export default function LandingPage() {
     <div>
       <Navbar />
       <Hero />
+      <HowItWorks />
       <InnovationSection />
-      <FeaturedProducts />
+      <FeaturedBakers />
       <About />
       <Footer />
     </div>
