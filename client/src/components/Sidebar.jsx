@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 const NAV_ITEMS = [
   { label: 'Home', icon: '⌂', path: '/dashboard/customer' },
   { label: 'Cake Builder', icon: '✎', path: '/builder' },
-  { label: 'AI Generator', icon: '✦', path: '/builder' },
+  { label: 'AI Generator', icon: '✦', path: '/ai-generator' },
   { label: 'Marketplace', icon: '⊞', path: '/#bakers' },
   { label: 'Chat', icon: '💬', path: '#' },
   { label: 'Order Tracking', icon: '◎', path: '#' },
