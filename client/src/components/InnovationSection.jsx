@@ -1,11 +1,11 @@
 const features = [
   {
-    title: '3D bake builder',
+    title: '3D cake builder',
     desc: 'Visualize your dream cake in 3D. Experiment with layers, textures, and toppings in real time before we bake it.',
     icon: '◆',
   },
   {
-    title: 'AI flavor match',
+    title: 'AI cake magic',
     desc: 'Share your theme or mood board and our AI will suggest flavor and design concepts tailored to your event.',
     icon: '✦',
   },

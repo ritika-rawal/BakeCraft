@@ -1,18 +1,24 @@
+import { Link } from 'react-router-dom';
+
 export default function Navbar() {
   return (
     <nav style={styles.nav}>
       <div className="container" style={styles.inner}>
-        <span style={styles.logo}>BakeCraft</span>
+        <Link to="/"><span style={styles.logo}>BakeCraft</span></Link>
         <div style={styles.links}>
-          <a href="#home" style={styles.activeLink}>Home</a>
-          <a href="#gallery">Gallery</a>
-          <a href="#customize">Customize</a>
+          <Link to="/" style={styles.activeLink}>Home</Link>
+          <a href="#bakers">Bakers</a>
+          <Link to="/builder">Cake builder</Link>
         </div>
         <div style={styles.actions}>
           <input placeholder="Search flavors..." style={styles.search} />
           <span style={styles.icon}>♡</span>
-          <span style={styles.icon}>⊕</span>
-          <button className="btn-primary" style={styles.orderBtn}>Order now</button>
+          <Link to="/login">
+            <span style={styles.loginLink}>Log in</span>
+          </Link>
+          <Link to="/signup">
+            <button className="btn-primary" style={styles.orderBtn}>Sign up</button>
+          </Link>
         </div>
       </div>
     </nav>
@@ -46,8 +52,6 @@ const styles = {
   activeLink: {
     color: 'var(--rose-deep)',
     fontWeight: 500,
-    borderBottom: '2px solid var(--rose-deep)',
-    paddingBottom: '4px',
   },
   actions: {
     display: 'flex',
@@ -63,6 +67,11 @@ const styles = {
   },
   icon: {
     fontSize: '18px',
+    color: 'var(--text-muted)',
+    cursor: 'pointer',
+  },
+  loginLink: {
+    fontSize: '14px',
     color: 'var(--text-muted)',
     cursor: 'pointer',
   },
