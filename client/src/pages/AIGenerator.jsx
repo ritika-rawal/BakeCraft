@@ -8,20 +8,37 @@ const SUGGESTIONS = [
 ];
 
 const RECENT_CREATIONS = [
-  { id: 1, name: 'Ethereal Pink Butterfly', desc: 'Velvet pink sponge with raspberry filling and hand-...', tag: 'New match' },
-  { id: 2, name: 'Ocean Whisper Tier', desc: 'Coconut cream layers with pineapple glaze and blue curaca...', tag: 'New match' },
-  { id: 3, name: 'Midnight Forest Moss', desc: 'Dark chocolate fudge with pistachio moss and forest berry...', tag: 'New match' },
+  { id: 1, name: 'Ethereal Pink Butterfly', desc: 'Velvet pink sponge with raspberry filling and hand-piped sugar butterflies.', tag: 'New match' },
+  { id: 2, name: 'Ocean Whisper Tier', desc: 'Coconut cream layers with pineapple glaze and blue curacao waves.', tag: 'New match' },
+  { id: 3, name: 'Midnight Forest Moss', desc: 'Dark chocolate fudge with pistachio moss and forest berry compote.', tag: 'New match' },
 ];
 
 export default function AIGenerator() {
   const [prompt, setPrompt] = useState('');
   const [generating, setGenerating] = useState(false);
+  const [generatedImage, setGeneratedImage] = useState(null);
+  const [error, setError] = useState('');
 
   const handleGenerate = () => {
     if (!prompt.trim()) return;
     setGenerating(true);
-    // TODO: replace with real API call to your AI backend endpoint
-    setTimeout(() => setGenerating(false), 1500);
+    setError('');
+    setGeneratedImage(null);
+
+    const fullPrompt = `professional photorealistic bakery photo of a custom cake: ${prompt}, studio lighting, on a clean plate, high detail, appetizing`;
+    const encodedPrompt = encodeURIComponent(fullPrompt);
+    const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&nologo=true`;
+
+    const img = new Image();
+    img.onload = () => {
+      setGeneratedImage(imageUrl);
+      setGenerating(false);
+    };
+    img.onerror = () => {
+      setError('Could not generate the image. Please try again.');
+      setGenerating(false);
+    };
+    img.src = imageUrl;
   };
 
   return (
@@ -61,6 +78,26 @@ export default function AIGenerator() {
           >
             {generating ? 'Generating...' : '⚡ Generate AI Design'}
           </button>
+
+          {error && <p style={styles.errorText}>{error}</p>}
+
+          {generating && (
+            <p style={styles.loadingText}>
+              Baking your design... this can take 10–20 seconds.
+            </p>
+          )}
+
+          {generatedImage && (
+            <div style={styles.resultWrap}>
+              <img src={generatedImage} alt="AI generated cake" style={styles.resultImg} />
+              <div style={styles.resultActions}>
+                <button className="btn-primary" style={styles.resultBtn}>
+                  🛒 Order This Cake
+                </button>
+                <button style={styles.resultBtnGhost}>💾 Save Design</button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -156,6 +193,48 @@ const styles = {
     padding: '15px',
     fontSize: '14.5px',
   },
+  errorText: {
+    color: '#C1121F',
+    marginTop: '16px',
+    fontSize: '13px',
+  },
+  loadingText: {
+    marginTop: '20px',
+    fontSize: '13px',
+    color: 'var(--text-muted)',
+    textAlign: 'center',
+  },
+  resultWrap: {
+    marginTop: '28px',
+    textAlign: 'center',
+  },
+  resultImg: {
+    width: '100%',
+    maxWidth: '400px',
+    borderRadius: '16px',
+    margin: '0 auto',
+    display: 'block',
+    boxShadow: '0 10px 25px rgba(0,0,0,0.08)',
+  },
+  resultActions: {
+    display: 'flex',
+    justifyContent: 'center',
+    gap: '12px',
+    marginTop: '18px',
+  },
+  resultBtn: {
+    padding: '12px 24px',
+  },
+  resultBtnGhost: {
+    background: 'transparent',
+    border: '1px solid var(--rose-deep)',
+    color: 'var(--rose-deep)',
+    padding: '12px 24px',
+    borderRadius: '30px',
+    fontSize: '14px',
+    fontWeight: 500,
+    cursor: 'pointer',
+  },
 
   recentHeader: {
     display: 'flex',
@@ -185,7 +264,7 @@ const styles = {
     boxShadow: '0 6px 16px rgba(0,0,0,0.04)',
   },
   imgPlaceholder: {
-    background: 'var(--pink-soft)', // swap for: background: `url(/your-image.jpg) center/cover`
+    background: 'var(--pink-soft)',
     borderRadius: '12px',
     height: '150px',
     marginBottom: '12px',
