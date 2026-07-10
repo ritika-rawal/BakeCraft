@@ -7,6 +7,7 @@ import Signup from './pages/Signup';
 import CustomerDashboard from './pages/CustomerDashboard';
 import BakerDashboard from './pages/BakerDashboard';
 import AIGenerator from './pages/AIGenerator';
+import Checkout from './pages/Checkout';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/dashboard/customer" element={<CustomerDashboard />} />
         <Route path="/dashboard/baker" element={<BakerDashboard />} />
         <Route path="/ai-generator" element={<AIGenerator />} />
+        <Route path="/checkout" element={<Checkout />} />
       </Routes>
     </BrowserRouter>
   );

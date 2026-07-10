@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import DashboardLayout from '../components/DashboardLayout';
+import { useNavigate } from 'react-router-dom';
 
 const SHAPES = [
   { id: 'round', label: 'Round', icon: '○' },
@@ -67,6 +68,22 @@ export default function CakeBuilder() {
     const total = base + flavor.price + toppingsTotal;
     return { base, toppingsTotal, total };
   }, [layers, flavor, toppings]);
+
+  const navigate = useNavigate();
+
+const handleOrder = () => {
+  navigate('/checkout', {
+    state: {
+      shape,
+      layers,
+      flavor: flavor.label,
+      frosting,
+      toppings: toppings.map((id) => TOPPINGS.find((t) => t.id === id)?.label),
+      message,
+      total: pricing.total,
+    },
+  });
+};
 
   return (
     <DashboardLayout>
@@ -147,96 +164,25 @@ export default function CakeBuilder() {
         {/* Center column */}
         <div style={styles.column}>
           <div style={styles.previewCard}>
-  <div style={styles.previewHeader}>
-    <span>🔄 Live 3D Preview</span>
-  </div>
-  <div style={styles.previewCircleWrap}>
-    <svg width="220" height="220" viewBox="0 0 220 220">
-      <defs>
-        <clipPath id="previewClip">
-          {shape === 'round' && <circle cx="110" cy="110" r="105" />}
-          {shape === 'square' && <rect x="10" y="10" width="200" height="200" rx="16" />}
-          {shape === 'heart' && (
-            <path d="M110 190 C40 140 10 90 40 55 C60 30 95 35 110 65 C125 35 160 30 180 55 C210 90 180 140 110 190 Z" />
-          )}
-        </clipPath>
-      </defs>
-
-      <g clipPath="url(#previewClip)">
-        <rect x="0" y="0" width="220" height="220" fill={FLAVOR_COLORS[flavor.id]} />
-        <rect x="0" y="0" width="220" height="60" fill={FROSTING_COLORS[frosting]} />
-
-        {toppings.includes('sprinkles') &&
-          Array.from({ length: 18 }).map((_, i) => (
-            <rect
-              key={i}
-              x={20 + (i % 9) * 22}
-              y={20 + Math.floor(i / 9) * 14}
-              width="4"
-              height="4"
-              fill={['#E24B4A', '#378ADD', '#F9C74F', '#43AA8B'][i % 4]}
-              transform={`rotate(${i * 37} ${20 + (i % 9) * 22} ${20 + Math.floor(i / 9) * 14})`}
-            />
-          ))}
-
-        {toppings.includes('berries') &&
-          Array.from({ length: 5 }).map((_, i) => (
-            <circle key={i} cx={40 + i * 35} cy="35" r="7" fill="#C1121F" />
-          ))}
-
-        {toppings.includes('chocolate') &&
-          Array.from({ length: 4 }).map((_, i) => (
-            <path
-              key={i}
-              d={`M${30 + i * 45} 15 Q${45 + i * 45} 5 ${60 + i * 45} 20`}
-              stroke="#3B2415"
-              strokeWidth="4"
-              fill="none"
-            />
-          ))}
-
-        {toppings.includes('pearls') &&
-          Array.from({ length: 10 }).map((_, i) => (
-            <circle key={i} cx={20 + i * 20} cy="55" r="3" fill="#F5F0E8" />
-          ))}
-
-        {toppings.includes('flowers') &&
-          [50, 110, 170].map((cx, i) => (
-            <g key={i} transform={`translate(${cx}, 30)`}>
-              <circle cx="0" cy="0" r="4" fill="#F9C74F" />
-              <circle cx="-6" cy="-3" r="4" fill="#F4B8C4" />
-              <circle cx="6" cy="-3" r="4" fill="#F4B8C4" />
-              <circle cx="-4" cy="4" r="4" fill="#F4B8C4" />
-              <circle cx="4" cy="4" r="4" fill="#F4B8C4" />
-            </g>
-          ))}
-
-        {toppings.includes('fruits') &&
-          Array.from({ length: 4 }).map((_, i) => (
-            <circle key={i} cx={45 + i * 40} cy="40" r="6" fill="#F77F00" />
-          ))}
-      </g>
-
-      {message && (
-        <text
-          x="110"
-          y="115"
-          textAnchor="middle"
-          fontSize="11"
-          fontFamily="Work Sans, sans-serif"
-          fill="#3B2415"
-        >
-          {message}
-        </text>
-      )}
-    </svg>
-  </div>
-  <div style={styles.previewActions}>
-    <span style={styles.previewIcon}>🔍</span>
-    <span style={styles.previewIcon}>📷</span>
-    <span style={styles.previewIcon}>🔄</span>
-  </div>
-</div>
+            <div style={styles.previewHeader}>
+              <span>🔄 Live 3D Preview</span>
+            </div>
+            <div style={styles.previewCircleWrap}>
+              <CakePreview
+                shape={shape}
+                layers={layers}
+                flavor={flavor}
+                frosting={frosting}
+                toppings={toppings}
+                message={message}
+              />
+            </div>
+            <div style={styles.previewActions}>
+              <span style={styles.previewIcon}>🔍</span>
+              <span style={styles.previewIcon}>📷</span>
+              <span style={styles.previewIcon}>🔄</span>
+            </div>
+          </div>
         </div>
 
         {/* Right column */}
@@ -288,7 +234,7 @@ export default function CakeBuilder() {
               <span style={styles.totalValue}>${pricing.total.toFixed(2)}</span>
             </div>
 
-            <button className="btn-primary" style={styles.orderBtn}>
+            <button className="btn-primary" style={styles.orderBtn} onClick={handleOrder}>
               🛒 Order This Cake
             </button>
             <button style={styles.saveBtn}>💾 Save Design</button>
@@ -297,6 +243,160 @@ export default function CakeBuilder() {
       </div>
     </DashboardLayout>
   );
+}
+
+function CakePreview({ shape, layers, flavor, frosting, toppings, message }) {
+  const flavorBase = FLAVOR_COLORS[flavor.id];
+  const flavorLight = shadeColor(flavorBase, 25);
+  const frostingColor = FROSTING_COLORS[frosting];
+  const frostingDark = shadeColor(frostingColor, -15);
+
+  const layerHeight = 42;
+  const layerWidth = 170;
+  const shrinkPerLayer = 12;
+  const totalHeight = layers * layerHeight + 40;
+  const svgHeight = totalHeight + 50;
+
+  const layerBlocks = [];
+  for (let i = 0; i < layers; i++) {
+    const widthAtLayer = layerWidth - i * shrinkPerLayer;
+    const yPos = svgHeight - 50 - (i + 1) * layerHeight;
+    const xPos = 120 - widthAtLayer / 2;
+    layerBlocks.push(
+      <g key={i}>
+        <rect
+          x={xPos}
+          y={yPos}
+          width={widthAtLayer}
+          height={layerHeight}
+          rx={shape === 'square' ? 6 : widthAtLayer / 2}
+          fill={`url(#grad-${i})`}
+        />
+        <ellipse
+          cx="120"
+          cy={yPos}
+          rx={widthAtLayer / 2}
+          ry="8"
+          fill={i === layers - 1 ? frostingColor : flavorLight}
+        />
+      </g>
+    );
+  }
+
+  const topWidth = layerWidth - (layers - 1) * shrinkPerLayer;
+  const topY = svgHeight - 50 - layers * layerHeight;
+
+  return (
+    <svg width="240" height="260" viewBox={`0 0 240 ${svgHeight + 10}`}>
+      <defs>
+        {Array.from({ length: layers }).map((_, i) => (
+          <linearGradient key={i} id={`grad-${i}`} x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor={shadeColor(flavorBase, -20)} />
+            <stop offset="50%" stopColor={flavorBase} />
+            <stop offset="100%" stopColor={shadeColor(flavorBase, -35)} />
+          </linearGradient>
+        ))}
+      </defs>
+
+      <ellipse cx="120" cy={svgHeight - 12} rx="95" ry="13" fill="#000" opacity="0.1" />
+
+      {layerBlocks}
+
+      {/* Frosting drip on top edge */}
+      <path
+        d={`M${120 - topWidth / 2} ${topY} 
+            Q${120 - topWidth / 2 + topWidth * 0.15} ${topY + 14} ${120 - topWidth / 2 + topWidth * 0.3} ${topY}
+            Q${120 - topWidth / 2 + topWidth * 0.45} ${topY + 14} ${120 - topWidth / 2 + topWidth * 0.6} ${topY}
+            Q${120 - topWidth / 2 + topWidth * 0.75} ${topY + 14} ${120 - topWidth / 2 + topWidth * 0.9} ${topY}
+            L${120 + topWidth / 2} ${topY}`}
+        fill="none"
+        stroke={frostingDark}
+        strokeWidth="3"
+        opacity="0.6"
+      />
+
+      {/* Toppings on top surface */}
+      {toppings.includes('sprinkles') &&
+        Array.from({ length: 12 }).map((_, i) => (
+          <rect
+            key={i}
+            x={120 - topWidth / 2 + 15 + (i % 6) * (topWidth / 7)}
+            y={topY - 4 + Math.floor(i / 6) * 5}
+            width="4"
+            height="4"
+            fill={['#E24B4A', '#378ADD', '#F9C74F', '#43AA8B'][i % 4]}
+            transform={`rotate(${i * 33} ${120 - topWidth / 2 + 15 + (i % 6) * (topWidth / 7)} ${topY - 4})`}
+          />
+        ))}
+
+      {toppings.includes('berries') &&
+        Array.from({ length: 3 }).map((_, i) => (
+          <circle key={i} cx={120 - 35 + i * 35} cy={topY - 6} r="7" fill="#C1121F" />
+        ))}
+
+      {toppings.includes('chocolate') &&
+        Array.from({ length: 3 }).map((_, i) => (
+          <path
+            key={i}
+            d={`M${120 - 40 + i * 40} ${topY - 15} Q${120 - 25 + i * 40} ${topY - 22} ${120 - 10 + i * 40} ${topY - 10}`}
+            stroke="#3B2415"
+            strokeWidth="4"
+            fill="none"
+          />
+        ))}
+
+      {toppings.includes('pearls') &&
+        Array.from({ length: 8 }).map((_, i) => (
+          <circle key={i} cx={120 - topWidth / 2 + 10 + i * (topWidth / 8)} cy={topY - 8} r="3" fill="#F5F0E8" />
+        ))}
+
+      {toppings.includes('flowers') &&
+        [-40, 0, 40].map((dx, i) => (
+          <g key={i} transform={`translate(${120 + dx}, ${topY - 10})`}>
+            <circle cx="0" cy="0" r="4" fill="#F9C74F" />
+            <circle cx="-6" cy="-3" r="4" fill="#F4B8C4" />
+            <circle cx="6" cy="-3" r="4" fill="#F4B8C4" />
+            <circle cx="-4" cy="4" r="4" fill="#F4B8C4" />
+            <circle cx="4" cy="4" r="4" fill="#F4B8C4" />
+          </g>
+        ))}
+
+      {toppings.includes('fruits') &&
+        Array.from({ length: 3 }).map((_, i) => (
+          <circle key={i} cx={120 - 35 + i * 35} cy={topY - 6} r="6" fill="#F77F00" />
+        ))}
+
+      {/* Candle */}
+      <rect x="115" y={topY - 40} width="8" height="26" rx="2" fill="#F5E6C8" />
+      <path
+        d={`M119 ${topY - 40} Q114 ${topY - 50} 119 ${topY - 58} Q124 ${topY - 50} 119 ${topY - 40}`}
+        fill="#F4A340"
+      />
+
+      {/* Message */}
+      {message && (
+        <text
+          x="120"
+          y={svgHeight - 65}
+          textAnchor="middle"
+          fontSize="10"
+          fontFamily="Work Sans, sans-serif"
+          fill="#3B2415"
+        >
+          {message}
+        </text>
+      )}
+    </svg>
+  );
+}
+
+function shadeColor(hex, percent) {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const amt = Math.round(2.55 * percent);
+  const R = Math.max(0, Math.min(255, (num >> 16) + amt));
+  const G = Math.max(0, Math.min(255, ((num >> 8) & 0x00ff) + amt));
+  const B = Math.max(0, Math.min(255, (num & 0x0000ff) + amt));
+  return `#${(0x1000000 + R * 0x10000 + G * 0x100 + B).toString(16).slice(1)}`;
 }
 
 const styles = {
@@ -308,15 +408,8 @@ const styles = {
     flexWrap: 'wrap',
     gap: '12px',
   },
-  pageTitle: {
-    fontSize: '20px',
-  },
-
-  topbarRight: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '16px',
-  },
+  pageTitle: { fontSize: '20px' },
+  topbarRight: { display: 'flex', alignItems: 'center', gap: '16px' },
   pickupBadge: {
     background: '#fff',
     border: '1px solid #f1e5e8',
@@ -325,16 +418,8 @@ const styles = {
     fontSize: '12.5px',
     color: 'var(--text-muted)',
   },
-  icon: {
-    fontSize: '17px',
-    cursor: 'pointer',
-  },
-  avatar: {
-    width: '34px',
-    height: '34px',
-    borderRadius: '50%',
-    background: 'var(--pink-soft)',
-  },
+  icon: { fontSize: '17px', cursor: 'pointer' },
+  avatar: { width: '34px', height: '34px', borderRadius: '50%', background: 'var(--pink-soft)' },
 
   grid: {
     display: 'grid',
@@ -342,23 +427,14 @@ const styles = {
     gap: '20px',
     alignItems: 'start',
   },
-  column: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '20px',
-  },
+  column: { display: 'flex', flexDirection: 'column', gap: '20px' },
   card: {
     background: '#fff',
     borderRadius: '16px',
     padding: '20px',
     boxShadow: '0 6px 16px rgba(0,0,0,0.04)',
   },
-  cardTitle: {
-    fontSize: '13px',
-    fontWeight: 600,
-    color: 'var(--rose-deep)',
-    marginBottom: '16px',
-  },
+  cardTitle: { fontSize: '13px', fontWeight: 600, color: 'var(--rose-deep)', marginBottom: '16px' },
   label: {
     fontSize: '12.5px',
     color: 'var(--text-muted)',
@@ -367,15 +443,9 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
   },
-  labelBold: {
-    color: 'var(--rose-deep)',
-    fontWeight: 600,
-  },
+  labelBold: { color: 'var(--rose-deep)', fontWeight: 600 },
 
-  shapeRow: {
-    display: 'flex',
-    gap: '8px',
-  },
+  shapeRow: { display: 'flex', gap: '8px' },
   shapeBtn: {
     flex: 1,
     border: '1px solid #eee',
@@ -395,20 +465,11 @@ const styles = {
     background: 'var(--pink-soft)',
     color: 'var(--rose-deep)',
   },
-  shapeIcon: {
-    fontSize: '16px',
-  },
+  shapeIcon: { fontSize: '16px' },
 
-  slider: {
-    width: '100%',
-    accentColor: 'var(--rose-deep)',
-  },
+  slider: { width: '100%', accentColor: 'var(--rose-deep)' },
 
-  flavorGrid: {
-    display: 'grid',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '8px',
-  },
+  flavorGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' },
   flavorBtn: {
     border: '1px solid #eee',
     background: '#fff',
@@ -434,11 +495,7 @@ const styles = {
     padding: '10px 0',
     cursor: 'pointer',
   },
-  radio: {
-    accentColor: 'var(--rose-deep)',
-    width: '15px',
-    height: '15px',
-  },
+  radio: { accentColor: 'var(--rose-deep)', width: '15px', height: '15px' },
 
   previewCard: {
     background: '#fff',
@@ -457,24 +514,16 @@ const styles = {
     alignSelf: 'flex-start',
   },
   previewCircleWrap: {
-  marginBottom: '20px',
-},
-  previewActions: {
-  display: 'flex',
-  gap: '20px',
-},
-
-previewIcon: {
-  fontSize: '16px',
-  cursor: 'pointer',
-  color: 'var(--text-muted)',
-},
-  toppingRow: {
+    marginBottom: '20px',
+    minHeight: '260px',
     display: 'flex',
-    flexWrap: 'wrap',
-    gap: '8px',
-    marginBottom: '8px',
+    alignItems: 'flex-end',
+    justifyContent: 'center',
   },
+  previewActions: { display: 'flex', gap: '20px' },
+  previewIcon: { fontSize: '16px', cursor: 'pointer', color: 'var(--text-muted)' },
+
+  toppingRow: { display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '8px' },
   toppingTag: {
     border: '1px solid #eee',
     background: '#fdf6f7',
@@ -522,14 +571,8 @@ previewIcon: {
     color: 'var(--text-dark)',
     padding: '12px 0',
   },
-  totalValue: {
-    color: 'var(--rose-deep)',
-    fontSize: '17px',
-  },
-  orderBtn: {
-    width: '100%',
-    marginTop: '10px',
-  },
+  totalValue: { color: 'var(--rose-deep)', fontSize: '17px' },
+  orderBtn: { width: '100%', marginTop: '10px' },
   saveBtn: {
     width: '100%',
     marginTop: '10px',
