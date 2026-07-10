@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 
 const SUGGESTIONS = [
@@ -19,16 +20,20 @@ export default function AIGenerator() {
   const [generatedImage, setGeneratedImage] = useState(null);
   const [error, setError] = useState('');
 
+  const buildImageUrl = () => {
+    const fullPrompt = `professional bakery product photo, ${prompt}, shot from a 3/4 angle clearly showing the cake's shape and number of layers, studio lighting, clean plate, high detail, appetizing, photorealistic`;
+    const encodedPrompt = encodeURIComponent(fullPrompt);
+    const seed = Math.floor(Math.random() * 100000);
+    return `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&nologo=true&seed=${seed}`;
+  };
+
   const handleGenerate = () => {
     if (!prompt.trim()) return;
     setGenerating(true);
     setError('');
     setGeneratedImage(null);
 
-    const fullPrompt = `professional photorealistic bakery photo of a custom cake: ${prompt}, studio lighting, on a clean plate, high detail, appetizing`;
-    const encodedPrompt = encodeURIComponent(fullPrompt);
-    const imageUrl = `https://image.pollinations.ai/prompt/${encodedPrompt}?width=1024&height=1024&nologo=true`;
-
+    const imageUrl = buildImageUrl();
     const img = new Image();
     img.onload = () => {
       setGeneratedImage(imageUrl);
@@ -79,6 +84,12 @@ export default function AIGenerator() {
             {generating ? 'Generating...' : '⚡ Generate AI Design'}
           </button>
 
+          <p style={styles.disclaimer}>
+            💡 For an exact shape, size, or layer count, use the{' '}
+            <Link to="/builder" style={styles.disclaimerLink}>Cake Builder</Link> —
+            AI Generator is best for exploring flavors, themes, and decoration style.
+          </p>
+
           {error && <p style={styles.errorText}>{error}</p>}
 
           {generating && (
@@ -95,6 +106,9 @@ export default function AIGenerator() {
                   🛒 Order This Cake
                 </button>
                 <button style={styles.resultBtnGhost}>💾 Save Design</button>
+                <button onClick={handleGenerate} style={styles.resultBtnGhost}>
+                  🔄 Try Again
+                </button>
               </div>
             </div>
           )}
@@ -193,6 +207,17 @@ const styles = {
     padding: '15px',
     fontSize: '14.5px',
   },
+  disclaimer: {
+    fontSize: '11.5px',
+    color: 'var(--text-muted)',
+    textAlign: 'center',
+    marginTop: '14px',
+    lineHeight: 1.5,
+  },
+  disclaimerLink: {
+    color: 'var(--rose-deep)',
+    fontWeight: 500,
+  },
   errorText: {
     color: '#C1121F',
     marginTop: '16px',
@@ -219,6 +244,7 @@ const styles = {
   resultActions: {
     display: 'flex',
     justifyContent: 'center',
+    flexWrap: 'wrap',
     gap: '12px',
     marginTop: '18px',
   },
