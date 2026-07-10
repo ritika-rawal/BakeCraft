@@ -7,7 +7,7 @@ const NAV_ITEMS = [
   { label: 'Marketplace', icon: '⊞', path: '/#bakers' },
   { label: 'Chat', icon: '💬', path: '#' },
   { label: 'Order Tracking', icon: '◎', path: '#' },
-  { label: 'Checkout', icon: '🛒', path: '#' },
+  { label: 'Checkout', icon: '🛒', path: '/checkout' },
   { label: 'Saved Designs', icon: '♡', path: '#' },
 ];
 
