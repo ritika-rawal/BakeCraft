@@ -6,13 +6,49 @@ export default function Signup() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // TODO: replace with real API call to backend once auth is wired up
-    localStorage.setItem('bakecraft_user', JSON.stringify({ name, email, role }));
-    navigate(role === 'baker' ? '/dashboard/baker' : '/dashboard/customer');
+    setError('');
+    setLoading(true);
+
+    try {
+      const res = await fetch('http://localhost:5000/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password, role }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Signup failed. Please try again.');
+      }
+
+      // Signup succeeded — now log them in automatically to get a token
+      const loginRes = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const loginData = await loginRes.json();
+
+      if (!loginRes.ok) {
+        throw new Error('Account created, but auto-login failed. Please log in manually.');
+      }
+
+      localStorage.setItem('bakecraft_token', loginData.token);
+      localStorage.setItem('bakecraft_user', JSON.stringify(loginData.user));
+
+      navigate(loginData.user.role === 'baker' ? '/dashboard/baker' : '/dashboard/customer');
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -63,10 +99,13 @@ export default function Signup() {
             onChange={(e) => setPassword(e.target.value)}
             style={styles.input}
             required
+            minLength={6}
           />
 
-          <button type="submit" className="btn-primary" style={styles.submitBtn}>
-            Create account
+          {error && <p style={styles.errorText}>{error}</p>}
+
+          <button type="submit" className="btn-primary" style={styles.submitBtn} disabled={loading}>
+            {loading ? 'Creating account...' : 'Create account'}
           </button>
         </form>
 
@@ -95,15 +134,8 @@ const styles = {
     maxWidth: '400px',
     boxShadow: '0 10px 30px rgba(0,0,0,0.06)',
   },
-  heading: {
-    fontSize: '24px',
-    marginBottom: '6px',
-  },
-  subtext: {
-    fontSize: '13px',
-    color: 'var(--text-muted)',
-    marginBottom: '24px',
-  },
+  heading: { fontSize: '24px', marginBottom: '6px' },
+  subtext: { fontSize: '13px', color: 'var(--text-muted)', marginBottom: '24px' },
   roleToggle: {
     display: 'flex',
     gap: '8px',
@@ -123,36 +155,11 @@ const styles = {
     fontWeight: 500,
     cursor: 'pointer',
   },
-  roleBtnActive: {
-    background: 'var(--rose-deep)',
-    color: '#fff',
-  },
-  label: {
-    display: 'block',
-    fontSize: '13px',
-    fontWeight: 500,
-    marginBottom: '6px',
-    marginTop: '14px',
-  },
-  input: {
-    width: '100%',
-    padding: '11px 14px',
-    borderRadius: '8px',
-    border: '1px solid #eee',
-    fontSize: '14px',
-  },
-  submitBtn: {
-    width: '100%',
-    marginTop: '24px',
-  },
-  footerText: {
-    fontSize: '13px',
-    color: 'var(--text-muted)',
-    textAlign: 'center',
-    marginTop: '20px',
-  },
-  link: {
-    color: 'var(--rose-deep)',
-    fontWeight: 500,
-  },
+  roleBtnActive: { background: 'var(--rose-deep)', color: '#fff' },
+  label: { display: 'block', fontSize: '13px', fontWeight: 500, marginBottom: '6px', marginTop: '14px' },
+  input: { width: '100%', padding: '11px 14px', borderRadius: '8px', border: '1px solid #eee', fontSize: '14px' },
+  errorText: { color: '#C1121F', fontSize: '12.5px', marginTop: '12px' },
+  submitBtn: { width: '100%', marginTop: '24px' },
+  footerText: { fontSize: '13px', color: 'var(--text-muted)', textAlign: 'center', marginTop: '20px' },
+  link: { color: 'var(--rose-deep)', fontWeight: 500 },
 };
