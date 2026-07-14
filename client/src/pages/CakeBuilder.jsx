@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react';
-import DashboardLayout from '../components/DashboardLayout';
 import { useNavigate } from 'react-router-dom';
+import DashboardLayout from '../components/DashboardLayout';
 
 const SHAPES = [
   { id: 'round', label: 'Round', icon: '○' },
@@ -46,6 +46,7 @@ const FROSTING_COLORS = {
 const BASE_PRICE_PER_LAYER = 20;
 
 export default function CakeBuilder() {
+  const navigate = useNavigate();
   const [shape, setShape] = useState('round');
   const [layers, setLayers] = useState(2);
   const [flavor, setFlavor] = useState(FLAVORS[0]);
@@ -69,11 +70,8 @@ export default function CakeBuilder() {
     return { base, toppingsTotal, total };
   }, [layers, flavor, toppings]);
 
-  const navigate = useNavigate();
-
-const handleOrder = () => {
-  navigate('/checkout', {
-    state: {
+  const handleOrder = () => {
+    const draftOrder = {
       shape,
       layers,
       flavor: flavor.label,
@@ -81,9 +79,11 @@ const handleOrder = () => {
       toppings: toppings.map((id) => TOPPINGS.find((t) => t.id === id)?.label),
       message,
       total: pricing.total,
-    },
-  });
-};
+    };
+
+    localStorage.setItem('bakecraft_draft_order', JSON.stringify(draftOrder));
+    navigate('/checkout', { state: draftOrder });
+  };
 
   return (
     <DashboardLayout>
@@ -302,7 +302,6 @@ function CakePreview({ shape, layers, flavor, frosting, toppings, message }) {
 
       {layerBlocks}
 
-      {/* Frosting drip on top edge */}
       <path
         d={`M${120 - topWidth / 2} ${topY} 
             Q${120 - topWidth / 2 + topWidth * 0.15} ${topY + 14} ${120 - topWidth / 2 + topWidth * 0.3} ${topY}
@@ -315,7 +314,6 @@ function CakePreview({ shape, layers, flavor, frosting, toppings, message }) {
         opacity="0.6"
       />
 
-      {/* Toppings on top surface */}
       {toppings.includes('sprinkles') &&
         Array.from({ length: 12 }).map((_, i) => (
           <rect
@@ -366,14 +364,12 @@ function CakePreview({ shape, layers, flavor, frosting, toppings, message }) {
           <circle key={i} cx={120 - 35 + i * 35} cy={topY - 6} r="6" fill="#F77F00" />
         ))}
 
-      {/* Candle */}
       <rect x="115" y={topY - 40} width="8" height="26" rx="2" fill="#F5E6C8" />
       <path
         d={`M119 ${topY - 40} Q114 ${topY - 50} 119 ${topY - 58} Q124 ${topY - 50} 119 ${topY - 40}`}
         fill="#F4A340"
       />
 
-      {/* Message */}
       {message && (
         <text
           x="120"

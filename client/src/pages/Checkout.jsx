@@ -18,7 +18,12 @@ const TIME_SLOTS = [
 export default function Checkout() {
   const location = useLocation();
   const navigate = useNavigate();
-  const order = location.state;
+
+  const [order] = useState(() => {
+    if (location.state) return location.state;
+    const savedDraft = localStorage.getItem('bakecraft_draft_order');
+    return savedDraft ? JSON.parse(savedDraft) : null;
+  });
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -32,6 +37,7 @@ export default function Checkout() {
   const [promoCode, setPromoCode] = useState('');
   const [placing, setPlacing] = useState(false);
   const [placed, setPlaced] = useState(false);
+  const [error, setError] = useState('');
 
   if (!order) {
     return (
@@ -52,14 +58,67 @@ export default function Checkout() {
   const discount = promoCode.trim().toUpperCase() === 'FIRSTCAKE' ? Math.round(subtotal * 0.1) : 0;
   const grandTotal = subtotal + deliveryFee - discount;
 
-  const handlePlaceOrder = (e) => {
+  const handlePlaceOrder = async (e) => {
     e.preventDefault();
+    setError('');
     setPlacing(true);
-    // TODO: replace with real API call to create an order in the backend
-    setTimeout(() => {
-      setPlacing(false);
+
+    try {
+      const token = localStorage.getItem('bakecraft_token');
+      if (!token) {
+        throw new Error('Please log in before placing an order.');
+      }
+
+      const res = await fetch('http://localhost:5000/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          cake: {
+            shape: order.shape,
+            layers: order.layers,
+            flavor: order.flavor,
+            frosting: order.frosting,
+            toppings: order.toppings,
+            message: order.message,
+          },
+          delivery: {
+            firstName,
+            lastName,
+            contact,
+            street,
+            city,
+            neighborhood,
+            deliveryDate,
+            timeSlot,
+          },
+          payment: {
+            method: paymentMethod,
+          },
+          pricing: {
+            subtotal,
+            deliveryFee,
+            discount,
+            grandTotal,
+          },
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to place order.');
+      }
+
+      localStorage.removeItem('bakecraft_draft_order');
       setPlaced(true);
-    }, 1200);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setPlacing(false);
+    }
   };
 
   if (placed) {
@@ -194,6 +253,8 @@ export default function Checkout() {
               ))}
             </div>
           </div>
+
+          {error && <p style={styles.errorText}>{error}</p>}
         </form>
 
         {/* Right: order summary */}
@@ -343,6 +404,12 @@ const styles = {
   },
   paymentIcon: {
     fontSize: '18px',
+  },
+
+  errorText: {
+    color: '#C1121F',
+    fontSize: '13px',
+    marginTop: '4px',
   },
 
   summaryCard: {
