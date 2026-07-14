@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const NAV_ITEMS = [
   { label: 'Home', icon: '⌂', path: '/dashboard/customer' },
@@ -6,23 +6,30 @@ const NAV_ITEMS = [
   { label: 'AI Generator', icon: '✦', path: '/ai-generator' },
   { label: 'Marketplace', icon: '⊞', path: '/#bakers' },
   { label: 'Chat', icon: '💬', path: '#' },
-  { label: 'Order Tracking', icon: '◎', path: '#' },
+  { label: 'Order Tracking', icon: '◎', path: '/order-tracking' },
   { label: 'Checkout', icon: '🛒', path: '/checkout' },
   { label: 'Saved Designs', icon: '♡', path: '#' },
 ];
 
 export default function Sidebar({ collapsed, onToggle }) {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('bakecraft_token');
+    localStorage.removeItem('bakecraft_user');
+    navigate('/login');
+  };
 
   return (
     <aside style={{ ...styles.sidebar, width: collapsed ? '72px' : '230px' }}>
       <div style={styles.topRow}>
-       <div style={styles.brand}>
-        <img
-        src="/logo-v2.png"
-         alt="BakeCraft"
-        style={collapsed ? styles.logoImgSmall : styles.logoImgLarge}
-         />
+        <div style={styles.brand}>
+          <img
+            src="/logo-v2.png"
+            alt="BakeCraft"
+            style={collapsed ? styles.logoImgSmall : styles.logoImgLarge}
+          />
         </div>
         <button onClick={onToggle} style={styles.toggleBtn}>
           {collapsed ? '»' : '«'}
@@ -52,7 +59,10 @@ export default function Sidebar({ collapsed, onToggle }) {
           <span style={styles.navIcon}>⚙</span>
           {!collapsed && 'Settings'}
         </div>
-        <div style={{ ...styles.navItem, justifyContent: collapsed ? 'center' : 'flex-start' }}>
+        <div
+          onClick={handleLogout}
+          style={{ ...styles.navItem, justifyContent: collapsed ? 'center' : 'flex-start' }}
+        >
           <span style={styles.navIcon}>⏻</span>
           {!collapsed && 'Logout'}
         </div>
@@ -81,21 +91,21 @@ const styles = {
     marginBottom: '32px',
     paddingLeft: '4px',
   },
- brand: {
-  display: 'flex',
-  alignItems: 'center',
-  overflow: 'visible',
-},
-    logoImgSmall: {
-  width: '32px',
-  height: '32px',
-  objectFit: 'contain',
-    },
-logoImgLarge: {
-  height: '40px',
-  width: 'auto',
-  objectFit: 'contain',
-},
+  brand: {
+    display: 'flex',
+    alignItems: 'center',
+    overflow: 'visible',
+  },
+  logoImgSmall: {
+    width: '32px',
+    height: '32px',
+    objectFit: 'contain',
+  },
+  logoImgLarge: {
+    height: '40px',
+    width: 'auto',
+    objectFit: 'contain',
+  },
   toggleBtn: {
     border: 'none',
     background: 'var(--pink-soft)',

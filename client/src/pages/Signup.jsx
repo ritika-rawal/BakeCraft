@@ -28,22 +28,7 @@ export default function Signup() {
         throw new Error(data.error || 'Signup failed. Please try again.');
       }
 
-      // Signup succeeded — now log them in automatically to get a token
-      const loginRes = await fetch('http://localhost:5000/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-      const loginData = await loginRes.json();
-
-      if (!loginRes.ok) {
-        throw new Error('Account created, but auto-login failed. Please log in manually.');
-      }
-
-      localStorage.setItem('bakecraft_token', loginData.token);
-      localStorage.setItem('bakecraft_user', JSON.stringify(loginData.user));
-
-      navigate(loginData.user.role === 'baker' ? '/dashboard/baker' : '/dashboard/customer');
+      navigate('/login', { state: { justRegistered: true } });
     } catch (err) {
       setError(err.message);
     } finally {
@@ -156,10 +141,31 @@ const styles = {
     cursor: 'pointer',
   },
   roleBtnActive: { background: 'var(--rose-deep)', color: '#fff' },
-  label: { display: 'block', fontSize: '13px', fontWeight: 500, marginBottom: '6px', marginTop: '14px' },
-  input: { width: '100%', padding: '11px 14px', borderRadius: '8px', border: '1px solid #eee', fontSize: '14px' },
-  errorText: { color: '#C1121F', fontSize: '12.5px', marginTop: '12px' },
+  label: {
+    display: 'block',
+    fontSize: '13px',
+    fontWeight: 500,
+    marginBottom: '6px',
+    marginTop: '14px',
+  },
+  input: {
+    width: '100%',
+    padding: '11px 14px',
+    borderRadius: '8px',
+    border: '1px solid #eee',
+    fontSize: '14px',
+  },
+  errorText: {
+    color: '#C1121F',
+    fontSize: '12.5px',
+    marginTop: '12px',
+  },
   submitBtn: { width: '100%', marginTop: '24px' },
-  footerText: { fontSize: '13px', color: 'var(--text-muted)', textAlign: 'center', marginTop: '20px' },
+  footerText: {
+    fontSize: '13px',
+    color: 'var(--text-muted)',
+    textAlign: 'center',
+    marginTop: '20px',
+  },
   link: { color: 'var(--rose-deep)', fontWeight: 500 },
 };
