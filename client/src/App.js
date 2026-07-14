@@ -8,6 +8,7 @@ import CustomerDashboard from './pages/CustomerDashboard';
 import BakerDashboard from './pages/BakerDashboard';
 import AIGenerator from './pages/AIGenerator';
 import Checkout from './pages/Checkout';
+import OrderTracking from './pages/OrderTracking';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/dashboard/baker" element={<BakerDashboard />} />
         <Route path="/ai-generator" element={<AIGenerator />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/order-tracking" element={<OrderTracking />} />
       </Routes>
     </BrowserRouter>
   );
