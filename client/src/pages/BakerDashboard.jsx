@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import DashboardLayout from '../components/DashboardLayout';
+import BakerLayout from '../components/BakerLayout';
 
 const STATUS_OPTIONS = ['pending', 'confirmed', 'baking', 'out-for-delivery', 'delivered', 'cancelled'];
 
@@ -75,7 +75,7 @@ export default function BakerDashboard() {
   };
 
   return (
-    <DashboardLayout>
+    <BakerLayout>
       <h1 style={styles.pageTitle}>Welcome back{user?.name ? `, ${user.name}` : ''}</h1>
       <p style={styles.pageSubtitle}>Manage incoming orders and update their status.</p>
 
@@ -157,7 +157,7 @@ export default function BakerDashboard() {
           </div>
         )}
       </div>
-    </DashboardLayout>
+    </BakerLayout>
   );
 }
 
