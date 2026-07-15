@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 
@@ -24,6 +24,15 @@ export default function Checkout() {
     const savedDraft = localStorage.getItem('bakecraft_draft_order');
     return savedDraft ? JSON.parse(savedDraft) : null;
   });
+
+  const [deliveryFee, setDeliveryFee] = useState(150); // fallback until real value loads
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/pricing')
+      .then((res) => res.json())
+      .then((data) => setDeliveryFee(data.pricing.deliveryFee))
+      .catch(() => {}); // keep fallback if this fails
+  }, []);
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -54,7 +63,6 @@ export default function Checkout() {
   }
 
   const subtotal = order.total;
-  const deliveryFee = 150;
   const discount = promoCode.trim().toUpperCase() === 'FIRSTCAKE' ? Math.round(subtotal * 0.1) : 0;
   const grandTotal = subtotal + deliveryFee - discount;
 
