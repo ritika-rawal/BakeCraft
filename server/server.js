@@ -6,6 +6,7 @@ require('dotenv').config();
 const authRoutes = require('./src/presentation/routes/authRoutes');
 const orderRoutes = require('./src/presentation/routes/orderRoutes');
 const pricingRoutes = require('./src/presentation/routes/pricingRoutes');
+const messageRoutes = require('./src/presentation/routes/messageRoutes');
 
 const app = express();
 app.use(cors());
@@ -18,6 +19,7 @@ mongoose.connect(process.env.MONGO_URI)
 app.use('/api/auth', authRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/pricing', pricingRoutes);
+app.use('/api/messages', messageRoutes);
 
 app.get('/', (req, res) => {
   res.send('BakeCraft API is running');
