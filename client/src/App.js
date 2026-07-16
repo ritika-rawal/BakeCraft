@@ -12,6 +12,7 @@ import OrderTracking from './pages/OrderTracking';
 import BakerPricing from './pages/BakerPricing';
 import OrderChat from './pages/OrderChat';
 import BakerOrderChat from './pages/BakerOrderChat';
+import ChatList from './pages/ChatList';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path="/baker/pricing" element={<BakerPricing />} />
         <Route path="/chat/:orderId" element={<OrderChat />} />
         <Route path="/baker/chat/:orderId" element={<BakerOrderChat />} />
+        <Route path="/chat" element={<ChatList />} />
       </Routes>
     </BrowserRouter>
   );
