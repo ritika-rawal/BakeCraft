@@ -5,7 +5,7 @@ const NAV_ITEMS = [
   { label: 'Cake Builder', icon: '✎', path: '/builder' },
   { label: 'AI Generator', icon: '✦', path: '/ai-generator' },
   { label: 'Marketplace', icon: '⊞', path: '/#bakers' },
-  { label: 'Chat', icon: '💬', path: '#' },
+  { label: 'Chat', icon: '💬', path: '/chat' },
   { label: 'Order Tracking', icon: '◎', path: '/order-tracking' },
   { label: 'Checkout', icon: '🛒', path: '/checkout' },
   { label: 'Saved Designs', icon: '♡', path: '#' },

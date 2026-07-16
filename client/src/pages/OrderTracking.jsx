@@ -6,7 +6,7 @@ const STATUS_STEPS = ['pending', 'confirmed', 'baking', 'out-for-delivery', 'del
 
 const STATUS_LABELS = {
   pending: 'Order Placed',
-  confirmed: 'Confirmed',
+  confirmed: 'Confirmed', 
   baking: 'Baking',
   'out-for-delivery': 'Out for Delivery',
   delivered: 'Delivered',
@@ -153,6 +153,9 @@ function OrderCard({ order }) {
         <span>📍 {order.delivery.street}, {order.delivery.neighborhood}, {order.delivery.city}</span>
         <span>🕓 {order.delivery.deliveryDate} · {order.delivery.timeSlot}</span>
       </div>
+      <Link to={`/chat/${order._id}`}>
+      <button style={styles.chatBtn}>💬 Message Baker</button>
+      </Link>
     </div>
   );
 }
@@ -286,4 +289,16 @@ const styles = {
     fontSize: '12px',
     color: 'var(--text-muted)',
   },
+  chatBtn: {
+  marginTop: '14px',
+  width: '100%',
+  background: 'var(--pink-soft)',
+  color: 'var(--rose-deep)',
+  border: 'none',
+  borderRadius: '20px',
+  padding: '10px',
+  fontSize: '12.5px',
+  fontWeight: 500,
+  cursor: 'pointer',
+},
 };

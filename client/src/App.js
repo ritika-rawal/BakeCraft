@@ -10,6 +10,8 @@ import AIGenerator from './pages/AIGenerator';
 import Checkout from './pages/Checkout';
 import OrderTracking from './pages/OrderTracking';
 import BakerPricing from './pages/BakerPricing';
+import OrderChat from './pages/OrderChat';
+import BakerOrderChat from './pages/BakerOrderChat';
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/order-tracking" element={<OrderTracking />} />
         <Route path="/baker/pricing" element={<BakerPricing />} />
+        <Route path="/chat/:orderId" element={<OrderChat />} />
+        <Route path="/baker/chat/:orderId" element={<BakerOrderChat />} />
       </Routes>
     </BrowserRouter>
   );

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import BakerLayout from '../components/BakerLayout';
+import { Link } from 'react-router-dom';
 
 const STATUS_OPTIONS = ['pending', 'confirmed', 'baking', 'out-for-delivery', 'delivered', 'cancelled'];
 
@@ -142,16 +143,21 @@ export default function BakerDashboard() {
 
                 <p style={styles.price}>NPR {order.pricing.grandTotal.toFixed(0)}</p>
 
-                <select
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                 <select
                   value={order.status}
                   onChange={(e) => handleStatusChange(order._id, e.target.value)}
                   disabled={updatingId === order._id}
                   style={styles.statusSelect}
-                >
-                  {STATUS_OPTIONS.map((s) => (
-                    <option key={s} value={s}>{STATUS_LABELS[s]}</option>
+                   >
+                   {STATUS_OPTIONS.map((s) => (
+                   <option key={s} value={s}>{STATUS_LABELS[s]}</option>
                   ))}
                 </select>
+                <Link to={`/baker/chat/${order._id}`} style={{ fontSize: '11.5px', color: 'var(--rose-deep)', textAlign: 'center' }}>
+                💬 Chat
+                </Link>
+              </div>
               </div>
             ))}
           </div>

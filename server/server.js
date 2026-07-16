@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const { MongoMemoryServer } = require('mongodb-memory-server');
 const cors = require('cors');
 require('dotenv').config();
 
@@ -12,9 +13,36 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ MongoDB connected'))
-  .catch((err) => console.error('❌ MongoDB connection error:', err));
+async function initDb() {
+  const uri = process.env.MONGO_URI;
+  if (uri) {
+    try {
+      await mongoose.connect(uri);
+      console.log('✅ MongoDB connected');
+      return;
+    } catch (err) {
+      console.error('❌ MongoDB connection error:', err);
+    }
+  }
+
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('Starting in-memory MongoDB for development...');
+    try {
+      const mongod = await MongoMemoryServer.create();
+      const memoryUri = mongod.getUri();
+      await mongoose.connect(memoryUri);
+      console.log('✅ Connected to in-memory MongoDB');
+    } catch (err) {
+      console.error('❌ In-memory MongoDB connection error:', err);
+      process.exit(1);
+    }
+  } else {
+    console.error('No MongoDB URI and running in production — exiting.');
+    process.exit(1);
+  }
+}
+
+initDb();
 
 app.use('/api/auth', authRoutes);
 app.use('/api/orders', orderRoutes);
