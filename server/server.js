@@ -8,6 +8,7 @@ const authRoutes = require('./src/presentation/routes/authRoutes');
 const orderRoutes = require('./src/presentation/routes/orderRoutes');
 const pricingRoutes = require('./src/presentation/routes/pricingRoutes');
 const messageRoutes = require('./src/presentation/routes/messageRoutes');
+const savedDesignRoutes = require('./src/presentation/routes/savedDesignRoutes');
 
 const app = express();
 app.use(cors());
@@ -48,6 +49,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/pricing', pricingRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/api/saved-designs', savedDesignRoutes);
 
 app.get('/', (req, res) => {
   res.send('BakeCraft API is running');
