@@ -52,10 +52,12 @@ export default function BakerSidebar({ collapsed, onToggle }) {
       </nav>
 
       <div style={styles.sidebarBottom}>
+        <Link to="/profile" style={{ textDecoration: 'none' }}>
         <div style={{ ...styles.navItem, justifyContent: collapsed ? 'center' : 'flex-start' }}>
           <span style={styles.navIcon}>⚙</span>
           {!collapsed && 'Settings'}
-        </div>
+       </div>
+      </Link>
         <div
           onClick={handleLogout}
           style={{ ...styles.navItem, justifyContent: collapsed ? 'center' : 'flex-start' }}
