@@ -31,6 +31,8 @@ export default function CakeBuilder() {
   const [pricingConfig, setPricingConfig] = useState(null);
   const [loadingPricing, setLoadingPricing] = useState(true);
   const [pricingError, setPricingError] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState('');
 
   const [shape, setShape] = useState('round');
   const [layers, setLayers] = useState(2);
@@ -82,6 +84,45 @@ export default function CakeBuilder() {
 
     localStorage.setItem('bakecraft_draft_order', JSON.stringify(draftOrder));
     navigate('/checkout', { state: draftOrder });
+  };
+
+  const handleSaveDesign = async () => {
+    setSaving(true);
+    setSaveMessage('');
+    try {
+      const token = localStorage.getItem('bakecraft_token');
+      if (!token) {
+        throw new Error('Please log in to save a design.');
+      }
+
+      const res = await fetch('http://localhost:5000/api/saved-designs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: `${flavor.label} Cake`,
+          shape,
+          layers,
+          flavor: flavor.label,
+          frosting,
+          toppings: toppings.map((id) => pricingConfig.toppings.find((t) => t.id === id)?.label),
+          message,
+          total: pricing.total,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to save design.');
+
+      setSaveMessage('✓ Saved!');
+      setTimeout(() => setSaveMessage(''), 2000);
+    } catch (err) {
+      setSaveMessage(err.message);
+    } finally {
+      setSaving(false);
+    }
   };
 
   if (loadingPricing) {
@@ -254,7 +295,10 @@ export default function CakeBuilder() {
             <button className="btn-primary" style={styles.orderBtn} onClick={handleOrder}>
               🛒 Order This Cake
             </button>
-            <button style={styles.saveBtn}>💾 Save Design</button>
+            <button style={styles.saveBtn} onClick={handleSaveDesign} disabled={saving}>
+              {saving ? 'Saving...' : '💾 Save Design'}
+            </button>
+            {saveMessage && <p style={styles.saveMessage}>{saveMessage}</p>}
           </div>
         </div>
       </div>
@@ -601,4 +645,10 @@ const styles = {
     fontWeight: 500,
     cursor: 'pointer',
   },
-};
+  saveMessage: {
+    fontSize: '12px',
+    textAlign: 'center',
+    marginTop: '8px',
+    color: 'var(--rose-deep)',
+  },
+};  

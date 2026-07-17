@@ -2,7 +2,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const NAV_ITEMS = [
   { label: 'Dashboard', icon: '⌂', path: '/dashboard/baker' },
-  { label: 'Orders', icon: '📦', path: '/dashboard/baker' },
   { label: 'Pricing & Menu', icon: '💰', path: '/baker/pricing' },
   { label: 'My Bakery Profile', icon: '🏪', path: '#' },
 ];
@@ -120,11 +119,7 @@ const styles = {
     cursor: 'pointer',
     whiteSpace: 'nowrap',
   },
-  navItemActive: {
-    background: 'var(--pink-soft)',
-    color: 'var(--rose-deep)',
-    fontWeight: 500,
-  },
+  navItemActive: { background: 'var(--pink-soft)', color: 'var(--rose-deep)', fontWeight: 500 },
   navIcon: { fontSize: '15px', width: '18px', textAlign: 'center', flexShrink: 0 },
   sidebarBottom: { display: 'flex', flexDirection: 'column', gap: '2px', marginTop: '16px' },
 };

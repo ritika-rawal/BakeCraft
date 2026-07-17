@@ -29,4 +29,4 @@ const styles = {
     padding: 0,
   },
   title: { fontSize: '20px' },
-};  
+};

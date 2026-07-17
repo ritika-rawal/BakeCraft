@@ -8,7 +8,7 @@ const NAV_ITEMS = [
   { label: 'Chat', icon: '💬', path: '/chat' },
   { label: 'Order Tracking', icon: '◎', path: '/order-tracking' },
   { label: 'Checkout', icon: '🛒', path: '/checkout' },
-  { label: 'Saved Designs', icon: '♡', path: '#' },
+  { label: 'Saved Designs', icon: '♡', path: '/saved-designs' },
 ];
 
 export default function Sidebar({ collapsed, onToggle }) {

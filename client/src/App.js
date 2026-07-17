@@ -13,6 +13,7 @@ import BakerPricing from './pages/BakerPricing';
 import OrderChat from './pages/OrderChat';
 import BakerOrderChat from './pages/BakerOrderChat';
 import ChatList from './pages/ChatList';
+import SavedDesigns from './pages/SavedDesigns';
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
         <Route path="/chat/:orderId" element={<OrderChat />} />
         <Route path="/baker/chat/:orderId" element={<BakerOrderChat />} />
         <Route path="/chat" element={<ChatList />} />
+        <Route path="/saved-designs" element={<SavedDesigns />} />
       </Routes>
     </BrowserRouter>
   );

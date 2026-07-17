@@ -28,7 +28,7 @@ export default function ChatWindow({ orderId }) {
 
   useEffect(() => {
     fetchMessages();
-    const interval = setInterval(fetchMessages, 4000); // poll every 4s
+    const interval = setInterval(fetchMessages, 4000);
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orderId]);
@@ -131,38 +131,13 @@ const styles = {
     flexDirection: 'column',
     gap: '10px',
   },
-  bubbleRow: {
-    display: 'flex',
-  },
-  bubble: {
-    maxWidth: '70%',
-    borderRadius: '14px',
-    padding: '10px 14px',
-  },
-  bubbleMine: {
-    background: 'var(--rose-deep)',
-    color: '#fff',
-  },
-  bubbleTheirs: {
-    background: 'var(--pink-soft)',
-    color: 'var(--text-dark)',
-  },
-  bubbleSender: {
-    fontSize: '10.5px',
-    fontWeight: 600,
-    opacity: 0.8,
-    marginBottom: '3px',
-  },
-  bubbleText: {
-    fontSize: '13.5px',
-    lineHeight: 1.4,
-  },
-  bubbleTime: {
-    fontSize: '10px',
-    opacity: 0.7,
-    marginTop: '4px',
-    textAlign: 'right',
-  },
+  bubbleRow: { display: 'flex' },
+  bubble: { maxWidth: '70%', borderRadius: '14px', padding: '10px 14px' },
+  bubbleMine: { background: 'var(--rose-deep)', color: '#fff' },
+  bubbleTheirs: { background: 'var(--pink-soft)', color: 'var(--text-dark)' },
+  bubbleSender: { fontSize: '10.5px', fontWeight: 600, opacity: 0.8, marginBottom: '3px' },
+  bubbleText: { fontSize: '13.5px', lineHeight: 1.4 },
+  bubbleTime: { fontSize: '10px', opacity: 0.7, marginTop: '4px', textAlign: 'right' },
   inputRow: {
     display: 'flex',
     gap: '10px',
@@ -176,8 +151,5 @@ const styles = {
     border: '1px solid #eee',
     fontSize: '13.5px',
   },
-  sendBtn: {
-    padding: '11px 22px',
-    fontSize: '13.5px',
-  },
+  sendBtn: { padding: '11px 22px', fontSize: '13.5px' },
 };
