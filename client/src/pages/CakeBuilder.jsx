@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 
@@ -8,25 +8,7 @@ const SHAPES = [
   { id: 'square', label: 'Square', icon: '□' },
 ];
 
-const FLAVORS = [
-  { id: 'vanilla', label: 'Vanilla', price: 0 },
-  { id: 'strawberry', label: 'Strawberry', price: 0 },
-  { id: 'dark-chocolate', label: 'Dark Chocolate', price: 5 },
-  { id: 'red-velvet', label: 'Red Velvet', price: 5 },
-  { id: 'white-forest', label: 'White Forest', price: 8 },
-  { id: 'black-forest', label: 'Black Forest', price: 8 },
-];
-
 const FROSTINGS = ['Swiss Meringue Cream', 'Classic Buttercream', 'Fresh Whipped Cream'];
-
-const TOPPINGS = [
-  { id: 'sprinkles', label: 'Sprinkles', price: 2 },
-  { id: 'berries', label: 'Berries', price: 4 },
-  { id: 'flowers', label: 'Flowers', price: 5 },
-  { id: 'chocolate', label: 'Chocolate', price: 3 },
-  { id: 'pearls', label: 'Pearls', price: 3 },
-  { id: 'fruits', label: 'Fruits', price: 4 },
-];
 
 const FLAVOR_COLORS = {
   vanilla: '#F5E6C8',
@@ -43,16 +25,32 @@ const FROSTING_COLORS = {
   'Fresh Whipped Cream': '#FFFFFF',
 };
 
-const BASE_PRICE_PER_LAYER = 20;
-
 export default function CakeBuilder() {
   const navigate = useNavigate();
+
+  const [pricingConfig, setPricingConfig] = useState(null);
+  const [loadingPricing, setLoadingPricing] = useState(true);
+  const [pricingError, setPricingError] = useState('');
+  const [saving, setSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState('');
+
   const [shape, setShape] = useState('round');
   const [layers, setLayers] = useState(2);
-  const [flavor, setFlavor] = useState(FLAVORS[0]);
+  const [flavor, setFlavor] = useState(null);
   const [frosting, setFrosting] = useState(FROSTINGS[0]);
   const [toppings, setToppings] = useState([]);
   const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/pricing')
+      .then((res) => res.json())
+      .then((data) => {
+        setPricingConfig(data.pricing);
+        setFlavor(data.pricing.flavors[0]);
+      })
+      .catch(() => setPricingError('Could not load current pricing. Using defaults may be inaccurate.'))
+      .finally(() => setLoadingPricing(false));
+  }, []);
 
   const toggleTopping = (id) => {
     setToppings((prev) =>
@@ -61,14 +59,17 @@ export default function CakeBuilder() {
   };
 
   const pricing = useMemo(() => {
-    const base = layers * BASE_PRICE_PER_LAYER + 5;
+    if (!pricingConfig || !flavor) {
+      return { base: 0, toppingsTotal: 0, total: 0 };
+    }
+    const base = layers * pricingConfig.basePricePerLayer + pricingConfig.baseFlatFee;
     const toppingsTotal = toppings.reduce((sum, id) => {
-      const t = TOPPINGS.find((x) => x.id === id);
+      const t = pricingConfig.toppings.find((x) => x.id === id);
       return sum + (t?.price || 0);
     }, 0);
     const total = base + flavor.price + toppingsTotal;
     return { base, toppingsTotal, total };
-  }, [layers, flavor, toppings]);
+  }, [layers, flavor, toppings, pricingConfig]);
 
   const handleOrder = () => {
     const draftOrder = {
@@ -76,7 +77,7 @@ export default function CakeBuilder() {
       layers,
       flavor: flavor.label,
       frosting,
-      toppings: toppings.map((id) => TOPPINGS.find((t) => t.id === id)?.label),
+      toppings: toppings.map((id) => pricingConfig.toppings.find((t) => t.id === id)?.label),
       message,
       total: pricing.total,
     };
@@ -84,6 +85,63 @@ export default function CakeBuilder() {
     localStorage.setItem('bakecraft_draft_order', JSON.stringify(draftOrder));
     navigate('/checkout', { state: draftOrder });
   };
+
+  const handleSaveDesign = async () => {
+    setSaving(true);
+    setSaveMessage('');
+    try {
+      const token = localStorage.getItem('bakecraft_token');
+      if (!token) {
+        throw new Error('Please log in to save a design.');
+      }
+
+      const res = await fetch('http://localhost:5000/api/saved-designs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: `${flavor.label} Cake`,
+          shape,
+          layers,
+          flavor: flavor.label,
+          frosting,
+          toppings: toppings.map((id) => pricingConfig.toppings.find((t) => t.id === id)?.label),
+          message,
+          total: pricing.total,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to save design.');
+
+      setSaveMessage('✓ Saved!');
+      setTimeout(() => setSaveMessage(''), 2000);
+    } catch (err) {
+      setSaveMessage(err.message);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loadingPricing) {
+    return (
+      <DashboardLayout>
+        <p style={styles.stateText}>Loading cake builder...</p>
+      </DashboardLayout>
+    );
+  }
+
+  if (!pricingConfig || !flavor) {
+    return (
+      <DashboardLayout>
+        <p style={styles.errorText}>
+          {pricingError || 'Something went wrong loading the cake builder. Please refresh.'}
+        </p>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -132,7 +190,7 @@ export default function CakeBuilder() {
 
             <p style={styles.label}>Cake Flavor</p>
             <div style={styles.flavorGrid}>
-              {FLAVORS.map((f) => (
+              {pricingConfig.flavors.map((f) => (
                 <button
                   key={f.id}
                   onClick={() => setFlavor(f)}
@@ -190,7 +248,7 @@ export default function CakeBuilder() {
           <div style={styles.card}>
             <p style={styles.cardTitle}>✨ Toppings</p>
             <div style={styles.toppingRow}>
-              {TOPPINGS.map((t) => (
+              {pricingConfig.toppings.map((t) => (
                 <button
                   key={t.id}
                   onClick={() => toggleTopping(t.id)}
@@ -237,7 +295,10 @@ export default function CakeBuilder() {
             <button className="btn-primary" style={styles.orderBtn} onClick={handleOrder}>
               🛒 Order This Cake
             </button>
-            <button style={styles.saveBtn}>💾 Save Design</button>
+            <button style={styles.saveBtn} onClick={handleSaveDesign} disabled={saving}>
+              {saving ? 'Saving...' : '💾 Save Design'}
+            </button>
+            {saveMessage && <p style={styles.saveMessage}>{saveMessage}</p>}
           </div>
         </div>
       </div>
@@ -246,9 +307,9 @@ export default function CakeBuilder() {
 }
 
 function CakePreview({ shape, layers, flavor, frosting, toppings, message }) {
-  const flavorBase = FLAVOR_COLORS[flavor.id];
+  const flavorBase = FLAVOR_COLORS[flavor.id] || '#F5E6C8';
   const flavorLight = shadeColor(flavorBase, 25);
-  const frostingColor = FROSTING_COLORS[frosting];
+  const frostingColor = FROSTING_COLORS[frosting] || '#FFF8F0';
   const frostingDark = shadeColor(frostingColor, -15);
 
   const layerHeight = 42;
@@ -396,6 +457,9 @@ function shadeColor(hex, percent) {
 }
 
 const styles = {
+  stateText: { fontSize: '14px', color: 'var(--text-muted)', padding: '40px' },
+  errorText: { fontSize: '14px', color: '#C1121F', padding: '40px' },
+
   topbar: {
     display: 'flex',
     justifyContent: 'space-between',
@@ -581,4 +645,10 @@ const styles = {
     fontWeight: 500,
     cursor: 'pointer',
   },
-};
+  saveMessage: {
+    fontSize: '12px',
+    textAlign: 'center',
+    marginTop: '8px',
+    color: 'var(--rose-deep)',
+  },
+};  

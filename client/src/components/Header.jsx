@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 export default function Header({ greeting, subtext }) {
   const user = JSON.parse(localStorage.getItem('bakecraft_user') || 'null');
 
@@ -10,15 +12,17 @@ export default function Header({ greeting, subtext }) {
       <div style={styles.topbarRight}>
         <input placeholder="Search flavors, themes, or bakers..." style={styles.search} />
         <span style={styles.bell}>🔔</span>
-        <div style={styles.avatarBlock}>
-          <div style={styles.avatar} />
-          <div>
-            <p style={styles.avatarName}>{user?.name || 'Guest'}</p>
-            <p style={styles.avatarTier}>
-              {user?.role === 'baker' ? 'Baker Account' : 'Gold Member'}
-            </p>
+        <Link to="/profile" style={{ textDecoration: 'none' }}>
+          <div style={styles.avatarBlock}>
+            <div style={styles.avatar} />
+            <div>
+              <p style={styles.avatarName}>{user?.name || 'Guest'}</p>
+              <p style={styles.avatarTier}>
+                {user?.role === 'baker' ? 'Baker Account' : 'Gold Member'}
+              </p>
+            </div>
           </div>
-        </div>
+        </Link>
       </div>
     </div>
   );
@@ -61,6 +65,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
+    cursor: 'pointer',
   },
   avatar: {
     width: '36px',

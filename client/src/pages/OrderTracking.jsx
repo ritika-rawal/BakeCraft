@@ -36,6 +36,7 @@ export default function OrderTracking() {
           throw new Error(data.error || 'Failed to load orders.');
         }
 
+        console.log('Fetched orders:', data.orders); // temporary debug log
         setOrders(data.orders);
       } catch (err) {
         setError(err.message);
@@ -153,6 +154,10 @@ function OrderCard({ order }) {
         <span>📍 {order.delivery.street}, {order.delivery.neighborhood}, {order.delivery.city}</span>
         <span>🕓 {order.delivery.deliveryDate} · {order.delivery.timeSlot}</span>
       </div>
+
+      <Link to={`/chat/${order._id}`}>
+        <button style={styles.chatBtn}>💬 Message Baker</button>
+      </Link>
     </div>
   );
 }
@@ -285,5 +290,18 @@ const styles = {
     gap: '8px',
     fontSize: '12px',
     color: 'var(--text-muted)',
+    marginBottom: '14px',
+  },
+
+  chatBtn: {
+    width: '100%',
+    background: 'var(--pink-soft)',
+    color: 'var(--rose-deep)',
+    border: 'none',
+    borderRadius: '20px',
+    padding: '10px',
+    fontSize: '12.5px',
+    fontWeight: 500,
+    cursor: 'pointer',
   },
 };
