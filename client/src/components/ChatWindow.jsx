@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import Icon from './Icon';
 
 export default function ChatWindow({ orderId }) {
   const [messages, setMessages] = useState([]);
@@ -83,7 +84,7 @@ export default function ChatWindow({ orderId }) {
             >
               <div style={{ ...styles.bubble, ...(isMine ? styles.bubbleMine : styles.bubbleTheirs) }}>
                 <p style={styles.bubbleSender}>
-                  {m.senderRole === 'baker' ? '🍰 Baker' : '🙂 You'}
+                  {m.senderRole === 'baker' ? <><Icon name="cake" size={12} /> Baker</> : <><Icon name="user" size={12} /> You</>}
                 </p>
                 <p style={styles.bubbleText}>{m.text}</p>
                 <p style={styles.bubbleTime}>

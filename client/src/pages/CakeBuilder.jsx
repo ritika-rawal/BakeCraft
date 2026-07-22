@@ -1,11 +1,12 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
+import Icon from '../components/Icon';
 
 const SHAPES = [
-  { id: 'round', label: 'Round', icon: '○' },
-  { id: 'heart', label: 'Heart', icon: '♡' },
-  { id: 'square', label: 'Square', icon: '□' },
+  { id: 'round', label: 'Round', icon: 'track' },
+  { id: 'heart', label: 'Heart', icon: 'heart' },
+  { id: 'square', label: 'Square', icon: 'package' },
 ];
 
 const FROSTINGS = ['Swiss Meringue Cream', 'Classic Buttercream', 'Fresh Whipped Cream'];
@@ -116,7 +117,7 @@ export default function CakeBuilder() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to save design.');
 
-      setSaveMessage('✓ Saved!');
+      setSaveMessage('Saved!');
       setTimeout(() => setSaveMessage(''), 2000);
     } catch (err) {
       setSaveMessage(err.message);
@@ -149,9 +150,9 @@ export default function CakeBuilder() {
       <div style={styles.topbar}>
         <h1 style={styles.pageTitle}>Custom Cake Studio</h1>
         <div style={styles.topbarRight}>
-          <span style={styles.pickupBadge}>🕓 Estimated Pickup: Tomorrow, 2:00 PM</span>
-          <span style={styles.icon}>♡</span>
-          <span style={styles.icon}>🔔</span>
+          <span style={styles.pickupBadge}><Icon name="clock" size={15} /> Estimated Pickup: Tomorrow, 2:00 PM</span>
+          <span style={styles.icon}><Icon name="heart" size={17} /></span>
+          <span style={styles.icon}><Icon name="bell" size={17} /></span>
           <div style={styles.avatar} />
         </div>
       </div>
@@ -160,7 +161,7 @@ export default function CakeBuilder() {
         {/* Left column */}
         <div style={styles.column}>
           <div style={styles.card}>
-            <p style={styles.cardTitle}>🍰 Base Structure</p>
+            <p style={styles.cardTitle}><Icon name="cake" size={15} /> Base Structure</p>
 
             <p style={styles.label}>Cake Shape</p>
             <div style={styles.shapeRow}>
@@ -170,7 +171,7 @@ export default function CakeBuilder() {
                   onClick={() => setShape(s.id)}
                   style={{ ...styles.shapeBtn, ...(shape === s.id ? styles.shapeBtnActive : {}) }}
                 >
-                  <span style={styles.shapeIcon}>{s.icon}</span>
+                  <span style={styles.shapeIcon}><Icon name={s.icon} size={17} /></span>
                   {s.label}
                 </button>
               ))}
@@ -203,7 +204,7 @@ export default function CakeBuilder() {
           </div>
 
           <div style={styles.card}>
-            <p style={styles.cardTitle}>🎀 Frosting Style</p>
+            <p style={styles.cardTitle}><Icon name="sparkle" size={15} /> Frosting Style</p>
             {FROSTINGS.map((f) => (
               <label key={f} style={styles.radioRow}>
                 <input
@@ -223,7 +224,7 @@ export default function CakeBuilder() {
         <div style={styles.column}>
           <div style={styles.previewCard}>
             <div style={styles.previewHeader}>
-              <span>🔄 Live 3D Preview</span>
+              <span><Icon name="refresh" size={15} /> Live Preview</span>
             </div>
             <div style={styles.previewCircleWrap}>
               <CakePreview
@@ -236,9 +237,9 @@ export default function CakeBuilder() {
               />
             </div>
             <div style={styles.previewActions}>
-              <span style={styles.previewIcon}>🔍</span>
-              <span style={styles.previewIcon}>📷</span>
-              <span style={styles.previewIcon}>🔄</span>
+              <span style={styles.previewIcon}><Icon name="search" size={16} /></span>
+              <span style={styles.previewIcon}><Icon name="camera" size={16} /></span>
+              <span style={styles.previewIcon}><Icon name="refresh" size={16} /></span>
             </div>
           </div>
         </div>
@@ -246,7 +247,7 @@ export default function CakeBuilder() {
         {/* Right column */}
         <div style={styles.column}>
           <div style={styles.card}>
-            <p style={styles.cardTitle}>✨ Toppings</p>
+            <p style={styles.cardTitle}><Icon name="sparkle" size={15} /> Toppings</p>
             <div style={styles.toppingRow}>
               {pricingConfig.toppings.map((t) => (
                 <button
@@ -293,10 +294,10 @@ export default function CakeBuilder() {
             </div>
 
             <button className="btn-primary" style={styles.orderBtn} onClick={handleOrder}>
-              🛒 Order This Cake
+              <Icon name="cart" size={16} /> Order This Cake
             </button>
             <button style={styles.saveBtn} onClick={handleSaveDesign} disabled={saving}>
-              {saving ? 'Saving...' : '💾 Save Design'}
+              {saving ? 'Saving...' : <><Icon name="bookmark" size={16} /> Save Design</>}
             </button>
             {saveMessage && <p style={styles.saveMessage}>{saveMessage}</p>}
           </div>

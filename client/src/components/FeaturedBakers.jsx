@@ -1,7 +1,9 @@
+import Icon from './Icon';
+
 const bakers = [
-  { name: 'Rose & Rye Bakery', specialty: 'Custom celebration cakes', rating: '4.9', tilt: -2 },
-  { name: 'The Sourdough Room', specialty: 'Artisan breads & loaves', rating: '4.8', tilt: 2 },
-  { name: 'Little Sugar Studio', specialty: 'Cupcakes & mini desserts', rating: '5.0', tilt: -1 },
+  { name: 'Rose & Rye Bakery', specialty: 'Custom celebration cakes', rating: '4.9', tilt: -2, image: '/cake-strawberry.png' },
+  { name: 'The Sourdough Room', specialty: 'Artisan breads & loaves', rating: '4.8', tilt: 2, image: '/cake-black-forest.png' },
+  { name: 'Little Sugar Studio', specialty: 'Cupcakes & mini desserts', rating: '5.0', tilt: -1, image: '/dessert-assortment.png' },
 ];
 
 export default function FeaturedBakers() {
@@ -15,10 +17,10 @@ export default function FeaturedBakers() {
         <div style={styles.grid}>
           {bakers.map((b) => (
             <div key={b.name} style={{ ...styles.card, transform: `rotate(${b.tilt}deg)` }}>
-              <div style={styles.avatar} />
+              <img src={b.image} alt={`${b.name} featured cake`} style={styles.avatar} />
               <p style={styles.name}>{b.name}</p>
               <p style={styles.specialty}>{b.specialty}</p>
-              <p style={styles.rating}>★ {b.rating}</p>
+              <p style={styles.rating}><Icon name="star" size={13} /> {b.rating}</p>
             </div>
           ))}
         </div>
@@ -40,10 +42,11 @@ const styles = {
     boxShadow: '0 8px 20px rgba(0,0,0,0.05)',
   },
   avatar: {
-    width: '44px',
-    height: '44px',
-    borderRadius: '50%',
-    background: 'var(--pink-soft)',
+    width: '100%',
+    height: '128px',
+    borderRadius: '12px',
+    objectFit: 'cover',
+    display: 'block',
     marginBottom: '14px',
   },
   name: {

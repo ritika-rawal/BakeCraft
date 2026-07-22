@@ -11,7 +11,7 @@ export default function Hero() {
         </h1>
         <p style={styles.subtext}>
           Browse home bakers near you, customize your cake with AI, and order
-          in minutes — no more messaging five Instagram pages.
+          in minutes - no more messaging five Instagram pages.
         </p>
         <div style={styles.ctaRow}>
           <Link to="/builder"><button className="btn-primary">Design your cake</button></Link>

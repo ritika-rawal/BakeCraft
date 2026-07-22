@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
+import Icon from '../components/Icon';
+import { cakeImageFor } from '../utils/cakeImages';
 
 const PAYMENT_METHODS = [
-  { id: 'cod', label: 'Cash on Delivery', icon: '💵' },
-  { id: 'esewa', label: 'eSewa', icon: '🟩' },
-  { id: 'khalti', label: 'Khalti', icon: '🟪' },
-  { id: 'mobile', label: 'Mobile Banking', icon: '🏦' },
+  { id: 'cod', label: 'Cash on Delivery', icon: 'money' },
+  { id: 'esewa', label: 'eSewa', icon: 'card' },
+  { id: 'khalti', label: 'Khalti', icon: 'card' },
+  { id: 'mobile', label: 'Mobile Banking', icon: 'store' },
 ];
 
 const TIME_SLOTS = [
@@ -133,7 +135,7 @@ export default function Checkout() {
     return (
       <DashboardLayout>
         <div style={styles.emptyState}>
-          <p style={styles.successIcon}>✓</p>
+          <p style={styles.successIcon}><Icon name="check" size={40} /></p>
           <p style={styles.emptyTitle}>Order placed!</p>
           <p style={styles.emptyText}>
             Your cake is on its way to being baked. You'll get updates in Order Tracking.
@@ -152,7 +154,7 @@ export default function Checkout() {
         {/* Left: forms */}
         <form onSubmit={handlePlaceOrder} style={styles.column}>
           <div style={styles.card}>
-            <p style={styles.cardTitle}>📍 Delivery Details</p>
+            <p style={styles.cardTitle}><Icon name="pin" size={15} /> Delivery Details</p>
 
             <div style={styles.fieldRow}>
               <div style={styles.fieldHalf}>
@@ -243,7 +245,7 @@ export default function Checkout() {
           </div>
 
           <div style={styles.card}>
-            <p style={styles.cardTitle}>💳 Payment Method</p>
+            <p style={styles.cardTitle}><Icon name="card" size={15} /> Payment Method</p>
             <div style={styles.paymentGrid}>
               {PAYMENT_METHODS.map((pm) => (
                 <button
@@ -255,7 +257,7 @@ export default function Checkout() {
                     ...(paymentMethod === pm.id ? styles.paymentCardActive : {}),
                   }}
                 >
-                  <span style={styles.paymentIcon}>{pm.icon}</span>
+                  <span style={styles.paymentIcon}><Icon name={pm.icon} size={18} /></span>
                   {pm.label}
                 </button>
               ))}
@@ -270,7 +272,7 @@ export default function Checkout() {
           <p style={styles.cardTitle}>Order Summary</p>
 
           <div style={styles.itemRow}>
-            <div style={styles.itemThumb} />
+            <img src={cakeImageFor(`${order.flavor} ${order.shape}`)} alt={`${order.flavor} cake`} style={styles.itemThumb} />
             <div style={styles.itemInfo}>
               <p style={styles.itemName}>
                 {order.flavor} Cake ({order.layers} {order.layers > 1 ? 'Layers' : 'Layer'})
@@ -320,12 +322,12 @@ export default function Checkout() {
             style={styles.placeOrderBtn}
             disabled={placing}
           >
-            {placing ? 'Placing order...' : 'Place Order →'}
+            {placing ? 'Placing order...' : 'Place Order'}
           </button>
-          <p style={styles.secureNote}>🔒 Secure checkout by BakeCraft Pay</p>
+          <p style={styles.secureNote}><Icon name="lock" size={13} /> Secure checkout by BakeCraft Pay</p>
 
           <div style={styles.freshNote}>
-            ✨ Every cake is freshly baked and hand-delivered within your selected time slot to
+            <Icon name="sparkle" size={13} /> Every cake is freshly baked and hand-delivered within your selected time slot to
             ensure maximum deliciousness.
           </div>
         </div>
@@ -438,7 +440,8 @@ const styles = {
     width: '48px',
     height: '48px',
     borderRadius: '10px',
-    background: 'var(--pink-soft)',
+    objectFit: 'cover',
+    display: 'block',
     flexShrink: 0,
   },
   itemInfo: {

@@ -8,7 +8,7 @@ export default function About() {
         <p style={{ color: 'var(--pink-soft)', fontSize: '15px' }}>
           Small bakers deserve better than scattered Instagram DMs and guesswork
           orders. BakeCraft brings local bakers and customers together in one
-          place, with AI helping you describe exactly what you want — so what
+          place, with AI helping you describe exactly what you want - so what
           you imagine is what arrives at your door.
         </p>
       </div>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import BakerLayout from '../components/BakerLayout';
 import { Link } from 'react-router-dom';
+import Icon from '../components/Icon';
 
 const STATUS_OPTIONS = ['pending', 'confirmed', 'baking', 'out-for-delivery', 'delivered', 'cancelled'];
 
@@ -132,7 +133,7 @@ export default function BakerDashboard() {
                     {order.cake.flavor} ({order.cake.layers}L)
                   </p>
                   <p style={styles.cakeSub}>
-                    {order.cake.shape} · {order.cake.frosting}
+                    {order.cake.shape} - {order.cake.frosting}
                   </p>
                 </div>
 
@@ -155,7 +156,7 @@ export default function BakerDashboard() {
                   ))}
                 </select>
                 <Link to={`/baker/chat/${order._id}`} style={{ fontSize: '11.5px', color: 'var(--rose-deep)', textAlign: 'center' }}>
-                💬 Chat
+                <Icon name="message" size={13} /> Chat
                 </Link>
               </div>
               </div>

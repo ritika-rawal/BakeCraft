@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
+import { cakeImageFor } from '../utils/cakeImages';
 
 export default function ChatList() {
   const [orders, setOrders] = useState([]);
@@ -47,14 +48,14 @@ export default function ChatList() {
           {orders.map((order) => (
             <Link key={order._id} to={`/chat/${order._id}`} style={{ textDecoration: 'none' }}>
               <div style={styles.row}>
-                <div style={styles.thumb} />
+                <img src={cakeImageFor(`${order.cake.flavor} ${order.cake.shape}`)} alt={`${order.cake.flavor} cake`} style={styles.thumb} />
                 <div style={styles.info}>
                   <p style={styles.orderName}>
-                    {order.cake.flavor} Cake — Order #{order._id.slice(-6).toUpperCase()}
+                    {order.cake.flavor} Cake - Order #{order._id.slice(-6).toUpperCase()}
                   </p>
                   <p style={styles.orderStatus}>Status: {order.status}</p>
                 </div>
-                <span style={styles.arrow}>→</span>
+                <span style={styles.arrow}>Open</span>
               </div>
             </Link>
           ))}
@@ -91,7 +92,8 @@ const styles = {
     width: '44px',
     height: '44px',
     borderRadius: '10px',
-    background: 'var(--pink-soft)',
+    objectFit: 'cover',
+    display: 'block',
     flexShrink: 0,
   },
   info: { flex: 1 },

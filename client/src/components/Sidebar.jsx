@@ -1,13 +1,14 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import Icon from './Icon';
 
 const NAV_ITEMS = [
-  { label: 'Home', icon: '⌂', path: '/dashboard/customer' },
-  { label: 'Cake Builder', icon: '✎', path: '/builder' },
-  { label: 'AI Generator', icon: '✦', path: '/ai-generator' },
-  { label: 'Chat', icon: '💬', path: '/chat' },
-  { label: 'Order Tracking', icon: '◎', path: '/order-tracking' },
-  { label: 'Checkout', icon: '🛒', path: '/checkout' },
-  { label: 'Saved Designs', icon: '♡', path: '/saved-designs' },
+  { label: 'Home', icon: 'home', path: '/dashboard/customer' },
+  { label: 'Cake Builder', icon: 'edit', path: '/builder' },
+  { label: 'AI Generator', icon: 'sparkle', path: '/ai-generator' },
+  { label: 'Chat', icon: 'message', path: '/chat' },
+  { label: 'Order Tracking', icon: 'track', path: '/order-tracking' },
+  { label: 'Checkout', icon: 'cart', path: '/checkout' },
+  { label: 'Saved Designs', icon: 'heart', path: '/saved-designs' },
 ];
 
 export default function Sidebar({ collapsed, onToggle }) {
@@ -31,7 +32,7 @@ export default function Sidebar({ collapsed, onToggle }) {
           />
         </div>
         <button onClick={onToggle} style={styles.toggleBtn}>
-          {collapsed ? '»' : '«'}
+          {collapsed ? '>' : '<'}
         </button>
       </div>
 
@@ -46,7 +47,7 @@ export default function Sidebar({ collapsed, onToggle }) {
               }}
               title={collapsed ? item.label : undefined}
             >
-              <span style={styles.navIcon}>{item.icon}</span>
+              <span style={styles.navIcon}><Icon name={item.icon} size={16} /></span>
               {!collapsed && item.label}
             </div>
           </Link>
@@ -56,7 +57,7 @@ export default function Sidebar({ collapsed, onToggle }) {
       <div style={styles.sidebarBottom}>
         <Link to="/profile" style={{ textDecoration: 'none' }}>
         <div style={{ ...styles.navItem, justifyContent: collapsed ? 'center' : 'flex-start' }}>
-          <span style={styles.navIcon}>⚙</span>
+          <span style={styles.navIcon}><Icon name="settings" size={16} /></span>
             {!collapsed && 'Settings'}
          </div>
         </Link>
@@ -64,7 +65,7 @@ export default function Sidebar({ collapsed, onToggle }) {
           onClick={handleLogout}
           style={{ ...styles.navItem, justifyContent: collapsed ? 'center' : 'flex-start' }}
         >
-          <span style={styles.navIcon}>⏻</span>
+          <span style={styles.navIcon}><Icon name="logout" size={16} /></span>
           {!collapsed && 'Logout'}
         </div>
         <button className="btn-primary" style={styles.startBtn}>

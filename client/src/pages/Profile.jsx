@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import DashboardLayout from '../components/DashboardLayout';
 import BakerLayout from '../components/BakerLayout';
+import Icon from '../components/Icon';
 
 export default function Profile() {
   const storedUser = JSON.parse(localStorage.getItem('bakecraft_user') || 'null');
@@ -58,7 +59,7 @@ export default function Profile() {
       if (!res.ok) throw new Error(data.error || 'Failed to update profile.');
 
       localStorage.setItem('bakecraft_user', JSON.stringify(data.user));
-      setProfileMessage('✓ Profile updated.');
+      setProfileMessage('Profile updated.');
     } catch (err) {
       setProfileError(err.message);
     } finally {
@@ -84,7 +85,7 @@ export default function Profile() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to change password.');
 
-      setPasswordMessage('✓ Password changed.');
+      setPasswordMessage('Password changed.');
       setCurrentPassword('');
       setNewPassword('');
     } catch (err) {
@@ -135,7 +136,7 @@ export default function Profile() {
           />
 
           {profileError && <p style={styles.errorText}>{profileError}</p>}
-          {profileMessage && <p style={styles.successText}>{profileMessage}</p>}
+          {profileMessage && <p style={styles.successText}><Icon name="check" size={14} /> {profileMessage}</p>}
 
           <button type="submit" className="btn-primary" style={styles.saveBtn} disabled={savingProfile}>
             {savingProfile ? 'Saving...' : 'Save Changes'}
@@ -166,7 +167,7 @@ export default function Profile() {
           />
 
           {passwordError && <p style={styles.errorText}>{passwordError}</p>}
-          {passwordMessage && <p style={styles.successText}>{passwordMessage}</p>}
+          {passwordMessage && <p style={styles.successText}><Icon name="check" size={14} /> {passwordMessage}</p>}
 
           <button type="submit" className="btn-primary" style={styles.saveBtn} disabled={savingPassword}>
             {savingPassword ? 'Updating...' : 'Update Password'}

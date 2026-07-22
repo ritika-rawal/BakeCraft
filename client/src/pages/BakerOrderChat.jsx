@@ -9,7 +9,7 @@ export default function BakerOrderChat() {
   return (
     <BakerLayout>
       <div style={styles.header}>
-        <button onClick={() => navigate('/dashboard/baker')} style={styles.backBtn}>← Back to Orders</button>
+          <button onClick={() => navigate('/dashboard/baker')} style={styles.backBtn}>Back to Orders</button>
         <h1 style={styles.title}>Chat about Order #{orderId.slice(-6).toUpperCase()}</h1>
       </div>
       <ChatWindow orderId={orderId} />

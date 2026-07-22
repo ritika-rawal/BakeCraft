@@ -1,9 +1,10 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import Icon from './Icon';
 
 const NAV_ITEMS = [
-  { label: 'Dashboard', icon: '⌂', path: '/dashboard/baker' },
-  { label: 'Pricing & Menu', icon: '💰', path: '/baker/pricing' },
-  { label: 'My Bakery Profile', icon: '🏪', path: '#' },
+  { label: 'Dashboard', icon: 'home', path: '/dashboard/baker' },
+  { label: 'Pricing & Menu', icon: 'money', path: '/baker/pricing' },
+  { label: 'My Bakery Profile', icon: 'store', path: '#' },
 ];
 
 export default function BakerSidebar({ collapsed, onToggle }) {
@@ -27,7 +28,7 @@ export default function BakerSidebar({ collapsed, onToggle }) {
           />
         </div>
         <button onClick={onToggle} style={styles.toggleBtn}>
-          {collapsed ? '»' : '«'}
+          {collapsed ? '>' : '<'}
         </button>
       </div>
 
@@ -44,7 +45,7 @@ export default function BakerSidebar({ collapsed, onToggle }) {
               }}
               title={collapsed ? item.label : undefined}
             >
-              <span style={styles.navIcon}>{item.icon}</span>
+              <span style={styles.navIcon}><Icon name={item.icon} size={16} /></span>
               {!collapsed && item.label}
             </div>
           </Link>
@@ -54,7 +55,7 @@ export default function BakerSidebar({ collapsed, onToggle }) {
       <div style={styles.sidebarBottom}>
         <Link to="/profile" style={{ textDecoration: 'none' }}>
         <div style={{ ...styles.navItem, justifyContent: collapsed ? 'center' : 'flex-start' }}>
-          <span style={styles.navIcon}>⚙</span>
+          <span style={styles.navIcon}><Icon name="settings" size={16} /></span>
           {!collapsed && 'Settings'}
        </div>
       </Link>
@@ -62,7 +63,7 @@ export default function BakerSidebar({ collapsed, onToggle }) {
           onClick={handleLogout}
           style={{ ...styles.navItem, justifyContent: collapsed ? 'center' : 'flex-start' }}
         >
-          <span style={styles.navIcon}>⏻</span>
+          <span style={styles.navIcon}><Icon name="logout" size={16} /></span>
           {!collapsed && 'Logout'}
         </div>
       </div>

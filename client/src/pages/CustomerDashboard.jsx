@@ -2,14 +2,15 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 import Header from '../components/Header';
+import Icon from '../components/Icon';
 
 const CATEGORIES = ['All', 'Birthday', 'Anniversary', 'Baby Shower', 'Graduation'];
 
 const CREATIONS = [
-  { id: 1, name: 'Velvet Peony Bliss', price: 85, tag: 'Best seller', category: 'Anniversary' },
-  { id: 2, name: 'Midnight Truffle', price: 92, tag: 'Popular', category: 'Birthday' },
-  { id: 3, name: 'Lavender Mist', price: 78, tag: 'New', category: 'Baby Shower' },
-  { id: 4, name: 'Caramel Cascade', price: 95, tag: "Chef's choice", category: 'Graduation' },
+  { id: 1, name: 'Velvet Peony Bliss', price: 85, tag: 'Best seller', category: 'Anniversary', image: '/cake-strawberry.png' },
+  { id: 2, name: 'Midnight Truffle', price: 92, tag: 'Popular', category: 'Birthday', image: '/cake-black-forest.png' },
+  { id: 3, name: 'Lavender Mist', price: 78, tag: 'New', category: 'Baby Shower', image: '/cake-lavender.png' },
+  { id: 4, name: 'Caramel Cascade', price: 95, tag: "Chef's choice", category: 'Graduation', image: '/dessert-assortment.png' },
 ];
 
 export default function CustomerDashboard() {
@@ -29,7 +30,8 @@ export default function CustomerDashboard() {
       {/* Hero banner + AI card */}
       <div style={styles.heroRow}>
         <div style={styles.heroBanner}>
-          <div style={styles.heroImgPlaceholder}>{/* your image goes here */}</div>
+          <img src="/Cake1.jpg" alt="Chocolate raspberry cake" style={styles.heroImg} />
+          <div style={styles.heroOverlay} />
           <div style={styles.heroText}>
             <h2 style={styles.heroTitle}>Design Your Own Dream Cake</h2>
             <p style={styles.heroDesc}>
@@ -43,7 +45,7 @@ export default function CustomerDashboard() {
         </div>
 
         <div style={styles.aiCard}>
-          <p style={styles.aiCardIcon}>✦</p>
+          <p style={styles.aiCardIcon}><Icon name="sparkle" size={20} /></p>
           <p style={styles.aiCardTitle}>AI Cake Magic</p>
           <p style={styles.aiCardDesc}>
             Let our AI analyze your mood and occasion to suggest the perfect
@@ -78,14 +80,15 @@ export default function CustomerDashboard() {
         <div style={styles.productGrid}>
           {filtered.map((item) => (
             <div key={item.id} style={styles.productCard}>
-              <div style={styles.productImgPlaceholder}>
-                <span style={styles.heartIcon}>♡</span>
+              <div style={styles.productImgWrap}>
+                <img src={item.image} alt={item.name} style={styles.productImg} />
+                <span style={styles.heartIcon}><Icon name="heart" size={13} /></span>
               </div>
               <p style={styles.productTag}>{item.tag}</p>
               <p style={styles.productName}>{item.name}</p>
               <div style={styles.productFooter}>
                 <span style={styles.productPrice}>${item.price.toFixed(2)}</span>
-                <button style={styles.orderBtnSmall}>🛒 Order Now</button>
+                <button style={styles.orderBtnSmall}><Icon name="cart" size={13} /> Order Now</button>
               </div>
             </div>
           ))}
@@ -97,7 +100,7 @@ export default function CustomerDashboard() {
         <div style={styles.activityCard}>
           <p style={styles.cardHeading}>Recent Activity</p>
           <div style={styles.activityItem}>
-            <span style={styles.activityIcon}>📦</span>
+            <span style={styles.activityIcon}><Icon name="package" size={16} /></span>
             <div>
               <p style={styles.activityTitle}>Order #CK9281 Out for Delivery</p>
               <p style={styles.activitySub}>Estimated arrival 2:30 PM today</p>
@@ -105,7 +108,7 @@ export default function CustomerDashboard() {
             <span style={styles.activityTime}>15m ago</span>
           </div>
           <div style={styles.activityItem}>
-            <span style={styles.activityIcon}>✎</span>
+            <span style={styles.activityIcon}><Icon name="edit" size={16} /></span>
             <div>
               <p style={styles.activityTitle}>Design "Summer Glow" Saved</p>
               <p style={styles.activitySub}>You updated your personal cake design</p>
@@ -143,7 +146,8 @@ const styles = {
     alignItems: 'flex-end',
     background: 'var(--rose-deep)',
   },
-  heroImgPlaceholder: { position: 'absolute', inset: 0, background: '#c98a9a' },
+  heroImg: { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' },
+  heroOverlay: { position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(42,27,34,0.78), rgba(42,27,34,0.22))' },
   heroText: { position: 'relative', padding: '24px', color: '#fff', maxWidth: '380px' },
   heroTitle: { fontSize: '22px', color: '#fff', marginBottom: '8px' },
   heroDesc: { fontSize: '13px', marginBottom: '16px', opacity: 0.9 },
@@ -214,13 +218,14 @@ const styles = {
     marginBottom: '32px',
   },
   productCard: { background: '#fff', borderRadius: '16px', padding: '14px', boxShadow: '0 6px 16px rgba(0,0,0,0.04)' },
-  productImgPlaceholder: {
-    background: 'var(--pink-soft)',
+  productImgWrap: {
     borderRadius: '12px',
     height: '130px',
     marginBottom: '10px',
     position: 'relative',
+    overflow: 'hidden',
   },
+  productImg: { width: '100%', height: '100%', objectFit: 'cover', display: 'block' },
   heartIcon: {
     position: 'absolute',
     top: '10px',

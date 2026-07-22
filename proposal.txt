@@ -1,0 +1,312 @@
+1
+ST6012CEM User Experience Design
+
+-- 1 of 21 --
+
+2
+ST6012CEM User Experience Design
+Table of Contents
+Introduction ................................................................................................................................................. 4
+Problem Statement...................................................................................................................................... 5
+Objectives and Goals .................................................................................................................................. 6
+Scope of the Study ....................................................................................................................................... 7
+Technical Architecture .............................................................................................................................. 7
+Supporting Tools ....................................................................................................................................... 8
+Project Phases ........................................................................................................................................... 8
+Synthesis of Research Gaps........................................................................................................................ 9
+UX Research Methodology....................................................................................................................... 10
+Project Timeline and Milestones ............................................................................................................. 11
+Conclusion ................................................................................................................................................. 12
+References .................................................................................................................................................. 13
+Appendix Google forms: ............................................................................................................................ 14
+
+-- 2 of 21 --
+
+3
+ST6012CEM User Experience Design
+Table of Figures
+Figure 1: BakeCraft Logo ............................................................................................................................... 4
+Figure 2: Project Timeline .......................................................................................................................... 11
+Figure 3: Gant Chart .................................................................................................................................... 11
+
+-- 3 of 21 --
+
+4
+ST6012CEM User Experience Design
+Introduction
+The AI Bakery Marketplace project will enhance how users learn about and shop bakery products
+and also help enable small and home-based bakers who may not be able to reach their customers
+through the traditional or social media based platform. In the present state of affairs, the bakery
+services are unbundled in various mediums, including Instagram pages, WhatsApp contacts and
+food delivery apps, and it is hard to find the reliable and systematized sources in a single location.
+This results in inefficient user and vendor experience with users wasting more time searching and
+bakers not being visible. This project will resolve these problems by developing a centralized
+digital platform that will unite both parties in a more organized and user-friendly manner. The
+central theme of the system is to improve the user experience by providing improved navigation,
+simplified product discovery as well as simple personalization capabilities. With the principles of
+UX design, the platform will make sure that people can easily navigate through bakery products,
+filter them according to their requirements, and have a more pleasant experience overall.
+Simultaneously, the system also offers the vendors with an adequate online platform to organize
+and present their products in a decent manner. The idea is to establish a well-balanced platform
+that enhances access, usability, and experiences of users and bakers.
+Figure 1: BakeCraft Logo
+
+-- 4 of 21 --
+
+5
+ST6012CEM User Experience Design
+Problem Statement
+The main issue regarding the bakery marketplace is that there is no organized online space that
+can help to establish a contact with small and independent bakery. In the modern world, the
+majority of bakery-related business are run using informal sources like social media pages or word-
+of-mouth marketing that are not geared towards effective product discovery or user engagement.
+These platforms are more content sharing oriented compared to transactional or discovery oriented
+experiences and this means that users cannot find particular bakery products by their specific
+needs, like occasion, customization or by their dietary preference.
+Consequently, the procedure of identification of appropriate bakery products turns out to be time-
+consuming and non-standardized. The user is usually left to search through various pages by hand,
+compare without appropriate filtering, and use half-baked information, to make a decision.
+Meanwhile, bakers have fewer opportunities to make their products attractive as they do not have
+the tools to sort, emphasize or suggest products in a significant manner.
+Even though there are general food delivery services, they are not tailored towards bakery-related
+services especially in aspects of customization, occasion based ordering and the representation of
+small vendors. These systems put a priority on the standard menu items and large vendors, with
+little opportunities given to smaller businesses to compete or be found.
+
+-- 5 of 21 --
+
+6
+ST6012CEM User Experience Design
+Objectives and Goals
+The primary goal of the project is to create and implement an AI-based bakery marketplace that
+will enhance the experience of customers and bakers by allowing a convenient and organized
+online platform. The system aims at addressing the issue of bakery services scattered about by
+centralizing everything in a single location whereby the users are able to browse, search and find
+bakery products based on their preferences with ease. It also focuses on making the interface clean
+and easy to navigate with a reduced complexity to enable easier usability and accessibility.
+The objectives of the system are:
+1. To create a marketplace that is user-friendly, with easy and user-friendly navigation of a
+bakery.
+2. To enhance product discovery using categories, filters and basic recommendation tools.
+3. To enable users to locate bakery products according to the choices they have like occasion,
+price, and type.
+4. To give bakers an opportunity to upload, manage and display their products effectively.
+5. To improve the overall user experience by implementing the major principles of UX which
+include consistency, clarity, and usability.
+
+-- 6 of 21 --
+
+7
+ST6012CEM User Experience Design
+Scope of the Study
+The BakeCraft will be designed as a web-based bakery marketplace, which aims at making the
+discovery of products and the user experience of customers and small-scale bakers as efficient as
+possible. The system will be structured to offer an orderly digital space that will allow users to
+conveniently navigate, filter, and browse bakery products according to their preferences and
+vendors to manage and present their products effectively. The lifecycle of the project takes the
+entire process of UX research and design to the creation of a functional and user-friendly web
+application.
+Technical Architecture
+The application will be implemented based on full-stack architecture that will deal with dynamic
+product information, user interactions, and vendor management without compromising on
+scalability and performance.
+1. Product & User Data Management
+User profiles, bakery products listing, vendor and interaction data will be stored in a flexible
+NoSQL database. This design can accommodate different product characteristics like
+customization, price and type to effectively manage different bakery information.
+2. Backend Service Layer
+The server-side system will handle API calls, routing, authentication and processing of data
+between the user and the database. It will be structured to support activities like product browsing,
+filtering, upload of vendors, and user interactions in a secure and efficient manner.
+3. User Interface Layer
+A component-based framework will be used to develop the frontend to make it responsive and
+interactive. The most important screens will be optimized to easy navigation and efficient
+rendering directly based on the design made in the Figma prototypes: product listing,
+recommendation section, and vendor dashboards.
+4. Application Runtime Environment
+An environment with scalable runtime will be used to execute backend processes and support
+asynchronous communication between various parts of the system, which will maintain similar
+performance levels in the presence of multiple users.
+
+-- 7 of 21 --
+
+8
+ST6012CEM User Experience Design
+Supporting Tools
+1. Figma: to design the user interface, prototype high-fidelity, and ensure consistency in the
+design.
+2. Postman to test and validate API functionality in the course of the backend development.
+3. The version control and the well-documented codebase maintenance by GitHub.
+4. JWT Authentication to securely log in and protect user data.
+5. Cloud Storage Solutions to store images and media of bakery products.
+Project Phases
+The following development phases are contained in the scope of this project in order to have a
+complete product that is based on UX:
+1. User Requirement Analysis: Determining user requirements, obstacles and expectations as
+far as bakery product discovery and interaction with vendors is concerned.
+2. User-Experience Design and Prototyping: Developing wireframes, user flows, and high
+fidelity prototypes to create a user friendly interface.
+3. Database Development and Backend: Setting up a powerful system to control product
+information, user accounts and vendor information safely.
+4. Frontend Development: Application of the interface through reusable parts to make the
+interface responsive and easy to navigate.
+5. Feature Development: Adding the essential elements like product filtering, search options,
+and simple recommendation systems.
+6. User Testing and Evaluation: Engaging in usability testing to get feedback and enhance
+system performance and user experience.
+7. System Documentation: Capturing design decisions, architecture and implementation details
+to be submitted and evaluated at the end.
+
+-- 8 of 21 --
+
+9
+ST6012CEM User Experience Design
+Synthesis of Research Gaps
+The current bakery discovery solutions and the general food-related solutions do not serve the
+needs of customers and small bakery businesses to the full extent, leaving a number of significant
+gaps that this project will attempt to fill.
+1. The Personalization Gap: The majority of existing platforms are based on generic products
+listing, instead of user-specific recommendations. The systems do not exist that personalize bakery
+recommendations, depending on user preferences (occasion, budget, taste, or dietary needs), and
+so the browsing experience is not customized.
+2. The Centralization Gap: Bakery products are currently distributed over numerous platforms
+among the pages of social media, messaging applications, and delivery services. This can result in
+a discontinuous ecosystem, requiring users to go to various sources to find out about a specific
+bakery and this is where a centralized marketplace to discover bakeries is needed.
+3. The Vendor Visibility Gap: Small and home bakers are frequently not able to achieve visibility
+in competitive online environments. Current platforms lack equal opportunities to present small
+vendors with their products and form a better picture, restricting their reach and development
+options.
+4. The Discovery Efficiency Gap: The existing systems are based heavily on manual search and
+simple filtering that is inefficient in most cases when a user is seeking a particular or tailored
+bakery product. The discovery system is not as developed and intuitive as it needs to be to make
+product finding easier.
+5. The Structured Interaction Gap: The majority of bakery-related platforms do not provide a
+seamless and directed user experience of discovery to selection. A more structured interface is
+required to enable the user to easily browse through, categorize clearly, and make better decisions
+without being overwhelmed.
+
+-- 9 of 21 --
+
+10
+ST6012CEM User Experience Design
+UX Research Methodology
+The AI Bakery Marketplace research phase is based on a mixed-methods approach that will
+guarantee the design decisions to be rooted in the actual user needs and industry practices.
+Secondary Research will be the starting point of the process, as a systematic examination of the
+existing platforms associated with bakery, food delivery apps, and business models based on social
+media will be conducted. The stage is dedicated to the comprehension of the way the existing
+systems manage product discovery, vendor visibility, and user interaction. It is also the study of
+what UX patterns of successful e-commerce sites have used to determine useful architecture of
+navigation, filtering systems and recommendation strategies. Through analyzing these solutions at
+hand, the study identifies general usability problems and design constraints that can guide this
+project in its path.
+Next, the Primary Research is performed in the form of quantitative and qualitative data collection,
+predominantly consisting of online survey and informal interviews with potential customers. This
+stage is focused on learning about the expectations of the users in searching bakery products,
+preferences based on the occasion of ordering, price, personalization, and accessibility. The
+information gathered assists in defining the main areas of concern where people have trouble
+locating reliable bakers, there is no structured product listings, and there are no customization
+features. These are necessary in outlining the functionality of the system. Lastly, the research
+results are condensed into user insights which informs the user flow and design choices so that the
+end product will not be based on assumptions but reflect the real user behaviour and needs.
+
+-- 10 of 21 --
+
+11
+ST6012CEM User Experience Design
+Project Timeline and Milestones
+Figure 2: Project Timeline
+Figure 3: Gant Chart
+
+-- 11 of 21 --
+
+12
+ST6012CEM User Experience Design
+Conclusion
+BakeCraft is trying to overcome the limitations of current methods of finding a bakery by creating
+a structured, user-centered digital marketplace where both customers and small-scale bakers can
+connect directly. The existing unstructured nature of social media has created chaos when it comes
+to how people find and purchase baked goods online. Therefore, BakeCraft will create a system
+for finding and ordering bakeries that includes filtering, categorizing, and providing limited
+personalize tion options, which will help improve the discovery process for customers. This will
+reduce the number of bakeries operating independently of each other and make them easier to
+discover, thereby lowering the effort required by the customer to locate a bakery that suits their
+needs. Additionally, this approach will also provide more visibility to bakeries because there will
+be one place to see all baked goods from many different bakeries at the same time. Overall,
+BakeCraft is an example of how to implement UX design principles with a full-stack application
+that offers an effective way for people to connect with bakers in a meaningful way.
+
+-- 12 of 21 --
+
+13
+ST6012CEM User Experience Design
+References
+ECommerce UX: Essential design Strategies and Principles | G & Co. (n.d.). https://www.g-
+co.agency/insights/ecommerce-ux-design
+He, Y., Du, Y., & Pu, X. (2025). Personalized Recommendation System of E-Commerce in the
+Digital Economy Era: Enhancing Social Connections with Graph Attention Networks.
+Applied Artificial Intelligence, 39(1). https://doi.org/10.1080/08839514.2025.2487417
+Nielsen, J. (2026, March 17). 10 Usability heuristics for user interface design. Nielsen Norman
+Group. https://www.nngroup.com/articles/ten-usability-heuristics/
+Bromley, R. (2026, March 26). Save time and increase consistency with new Contensis AI tools.
+Contensis. https://www.contensis.com/community/blog/the-importance-of-information-
+architecture
+Rumsey, H. (2024, September 10). Human-Centered Design & Key Trends in Product
+Development. DISHER. https://www.disher.com/blog/trends-in-product-development-
+and-hcd/
+UNDERSTANDING CONSUMER BEHAVIOR ON ONLINE FOOD DELIVERY PLATFORMS –
+International Journal of Education, Business and Economics Research (IJEBER). (n.d.).
+https://ijeber.com/understanding-consumer-behavior-on-online-food-delivery-platforms/
+GeeksforGeeks. (2025, July 23). The role of AI in enhancing user experience design.
+GeeksforGeeks. https://www.geeksforgeeks.org/blogs/the-role-of-ai-in-enhancing-user-
+experience-design/
+
+-- 13 of 21 --
+
+14
+ST6012CEM User Experience Design
+Appendix
+Google forms:
+https://forms.gle/XsqvmHZzssGRq2SY8
+Forms-sheets:
+https://docs.google.com/spreadsheets/d/16XEc0cvBTxyp6G1jXl8UL_4pW0fYbs_IqjTNsdN1c_
+k/edit?usp=sharing\
+
+-- 14 of 21 --
+
+15
+ST6012CEM User Experience Design
+
+-- 15 of 21 --
+
+16
+ST6012CEM User Experience Design
+
+-- 16 of 21 --
+
+17
+ST6012CEM User Experience Design
+
+-- 17 of 21 --
+
+18
+ST6012CEM User Experience Design
+
+-- 18 of 21 --
+
+19
+ST6012CEM User Experience Design
+
+-- 19 of 21 --
+
+20
+ST6012CEM User Experience Design
+
+-- 20 of 21 --
+
+21
+ST6012CEM User Experience Design
+
+-- 21 of 21 --
+

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
+import Icon from '../components/Icon';
 
 const SUGGESTIONS = [
   'Pink birthday cake with butterflies',
@@ -9,9 +10,9 @@ const SUGGESTIONS = [
 ];
 
 const RECENT_CREATIONS = [
-  { id: 1, name: 'Ethereal Pink Butterfly', desc: 'Velvet pink sponge with raspberry filling and hand-piped sugar butterflies.', tag: 'New match' },
-  { id: 2, name: 'Ocean Whisper Tier', desc: 'Coconut cream layers with pineapple glaze and blue curacao waves.', tag: 'New match' },
-  { id: 3, name: 'Midnight Forest Moss', desc: 'Dark chocolate fudge with pistachio moss and forest berry compote.', tag: 'New match' },
+  { id: 1, name: 'Ethereal Pink Butterfly', desc: 'Velvet pink sponge with raspberry filling and hand-piped sugar butterflies.', tag: 'New match', image: '/cake-strawberry.png' },
+  { id: 2, name: 'Ocean Whisper Tier', desc: 'Coconut cream layers with pineapple glaze and blue curacao waves.', tag: 'New match', image: '/cake-lavender.png' },
+  { id: 3, name: 'Midnight Forest Moss', desc: 'Dark chocolate fudge with pistachio moss and forest berry compote.', tag: 'New match', image: '/cake-black-forest.png' },
 ];
 
 export default function AIGenerator() {
@@ -58,7 +59,7 @@ export default function AIGenerator() {
         </p>
 
         <div style={styles.promptCard}>
-          <p style={styles.promptLabel}>✨ What cake are you dreaming of?</p>
+          <p style={styles.promptLabel}><Icon name="sparkle" size={15} /> What cake are you dreaming of?</p>
           <textarea
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
@@ -81,12 +82,12 @@ export default function AIGenerator() {
             style={styles.generateBtn}
             disabled={generating}
           >
-            {generating ? 'Generating...' : '⚡ Generate AI Design'}
+            {generating ? 'Generating...' : <><Icon name="sparkle" size={16} /> Generate AI Design</>}
           </button>
 
           <p style={styles.disclaimer}>
-            💡 For an exact shape, size, or layer count, use the{' '}
-            <Link to="/builder" style={styles.disclaimerLink}>Cake Builder</Link> —
+            <Icon name="lightbulb" size={13} /> For an exact shape, size, or layer count, use the{' '}
+            <Link to="/builder" style={styles.disclaimerLink}>Cake Builder</Link> -
             AI Generator is best for exploring flavors, themes, and decoration style.
           </p>
 
@@ -94,7 +95,7 @@ export default function AIGenerator() {
 
           {generating && (
             <p style={styles.loadingText}>
-              Baking your design... this can take 10–20 seconds.
+              Baking your design... this can take 10-20 seconds.
             </p>
           )}
 
@@ -103,11 +104,11 @@ export default function AIGenerator() {
               <img src={generatedImage} alt="AI generated cake" style={styles.resultImg} />
               <div style={styles.resultActions}>
                 <button className="btn-primary" style={styles.resultBtn}>
-                  🛒 Order This Cake
+                  <Icon name="cart" size={16} /> Order This Cake
                 </button>
-                <button style={styles.resultBtnGhost}>💾 Save Design</button>
+                <button style={styles.resultBtnGhost}><Icon name="bookmark" size={16} /> Save Design</button>
                 <button onClick={handleGenerate} style={styles.resultBtnGhost}>
-                  🔄 Try Again
+                  <Icon name="refresh" size={16} /> Try Again
                 </button>
               </div>
             </div>
@@ -124,14 +125,15 @@ export default function AIGenerator() {
         {RECENT_CREATIONS.map((c) => (
           <div key={c.id} style={styles.card}>
             <div style={styles.imgPlaceholder}>
+              <img src={c.image} alt={c.name} style={styles.cardImg} />
               <span style={styles.tag}>{c.tag}</span>
             </div>
             <p style={styles.cardName}>{c.name}</p>
             <p style={styles.cardDesc}>{c.desc}</p>
             <div style={styles.cardFooter}>
-              <button style={styles.orderSmallBtn}>🛒 Order</button>
-              <span style={styles.iconBtn}>✎</span>
-              <span style={styles.iconBtn}>🔖</span>
+              <button style={styles.orderSmallBtn}><Icon name="cart" size={14} /> Order</button>
+              <span style={styles.iconBtn}><Icon name="edit" size={14} /></span>
+              <span style={styles.iconBtn}><Icon name="bookmark" size={14} /></span>
             </div>
           </div>
         ))}
@@ -290,11 +292,17 @@ const styles = {
     boxShadow: '0 6px 16px rgba(0,0,0,0.04)',
   },
   imgPlaceholder: {
-    background: 'var(--pink-soft)',
     borderRadius: '12px',
     height: '150px',
     marginBottom: '12px',
     position: 'relative',
+    overflow: 'hidden',
+  },
+  cardImg: {
+    width: '100%',
+    height: '100%',
+    objectFit: 'cover',
+    display: 'block',
   },
   tag: {
     position: 'absolute',

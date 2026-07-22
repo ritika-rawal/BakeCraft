@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
+import Icon from '../components/Icon';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -46,7 +47,7 @@ export default function Login() {
         <p style={styles.subtext}>Log in to your BakeCraft account.</p>
 
         {justRegistered && (
-          <p style={styles.successBanner}>✓ Account created! Please log in.</p>
+          <p style={styles.successBanner}><Icon name="check" size={14} /> Account created! Please log in.</p>
         )}
 
         <form onSubmit={handleSubmit}>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import BakerLayout from '../components/BakerLayout';
+import Icon from '../components/Icon';
 
 export default function BakerPricing() {
   const [pricing, setPricing] = useState(null);
@@ -146,7 +147,7 @@ export default function BakerPricing() {
       </div>
 
       <button className="btn-primary" onClick={handleSave} disabled={saving} style={styles.saveBtn}>
-        {saving ? 'Saving...' : saved ? '✓ Saved' : 'Save Changes'}
+        {saving ? 'Saving...' : saved ? <><Icon name="check" size={16} /> Saved</> : 'Save Changes'}
       </button>
     </BakerLayout>
   );

@@ -1,18 +1,20 @@
+import Icon from './Icon';
+
 const features = [
   {
     title: '3D cake builder',
     desc: 'Visualize your dream cake in 3D. Experiment with layers, textures, and toppings in real time before we bake it.',
-    icon: '◆',
+    icon: 'track',
   },
   {
     title: 'AI cake magic',
     desc: 'Share your theme or mood board and our AI will suggest flavor and design concepts tailored to your event.',
-    icon: '✦',
+    icon: 'sparkle',
   },
   {
     title: 'Handcrafted quality',
     desc: 'Every design is executed by our pastry chefs using only the finest organic ingredients and artisan skill.',
-    icon: '❋',
+    icon: 'cake',
   },
 ];
 
@@ -28,7 +30,7 @@ export default function InnovationSection() {
         <div style={styles.grid}>
           {features.map((f) => (
             <div key={f.title} style={styles.card}>
-              <div style={styles.iconCircle}>{f.icon}</div>
+              <div style={styles.iconCircle}><Icon name={f.icon} size={20} /></div>
               <h3 style={styles.cardTitle}>{f.title}</h3>
               <p style={styles.cardDesc}>{f.desc}</p>
             </div>

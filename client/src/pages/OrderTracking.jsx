@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
+import Icon from '../components/Icon';
+import { cakeImageFor } from '../utils/cakeImages';
 
 const STATUS_STEPS = ['pending', 'confirmed', 'baking', 'out-for-delivery', 'delivered'];
 
@@ -36,7 +38,6 @@ export default function OrderTracking() {
           throw new Error(data.error || 'Failed to load orders.');
         }
 
-        console.log('Fetched orders:', data.orders); // temporary debug log
         setOrders(data.orders);
       } catch (err) {
         setError(err.message);
@@ -106,14 +107,14 @@ function OrderCard({ order }) {
       </div>
 
       <div style={styles.cakeInfo}>
-        <div style={styles.cakeThumb} />
+        <img src={cakeImageFor(`${order.cake.flavor} ${order.cake.shape}`)} alt={`${order.cake.flavor} cake`} style={styles.cakeThumb} />
         <div>
           <p style={styles.cakeName}>
             {order.cake.flavor} Cake ({order.cake.layers} {order.cake.layers > 1 ? 'Layers' : 'Layer'})
           </p>
           <p style={styles.cakeSub}>
-            {order.cake.shape} shape · {order.cake.frosting}
-            {order.cake.toppings?.length > 0 && ` · ${order.cake.toppings.join(', ')}`}
+            {order.cake.shape} shape - {order.cake.frosting}
+            {order.cake.toppings?.length > 0 && ` - ${order.cake.toppings.join(', ')}`}
           </p>
         </div>
         <p style={styles.cakePrice}>NPR {order.pricing.grandTotal.toFixed(0)}</p>
@@ -151,12 +152,12 @@ function OrderCard({ order }) {
       )}
 
       <div style={styles.deliveryInfo}>
-        <span>📍 {order.delivery.street}, {order.delivery.neighborhood}, {order.delivery.city}</span>
-        <span>🕓 {order.delivery.deliveryDate} · {order.delivery.timeSlot}</span>
+        <span><Icon name="pin" size={13} /> {order.delivery.street}, {order.delivery.neighborhood}, {order.delivery.city}</span>
+        <span><Icon name="clock" size={13} /> {order.delivery.deliveryDate} - {order.delivery.timeSlot}</span>
       </div>
 
       <Link to={`/chat/${order._id}`}>
-        <button style={styles.chatBtn}>💬 Message Baker</button>
+        <button style={styles.chatBtn}><Icon name="message" size={14} /> Message Baker</button>
       </Link>
     </div>
   );
@@ -221,7 +222,8 @@ const styles = {
     width: '52px',
     height: '52px',
     borderRadius: '12px',
-    background: 'var(--pink-soft)',
+    objectFit: 'cover',
+    display: 'block',
     flexShrink: 0,
   },
   cakeName: {
