@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-export default function Header({ greeting, subtext }) {
+export default function Header({ greeting, subtext, searchValue, onSearchChange }) {
   const user = JSON.parse(localStorage.getItem('bakecraft_user') || 'null');
 
   return (
@@ -10,7 +10,12 @@ export default function Header({ greeting, subtext }) {
         <p style={styles.greetingSub}>{subtext || 'Ready for something sweet today?'}</p>
       </div>
       <div style={styles.topbarRight}>
-        <input placeholder="Search flavors, themes, or bakers..." style={styles.search} />
+        <input
+          value={searchValue || ''}
+          onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
+          placeholder="Search flavors, themes, or bakers..."
+          style={styles.search}
+        />
         <span style={styles.bell}>🔔</span>
         <Link to="/profile" style={{ textDecoration: 'none' }}>
           <div style={styles.avatarBlock}>
@@ -35,20 +40,9 @@ const styles = {
     alignItems: 'center',
     marginBottom: '24px',
   },
-  greeting: {
-    fontSize: '18px',
-    fontWeight: 500,
-    color: 'var(--text-dark)',
-  },
-  greetingSub: {
-    fontSize: '13px',
-    color: 'var(--text-muted)',
-  },
-  topbarRight: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '18px',
-  },
+  greeting: { fontSize: '18px', fontWeight: 500, color: 'var(--text-dark)' },
+  greetingSub: { fontSize: '13px', color: 'var(--text-muted)' },
+  topbarRight: { display: 'flex', alignItems: 'center', gap: '18px' },
   search: {
     border: '1px solid #eee',
     borderRadius: '20px',
@@ -57,28 +51,9 @@ const styles = {
     width: '260px',
     background: '#fafafa',
   },
-  bell: {
-    fontSize: '17px',
-    cursor: 'pointer',
-  },
-  avatarBlock: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    cursor: 'pointer',
-  },
-  avatar: {
-    width: '36px',
-    height: '36px',
-    borderRadius: '50%',
-    background: 'var(--pink-soft)',
-  },
-  avatarName: {
-    fontSize: '13px',
-    fontWeight: 500,
-  },
-  avatarTier: {
-    fontSize: '11px',
-    color: 'var(--rose-mid)',
-  },
+  bell: { fontSize: '17px', cursor: 'pointer' },
+  avatarBlock: { display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' },
+  avatar: { width: '36px', height: '36px', borderRadius: '50%', background: 'var(--pink-soft)' },
+  avatarName: { fontSize: '13px', fontWeight: 500 },
+  avatarTier: { fontSize: '11px', color: 'var(--rose-mid)' },
 };
