@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 import Icon from '../components/Icon';
 
@@ -16,10 +16,12 @@ const RECENT_CREATIONS = [
 ];
 
 export default function AIGenerator() {
+  const navigate = useNavigate();
   const [prompt, setPrompt] = useState('');
   const [generating, setGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState(null);
   const [error, setError] = useState('');
+  const [saveMessage, setSaveMessage] = useState('');
 
   const buildImageUrl = () => {
     const fullPrompt = `professional bakery product photo, ${prompt}, shot from a 3/4 angle clearly showing the cake's shape and number of layers, studio lighting, clean plate, high detail, appetizing, photorealistic`;
@@ -45,6 +47,72 @@ export default function AIGenerator() {
       setGenerating(false);
     };
     img.src = imageUrl;
+  };
+
+  const buildDraftOrder = () => ({
+    source: 'ai-generated',
+    shape: 'custom',
+    layers: 1,
+    flavor: prompt.trim() || 'AI Cake Design',
+    frosting: 'Baker selected',
+    toppings: [],
+    message: '',
+    total: 1800,
+    image: generatedImage,
+  });
+
+  const handleOrderGenerated = () => {
+    if (!generatedImage) return;
+    const draftOrder = buildDraftOrder();
+    localStorage.setItem('bakecraft_draft_order', JSON.stringify(draftOrder));
+    navigate('/checkout', { state: draftOrder });
+  };
+
+  const handleOrderRecent = (creation) => {
+    const draftOrder = {
+      source: 'ai-gallery',
+      shape: 'custom',
+      layers: 1,
+      flavor: creation.name,
+      frosting: 'Baker selected',
+      toppings: [],
+      message: '',
+      total: 1800,
+      image: creation.image,
+    };
+
+    localStorage.setItem('bakecraft_draft_order', JSON.stringify(draftOrder));
+    navigate('/checkout', { state: draftOrder });
+  };
+
+  const handleSaveGenerated = async () => {
+    if (!generatedImage) return;
+    setSaveMessage('');
+    setError('');
+
+    try {
+      const token = localStorage.getItem('bakecraft_token');
+      if (!token) throw new Error('Please log in to save this design.');
+
+      const draftOrder = buildDraftOrder();
+      const res = await fetch('http://localhost:5000/api/saved-designs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: 'AI Cake Design',
+          ...draftOrder,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to save design.');
+      setSaveMessage('Design saved.');
+    } catch (err) {
+      setError(err.message);
+    }
   };
 
   return (
@@ -103,14 +171,15 @@ export default function AIGenerator() {
             <div style={styles.resultWrap}>
               <img src={generatedImage} alt="AI generated cake" style={styles.resultImg} />
               <div style={styles.resultActions}>
-                <button className="btn-primary" style={styles.resultBtn}>
+                <button onClick={handleOrderGenerated} className="btn-primary" style={styles.resultBtn}>
                   <Icon name="cart" size={16} /> Order This Cake
                 </button>
-                <button style={styles.resultBtnGhost}><Icon name="bookmark" size={16} /> Save Design</button>
+                <button onClick={handleSaveGenerated} style={styles.resultBtnGhost}><Icon name="bookmark" size={16} /> Save Design</button>
                 <button onClick={handleGenerate} style={styles.resultBtnGhost}>
                   <Icon name="refresh" size={16} /> Try Again
                 </button>
               </div>
+              {saveMessage && <p style={styles.saveText}>{saveMessage}</p>}
             </div>
           )}
         </div>
@@ -131,7 +200,7 @@ export default function AIGenerator() {
             <p style={styles.cardName}>{c.name}</p>
             <p style={styles.cardDesc}>{c.desc}</p>
             <div style={styles.cardFooter}>
-              <button style={styles.orderSmallBtn}><Icon name="cart" size={14} /> Order</button>
+              <button onClick={() => handleOrderRecent(c)} style={styles.orderSmallBtn}><Icon name="cart" size={14} /> Order</button>
               <span style={styles.iconBtn}><Icon name="edit" size={14} /></span>
               <span style={styles.iconBtn}><Icon name="bookmark" size={14} /></span>
             </div>
@@ -297,6 +366,12 @@ const styles = {
     marginBottom: '12px',
     position: 'relative',
     overflow: 'hidden',
+  },
+  saveText: {
+    color: '#2E7D32',
+    marginTop: '12px',
+    fontSize: '13px',
+    textAlign: 'center',
   },
   cardImg: {
     width: '100%',

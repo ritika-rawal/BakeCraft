@@ -83,7 +83,7 @@ export default function BakerPricing() {
         <p style={styles.cardTitle}>Base Pricing</p>
         <div style={styles.fieldRow}>
           <div style={styles.fieldHalf}>
-            <label style={styles.label}>Price per layer (USD)</label>
+            <label style={styles.label}>Price per layer (NPR)</label>
             <input
               type="number"
               value={pricing.basePricePerLayer}
@@ -92,7 +92,7 @@ export default function BakerPricing() {
             />
           </div>
           <div style={styles.fieldHalf}>
-            <label style={styles.label}>Flat base fee (USD)</label>
+            <label style={styles.label}>Flat base fee (NPR)</label>
             <input
               type="number"
               value={pricing.baseFlatFee}
@@ -113,7 +113,7 @@ export default function BakerPricing() {
       </div>
 
       <div style={styles.card}>
-        <p style={styles.cardTitle}>Flavor Prices (add-on cost, USD)</p>
+        <p style={styles.cardTitle}>Flavor Prices (add-on cost, NPR)</p>
         <div style={styles.grid2}>
           {pricing.flavors.map((f) => (
             <div key={f.id} style={styles.itemRow}>
@@ -130,7 +130,7 @@ export default function BakerPricing() {
       </div>
 
       <div style={styles.card}>
-        <p style={styles.cardTitle}>Topping Prices (add-on cost, USD)</p>
+        <p style={styles.cardTitle}>Topping Prices (add-on cost, NPR)</p>
         <div style={styles.grid2}>
           {pricing.toppings.map((t) => (
             <div key={t.id} style={styles.itemRow}>

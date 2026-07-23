@@ -1,22 +1,22 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 import Header from '../components/Header';
 import Icon from '../components/Icon';
+import { formatNpr } from '../utils/currency';
 
 const CATEGORIES = ['All', 'Birthday', 'Anniversary', 'Baby Shower', 'Graduation'];
-
-const CREATIONS = [
-  { id: 1, name: 'Velvet Peony Bliss', price: 85, tag: 'Best seller', category: 'Anniversary', image: '/cake-strawberry.png' },
-  { id: 2, name: 'Midnight Truffle', price: 92, tag: 'Popular', category: 'Birthday', image: '/cake-black-forest.png' },
-  { id: 3, name: 'Lavender Mist', price: 78, tag: 'New', category: 'Baby Shower', image: '/cake-lavender.png' },
-  { id: 4, name: 'Caramel Cascade', price: 95, tag: "Chef's choice", category: 'Graduation', image: '/dessert-assortment.png' },
-];
 
 export default function CustomerDashboard() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
   const [uploadedCreations, setUploadedCreations] = useState([]);
+  const [loadingUploads, setLoadingUploads] = useState(true);
+  const [uploadError, setUploadError] = useState('');
+  const [savedCreations, setSavedCreations] = useState({});
+  const [savingCreationId, setSavingCreationId] = useState('');
+  const [saveError, setSaveError] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUploadedCakes = async () => {
@@ -36,15 +36,111 @@ export default function CustomerDashboard() {
         }));
 
         setUploadedCreations(mapped);
+        setUploadError('');
       } catch (err) {
         setUploadedCreations([]);
+        setUploadError('Trending creations are temporarily unavailable.');
+      } finally {
+        setLoadingUploads(false);
       }
     };
 
     fetchUploadedCakes();
+
+    const fetchSavedCreations = async () => {
+      try {
+        const token = localStorage.getItem('bakecraft_token');
+        const res = await fetch('http://localhost:5000/api/saved-designs', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to load saved cakes.');
+
+        const savedBySource = {};
+        data.designs.forEach((design) => {
+          if (design.sourceId) savedBySource[design.sourceId] = design._id;
+        });
+        setSavedCreations(savedBySource);
+      } catch (err) {
+        setSaveError('Saved cake status is temporarily unavailable.');
+      }
+    };
+
+    fetchSavedCreations();
   }, []);
 
-  const creations = uploadedCreations.length > 0 ? uploadedCreations : CREATIONS;
+  const creations = uploadedCreations;
+
+  const handleOrderCreation = (item) => {
+    const draftOrder = {
+      source: String(item.id).length > 12 ? 'baker-upload' : 'sample-creation',
+      productId: item.id,
+      shape: 'custom',
+      layers: 1,
+      flavor: item.name,
+      frosting: item.category,
+      toppings: [],
+      message: '',
+      total: item.price,
+      image: item.image,
+    };
+
+    localStorage.setItem('bakecraft_draft_order', JSON.stringify(draftOrder));
+    navigate('/checkout', { state: draftOrder });
+  };
+
+  const handleToggleSaved = async (item) => {
+    const sourceId = String(item.id);
+    const savedDesignId = savedCreations[sourceId];
+    const token = localStorage.getItem('bakecraft_token');
+
+    setSavingCreationId(sourceId);
+    setSaveError('');
+
+    try {
+      if (savedDesignId) {
+        const res = await fetch(`http://localhost:5000/api/saved-designs/${savedDesignId}`, {
+          method: 'DELETE',
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to unsave cake.');
+
+        setSavedCreations((current) => {
+          const next = { ...current };
+          delete next[sourceId];
+          return next;
+        });
+      } else {
+        const res = await fetch('http://localhost:5000/api/saved-designs', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            name: item.name,
+            shape: 'custom',
+            layers: 1,
+            flavor: item.name,
+            frosting: item.category,
+            toppings: [],
+            message: '',
+            total: item.price,
+            image: item.image,
+            sourceId,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to save cake.');
+        setSavedCreations((current) => ({ ...current, [sourceId]: data.design._id }));
+      }
+    } catch (err) {
+      setSaveError(err.message);
+    } finally {
+      setSavingCreationId('');
+    }
+  };
 
   const filtered = creations.filter((c) => {
     const matchesCategory = activeCategory === 'All' || c.category === activeCategory;
@@ -103,6 +199,8 @@ export default function CustomerDashboard() {
         <div>
           <h3 style={styles.trendingTitle}>Trending Creations</h3>
           <p style={styles.trendingSub}>Handcrafted delights from our top master bakers</p>
+          {!loadingUploads && uploadError && <p style={styles.uploadNote}>{uploadError}</p>}
+          {saveError && <p style={styles.saveError}>{saveError}</p>}
         </div>
         <div className="customer-tabs" style={styles.tabs}>
           {CATEGORIES.map((c) => (
@@ -117,8 +215,24 @@ export default function CustomerDashboard() {
         </div>
       </div>
 
-      {filtered.length === 0 ? (
-        <p style={styles.noResults}>No creations match "{searchTerm}". Try a different search.</p>
+      {loadingUploads ? (
+        <div style={styles.trendingLoading} aria-live="polite">
+          <span style={styles.loadingIcon}><Icon name="refresh" size={18} /></span>
+          <div>
+            <p style={styles.loadingTitle}>Loading baker creations</p>
+            <p style={styles.loadingText}>Finding the latest cakes for you.</p>
+          </div>
+        </div>
+      ) : filtered.length === 0 ? (
+        <div style={styles.trendingEmpty}>
+          <span style={styles.emptyIcon}><Icon name="cake" size={20} /></span>
+          <div>
+            <p style={styles.loadingTitle}>{searchTerm ? 'No matching creations' : 'No cakes uploaded yet'}</p>
+            <p style={styles.loadingText}>
+              {searchTerm ? 'Try a different search or category.' : 'New baker creations will appear here after they are uploaded.'}
+            </p>
+          </div>
+        </div>
       ) : (
         <div className="customer-product-grid trending-market-grid" style={styles.productGrid}>
           {filtered.map((item, index) => (
@@ -132,7 +246,23 @@ export default function CustomerDashboard() {
             >
               <div className="customer-product-img" style={styles.productImgWrap}>
                 <img src={item.image} alt={item.name} style={styles.productImg} />
-                <span style={styles.heartIcon}><Icon name="heart" size={13} /></span>
+                <button
+                  type="button"
+                  aria-label={savedCreations[String(item.id)] ? `Unsave ${item.name}` : `Save ${item.name}`}
+                  title={savedCreations[String(item.id)] ? 'Remove from saved designs' : 'Save design'}
+                  disabled={savingCreationId === String(item.id)}
+                  onClick={() => handleToggleSaved(item)}
+                  style={{
+                    ...styles.heartIcon,
+                    ...(savedCreations[String(item.id)] ? styles.heartIconSaved : {}),
+                  }}
+                >
+                  <Icon
+                    name="heart"
+                    size={14}
+                    style={savedCreations[String(item.id)] ? { fill: 'currentColor' } : undefined}
+                  />
+                </button>
                 <span style={styles.imageBadge}>{item.category}</span>
               </div>
               <div style={styles.productBody}>
@@ -146,11 +276,9 @@ export default function CustomerDashboard() {
               <div style={styles.productFooter}>
                 <div>
                   <p style={styles.priceLabel}>Starting from</p>
-                  <span style={styles.productPrice}>${item.price.toFixed(2)}</span>
+                  <span style={styles.productPrice}>{formatNpr(item.price)}</span>
                 </div>
-                <Link to="/builder">
-                  <button style={styles.orderBtnSmall}><Icon name="cart" size={13} /> Order Now</button>
-                </Link>
+                <button onClick={() => handleOrderCreation(item)} style={styles.orderBtnSmall}><Icon name="cart" size={13} /> Order Now</button>
               </div>
             </div>
           ))}
@@ -330,6 +458,8 @@ const styles = {
   },
   trendingTitle: { fontSize: '18px', color: 'var(--rose-deep)' },
   trendingSub: { fontSize: '12.5px', color: 'var(--text-muted)' },
+  uploadNote: { fontSize: '11.5px', color: 'var(--text-muted)', marginTop: '6px' },
+  saveError: { fontSize: '11.5px', color: '#A33A46', marginTop: '6px' },
   tabs: { display: 'flex', gap: '6px', flexWrap: 'wrap' },
   tab: {
     border: 'none',
@@ -354,6 +484,47 @@ const styles = {
     gap: '24px',
     marginBottom: '32px',
   },
+  trendingLoading: {
+    minHeight: '180px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '12px',
+    color: 'var(--text-muted)',
+    marginBottom: '32px',
+  },
+  trendingEmpty: {
+    minHeight: '180px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '12px',
+    textAlign: 'left',
+    marginBottom: '32px',
+  },
+  loadingIcon: {
+    width: '40px',
+    height: '40px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '50%',
+    background: 'var(--pink-soft)',
+    color: 'var(--rose-deep)',
+  },
+  emptyIcon: {
+    width: '40px',
+    height: '40px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '50%',
+    background: '#fff',
+    color: 'var(--rose-deep)',
+    boxShadow: '0 6px 16px rgba(42,27,34,0.08)',
+  },
+  loadingTitle: { fontSize: '13.5px', fontWeight: 600, color: 'var(--text-dark)', marginBottom: '3px' },
+  loadingText: { fontSize: '12px', color: 'var(--text-muted)' },
   productCard: {
     background: '#fff',
     borderRadius: '6px',
@@ -383,9 +554,14 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: '13px',
     color: 'var(--rose-mid)',
+    border: 'none',
+    padding: 0,
+    cursor: 'pointer',
+    boxShadow: '0 4px 12px rgba(42,27,34,0.12)',
+    transition: 'transform 160ms ease, background 160ms ease, color 160ms ease',
   },
+  heartIconSaved: { background: 'var(--rose-deep)', color: '#fff' },
   imageBadge: {
     position: 'absolute',
     left: '10px',

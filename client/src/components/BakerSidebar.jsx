@@ -5,7 +5,7 @@ const NAV_ITEMS = [
   { label: 'Dashboard', icon: 'home', path: '/dashboard/baker' },
   { label: 'Cake Gallery', icon: 'camera', path: '/baker/products' },
   { label: 'Pricing & Menu', icon: 'money', path: '/baker/pricing' },
-  { label: 'My Bakery Profile', icon: 'store', path: '#' },
+  { label: 'My Bakery Profile', icon: 'store', path: '/profile' },
 ];
 
 export default function BakerSidebar({ collapsed, onToggle }) {
@@ -15,7 +15,7 @@ export default function BakerSidebar({ collapsed, onToggle }) {
   const handleLogout = () => {
     localStorage.removeItem('bakecraft_token');
     localStorage.removeItem('bakecraft_user');
-    navigate('/login');
+    navigate('/login', { replace: true });
   };
 
   return (

@@ -18,7 +18,7 @@ export default function Sidebar({ collapsed, onToggle }) {
   const handleLogout = () => {
     localStorage.removeItem('bakecraft_token');
     localStorage.removeItem('bakecraft_user');
-    navigate('/login');
+    navigate('/login', { replace: true });
   };
 
   return (
@@ -69,7 +69,7 @@ export default function Sidebar({ collapsed, onToggle }) {
           <span style={styles.navIcon}><Icon name="logout" size={16} /></span>
           {!collapsed && 'Logout'}
         </div>
-        <button className="btn-primary" style={styles.startBtn}>
+        <button className="btn-primary" style={styles.startBtn} onClick={() => navigate('/builder')}>
           {collapsed ? '+' : '+ Start New Design'}
         </button>
       </div>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import BakerLayout from '../components/BakerLayout';
 import Icon from '../components/Icon';
+import { formatNpr } from '../utils/currency';
 
 const CATEGORIES = ['Birthday', 'Anniversary', 'Baby Shower', 'Graduation', 'Cupcakes', 'Custom'];
 
@@ -15,6 +16,7 @@ export default function BakerProducts() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [editingId, setEditingId] = useState(null);
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -66,6 +68,18 @@ export default function BakerProducts() {
     setPrice('');
     setDescription('');
     setImageData('');
+    setEditingId(null);
+  };
+
+  const startEdit = (product) => {
+    setEditingId(product._id);
+    setName(product.name);
+    setCategory(product.category);
+    setPrice(String(product.price));
+    setDescription(product.description || '');
+    setImageData(product.imageData);
+    setMessage('');
+    setError('');
   };
 
   const handleSubmit = async (e) => {
@@ -76,8 +90,11 @@ export default function BakerProducts() {
 
     try {
       const token = localStorage.getItem('bakecraft_token');
-      const res = await fetch('http://localhost:5000/api/products', {
-        method: 'POST',
+      const endpoint = editingId
+        ? `http://localhost:5000/api/products/${editingId}`
+        : 'http://localhost:5000/api/products';
+      const res = await fetch(endpoint, {
+        method: editingId ? 'PUT' : 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
@@ -88,13 +105,38 @@ export default function BakerProducts() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to add cake.');
 
-      setProducts((prev) => [data.product, ...prev]);
-      setMessage('Cake added to customer trending section.');
+      setProducts((prev) => (
+        editingId
+          ? prev.map((product) => (product._id === editingId ? data.product : product))
+          : [data.product, ...prev]
+      ));
+      setMessage(editingId ? 'Cake updated in Trending Creations.' : 'Cake added to customer trending section.');
       resetForm();
     } catch (err) {
       setError(err.message);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    setError('');
+    setMessage('');
+
+    try {
+      const token = localStorage.getItem('bakecraft_token');
+      const res = await fetch(`http://localhost:5000/api/products/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to delete cake.');
+
+      setProducts((prev) => prev.filter((product) => product._id !== id));
+      if (editingId === id) resetForm();
+      setMessage('Cake removed from Trending Creations.');
+    } catch (err) {
+      setError(err.message);
     }
   };
 
@@ -105,7 +147,7 @@ export default function BakerProducts() {
 
       <div className="baker-products-grid" style={styles.grid}>
         <form onSubmit={handleSubmit} className="baker-products-form" style={styles.formCard}>
-          <p style={styles.cardTitle}><Icon name="camera" size={15} /> Add a Cake</p>
+          <p style={styles.cardTitle}><Icon name="camera" size={15} /> {editingId ? 'Edit Cake' : 'Add a Cake'}</p>
 
           <label style={styles.label}>Cake name</label>
           <input value={name} onChange={(e) => setName(e.target.value)} style={styles.input} required />
@@ -118,7 +160,7 @@ export default function BakerProducts() {
               </select>
             </div>
             <div style={styles.fieldHalf}>
-              <label style={styles.label}>Price (USD)</label>
+              <label style={styles.label}>Price (NPR)</label>
               <input type="number" min="0" value={price} onChange={(e) => setPrice(e.target.value)} style={styles.input} required />
             </div>
           </div>
@@ -139,8 +181,13 @@ export default function BakerProducts() {
           {message && <p style={styles.successText}>{message}</p>}
 
           <button className="btn-primary" type="submit" disabled={saving} style={styles.submitBtn}>
-            {saving ? 'Uploading...' : <><Icon name="camera" size={16} /> Upload Cake</>}
+            {saving ? 'Saving...' : <><Icon name={editingId ? 'check' : 'camera'} size={16} /> {editingId ? 'Save Changes' : 'Upload Cake'}</>}
           </button>
+          {editingId && (
+            <button type="button" onClick={resetForm} style={styles.cancelBtn}>
+              Cancel Edit
+            </button>
+          )}
         </form>
 
         <div className="baker-products-gallery" style={styles.galleryCard}>
@@ -155,7 +202,15 @@ export default function BakerProducts() {
                 <div key={product._id} style={styles.productCard}>
                   <img src={product.imageData} alt={product.name} style={styles.productImg} />
                   <p style={styles.productName}>{product.name}</p>
-                  <p style={styles.productMeta}>{product.category} - ${Number(product.price).toFixed(2)}</p>
+                  <p style={styles.productMeta}>{product.category} - {formatNpr(product.price)}</p>
+                  <div style={styles.productActions}>
+                    <button type="button" onClick={() => startEdit(product)} style={styles.editBtn}>
+                      <Icon name="edit" size={13} /> Edit
+                    </button>
+                    <button type="button" onClick={() => handleDelete(product._id)} style={styles.deleteBtn}>
+                      <Icon name="trash" size={13} /> Delete
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
@@ -180,6 +235,7 @@ const styles = {
   textarea: { width: '100%', minHeight: '78px', padding: '11px 14px', borderRadius: '8px', border: '1px solid #eee', fontSize: '13.5px', resize: 'none' },
   preview: { width: '100%', height: '190px', objectFit: 'cover', display: 'block', borderRadius: '12px', marginTop: '14px' },
   submitBtn: { width: '100%', marginTop: '18px' },
+  cancelBtn: { width: '100%', marginTop: '10px', background: '#fff', color: 'var(--rose-deep)', border: '1px solid var(--rose-deep)', borderRadius: '20px', padding: '12px', cursor: 'pointer' },
   errorText: { color: '#C1121F', fontSize: '12.5px', marginTop: '12px' },
   successText: { color: '#2E7D32', fontSize: '12.5px', marginTop: '12px' },
   stateText: { fontSize: '13.5px', color: 'var(--text-muted)' },
@@ -188,4 +244,7 @@ const styles = {
   productImg: { width: '100%', height: '130px', objectFit: 'cover', display: 'block', borderRadius: '10px', marginBottom: '10px' },
   productName: { fontSize: '13.5px', fontWeight: 600 },
   productMeta: { fontSize: '12px', color: 'var(--text-muted)', textTransform: 'capitalize' },
+  productActions: { display: 'flex', gap: '8px', marginTop: '10px' },
+  editBtn: { flex: 1, border: '1px solid #f2e6e9', background: '#fff', color: 'var(--rose-deep)', borderRadius: '12px', padding: '8px', fontSize: '12px', cursor: 'pointer' },
+  deleteBtn: { flex: 1, border: 'none', background: '#FDEBEC', color: '#C1121F', borderRadius: '12px', padding: '8px', fontSize: '12px', cursor: 'pointer' },
 };

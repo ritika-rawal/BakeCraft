@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 import BakerLayout from '../components/BakerLayout';
 import Icon from '../components/Icon';
 
 export default function Profile() {
+  const navigate = useNavigate();
   const storedUser = JSON.parse(localStorage.getItem('bakecraft_user') || 'null');
   const Layout = storedUser?.role === 'baker' ? BakerLayout : DashboardLayout;
 
@@ -33,12 +35,17 @@ export default function Profile() {
         setEmail(data.user.email);
       } catch (err) {
         setProfileError(err.message);
+        if (err.message.toLowerCase().includes('token') || err.message.toLowerCase().includes('unauthorized')) {
+          localStorage.removeItem('bakecraft_token');
+          localStorage.removeItem('bakecraft_user');
+          navigate('/login', { replace: true });
+        }
       } finally {
         setLoading(false);
       }
     };
     fetchProfile();
-  }, []);
+  }, [navigate]);
 
   const handleProfileSave = async (e) => {
     e.preventDefault();

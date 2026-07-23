@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 import Icon from '../components/Icon';
 import { cakeImageFor } from '../utils/cakeImages';
+import { formatNpr } from '../utils/currency';
 
 const PAYMENT_METHODS = [
   { id: 'cod', label: 'Cash on Delivery', icon: 'money' },
@@ -93,6 +94,9 @@ export default function Checkout() {
             frosting: order.frosting,
             toppings: order.toppings,
             message: order.message,
+            image: order.image,
+            source: order.source,
+            productId: order.productId,
           },
           delivery: {
             firstName,
@@ -150,13 +154,13 @@ export default function Checkout() {
 
   return (
     <DashboardLayout>
-      <div style={styles.grid}>
+      <div className="checkout-grid" style={styles.grid}>
         {/* Left: forms */}
         <form onSubmit={handlePlaceOrder} style={styles.column}>
           <div style={styles.card}>
             <p style={styles.cardTitle}><Icon name="pin" size={15} /> Delivery Details</p>
 
-            <div style={styles.fieldRow}>
+            <div className="checkout-field-row" style={styles.fieldRow}>
               <div style={styles.fieldHalf}>
                 <label style={styles.label}>First Name</label>
                 <input
@@ -197,7 +201,7 @@ export default function Checkout() {
               required
             />
 
-            <div style={styles.fieldRow}>
+            <div className="checkout-field-row" style={styles.fieldRow}>
               <div style={styles.fieldHalf}>
                 <label style={styles.label}>City</label>
                 <input
@@ -218,7 +222,7 @@ export default function Checkout() {
               </div>
             </div>
 
-            <div style={styles.fieldRow}>
+            <div className="checkout-field-row" style={styles.fieldRow}>
               <div style={styles.fieldHalf}>
                 <label style={styles.label}>Delivery Date</label>
                 <input
@@ -246,7 +250,7 @@ export default function Checkout() {
 
           <div style={styles.card}>
             <p style={styles.cardTitle}><Icon name="card" size={15} /> Payment Method</p>
-            <div style={styles.paymentGrid}>
+            <div className="checkout-payment-grid" style={styles.paymentGrid}>
               {PAYMENT_METHODS.map((pm) => (
                 <button
                   key={pm.id}
@@ -268,18 +272,18 @@ export default function Checkout() {
         </form>
 
         {/* Right: order summary */}
-        <div style={styles.summaryCard}>
+        <div className="checkout-summary-card" style={styles.summaryCard}>
           <p style={styles.cardTitle}>Order Summary</p>
 
-          <div style={styles.itemRow}>
-            <img src={cakeImageFor(`${order.flavor} ${order.shape}`)} alt={`${order.flavor} cake`} style={styles.itemThumb} />
+          <div className="checkout-item-row" style={styles.itemRow}>
+            <img src={order.image || cakeImageFor(`${order.flavor} ${order.shape}`)} alt={`${order.flavor} cake`} style={styles.itemThumb} />
             <div style={styles.itemInfo}>
               <p style={styles.itemName}>
                 {order.flavor} Cake ({order.layers} {order.layers > 1 ? 'Layers' : 'Layer'})
               </p>
               <p style={styles.itemSub}>{order.shape} shape, {order.frosting}</p>
             </div>
-            <span style={styles.itemPrice}>NPR {(order.total * 133).toFixed(0)}</span>
+            <span style={styles.itemPrice}>{formatNpr(order.total)}</span>
           </div>
 
           <div style={styles.promoRow}>
@@ -295,23 +299,23 @@ export default function Checkout() {
 
           <div style={styles.summaryRow}>
             <span>Subtotal</span>
-            <span>NPR {(subtotal * 133).toFixed(0)}</span>
+            <span>{formatNpr(subtotal)}</span>
           </div>
           <div style={styles.summaryRow}>
             <span>Delivery Fee</span>
-            <span>NPR {deliveryFee}</span>
+            <span>{formatNpr(deliveryFee)}</span>
           </div>
           {discount > 0 && (
             <div style={{ ...styles.summaryRow, color: '#2E7D32' }}>
               <span>Discount (FIRSTCAKE)</span>
-              <span>- NPR {(discount * 133).toFixed(0)}</span>
+              <span>- {formatNpr(discount)}</span>
             </div>
           )}
 
           <div style={styles.summaryTotalRow}>
             <span>Grand Total</span>
             <span style={styles.totalValue}>
-              NPR {((subtotal + deliveryFee / 133 - discount) * 133).toFixed(0)}
+              {formatNpr(grandTotal)}
             </span>
           </div>
           <p style={styles.taxNote}>Inclusive of taxes</p>

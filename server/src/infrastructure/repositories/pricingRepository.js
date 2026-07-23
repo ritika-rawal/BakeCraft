@@ -5,24 +5,24 @@ exports.getConfig = async () => {
   if (!config) {
     // Seed sensible defaults the very first time
     config = await PricingModel.create({
-      basePricePerLayer: 20,
-      baseFlatFee: 5,
+      basePricePerLayer: 500,
+      baseFlatFee: 300,
       deliveryFee: 150,
       flavors: [
         { id: 'vanilla', label: 'Vanilla', price: 0 },
         { id: 'strawberry', label: 'Strawberry', price: 0 },
-        { id: 'dark-chocolate', label: 'Dark Chocolate', price: 5 },
-        { id: 'red-velvet', label: 'Red Velvet', price: 5 },
-        { id: 'white-forest', label: 'White Forest', price: 8 },
-        { id: 'black-forest', label: 'Black Forest', price: 8 },
+        { id: 'dark-chocolate', label: 'Dark Chocolate', price: 120 },
+        { id: 'red-velvet', label: 'Red Velvet', price: 120 },
+        { id: 'white-forest', label: 'White Forest', price: 180 },
+        { id: 'black-forest', label: 'Black Forest', price: 180 },
       ],
       toppings: [
-        { id: 'sprinkles', label: 'Sprinkles', price: 2 },
-        { id: 'berries', label: 'Berries', price: 4 },
-        { id: 'flowers', label: 'Flowers', price: 5 },
-        { id: 'chocolate', label: 'Chocolate', price: 3 },
-        { id: 'pearls', label: 'Pearls', price: 3 },
-        { id: 'fruits', label: 'Fruits', price: 4 },
+        { id: 'sprinkles', label: 'Sprinkles', price: 60 },
+        { id: 'berries', label: 'Berries', price: 120 },
+        { id: 'flowers', label: 'Flowers', price: 150 },
+        { id: 'chocolate', label: 'Chocolate', price: 100 },
+        { id: 'pearls', label: 'Pearls', price: 90 },
+        { id: 'fruits', label: 'Fruits', price: 120 },
       ],
     });
   }

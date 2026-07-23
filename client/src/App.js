@@ -16,27 +16,28 @@ import ChatList from './pages/ChatList';
 import SavedDesigns from './pages/SavedDesigns';
 import Profile from './pages/Profile';
 import BakerProducts from './pages/BakerProducts';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/builder" element={<CakeBuilder />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/dashboard/customer" element={<CustomerDashboard />} />
-        <Route path="/dashboard/baker" element={<BakerDashboard />} />
-        <Route path="/ai-generator" element={<AIGenerator />} />
-        <Route path="/checkout" element={<Checkout />} />
-        <Route path="/order-tracking" element={<OrderTracking />} />
-        <Route path="/baker/pricing" element={<BakerPricing />} />
-        <Route path="/baker/products" element={<BakerProducts />} />
-        <Route path="/chat/:orderId" element={<OrderChat />} />
-        <Route path="/baker/chat/:orderId" element={<BakerOrderChat />} />
-        <Route path="/chat" element={<ChatList />} />
-        <Route path="/saved-designs" element={<SavedDesigns />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/builder" element={<ProtectedRoute role="customer"><CakeBuilder /></ProtectedRoute>} />
+        <Route path="/dashboard/customer" element={<ProtectedRoute role="customer"><CustomerDashboard /></ProtectedRoute>} />
+        <Route path="/dashboard/baker" element={<ProtectedRoute role="baker"><BakerDashboard /></ProtectedRoute>} />
+        <Route path="/ai-generator" element={<ProtectedRoute role="customer"><AIGenerator /></ProtectedRoute>} />
+        <Route path="/checkout" element={<ProtectedRoute role="customer"><Checkout /></ProtectedRoute>} />
+        <Route path="/order-tracking" element={<ProtectedRoute role="customer"><OrderTracking /></ProtectedRoute>} />
+        <Route path="/baker/pricing" element={<ProtectedRoute role="baker"><BakerPricing /></ProtectedRoute>} />
+        <Route path="/baker/products" element={<ProtectedRoute role="baker"><BakerProducts /></ProtectedRoute>} />
+        <Route path="/chat/:orderId" element={<ProtectedRoute role="customer"><OrderChat /></ProtectedRoute>} />
+        <Route path="/baker/chat/:orderId" element={<ProtectedRoute role="baker"><BakerOrderChat /></ProtectedRoute>} />
+        <Route path="/chat" element={<ProtectedRoute role="customer"><ChatList /></ProtectedRoute>} />
+        <Route path="/saved-designs" element={<ProtectedRoute role="customer"><SavedDesigns /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );

@@ -48,3 +48,54 @@ exports.createProduct = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+exports.updateProduct = async (req, res) => {
+  try {
+    const { name, category, price, description, imageData } = req.body;
+
+    if (!name || !category || price === undefined || !imageData) {
+      return res.status(400).json({ error: 'Name, category, price, and image are required.' });
+    }
+
+    if (!String(imageData).startsWith('data:image/')) {
+      return res.status(400).json({ error: 'Please upload a valid image file.' });
+    }
+
+    const product = await Product.findOneAndUpdate(
+      { _id: req.params.id, baker: req.user.userId },
+      {
+        name,
+        category,
+        price: Number(price),
+        description,
+        imageData,
+      },
+      { new: true, runValidators: true }
+    );
+
+    if (!product) {
+      return res.status(404).json({ error: 'Cake upload not found.' });
+    }
+
+    res.status(200).json({ message: 'Cake updated.', product });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+exports.deleteProduct = async (req, res) => {
+  try {
+    const product = await Product.findOneAndDelete({
+      _id: req.params.id,
+      baker: req.user.userId,
+    });
+
+    if (!product) {
+      return res.status(404).json({ error: 'Cake upload not found.' });
+    }
+
+    res.status(200).json({ message: 'Cake deleted.' });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};

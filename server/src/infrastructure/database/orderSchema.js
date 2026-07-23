@@ -10,6 +10,9 @@ const orderSchema = new mongoose.Schema(
       frosting: String,
       toppings: [String],
       message: String,
+      image: String,
+      source: String,
+      productId: String,
     },
     delivery: {
       firstName: String,

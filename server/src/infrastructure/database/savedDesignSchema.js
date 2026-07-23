@@ -11,6 +11,8 @@ const savedDesignSchema = new mongoose.Schema(
     toppings: [String],
     message: String,
     total: Number,
+    image: String,
+    sourceId: String,
   },
   { timestamps: true }
 );

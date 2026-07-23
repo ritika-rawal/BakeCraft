@@ -90,7 +90,7 @@ function OrderCard({ order }) {
   });
 
   return (
-    <div style={styles.card}>
+    <div className="order-card" style={styles.card}>
       <div style={styles.cardHeader}>
         <div>
           <p style={styles.orderId}>Order #{order._id.slice(-6).toUpperCase()}</p>
@@ -106,8 +106,8 @@ function OrderCard({ order }) {
         </span>
       </div>
 
-      <div style={styles.cakeInfo}>
-        <img src={cakeImageFor(`${order.cake.flavor} ${order.cake.shape}`)} alt={`${order.cake.flavor} cake`} style={styles.cakeThumb} />
+      <div className="order-cake-info" style={styles.cakeInfo}>
+        <img src={order.cake.image || cakeImageFor(`${order.cake.flavor} ${order.cake.shape}`)} alt={`${order.cake.flavor} cake`} style={styles.cakeThumb} />
         <div>
           <p style={styles.cakeName}>
             {order.cake.flavor} Cake ({order.cake.layers} {order.cake.layers > 1 ? 'Layers' : 'Layer'})
@@ -121,7 +121,7 @@ function OrderCard({ order }) {
       </div>
 
       {!isCancelled && (
-        <div style={styles.progressRow}>
+        <div className="order-progress-row" style={styles.progressRow}>
           {STATUS_STEPS.map((step, i) => (
             <div key={step} style={styles.progressStep}>
               <div
@@ -151,7 +151,7 @@ function OrderCard({ order }) {
         </div>
       )}
 
-      <div style={styles.deliveryInfo}>
+      <div className="order-delivery-info" style={styles.deliveryInfo}>
         <span><Icon name="pin" size={13} /> {order.delivery.street}, {order.delivery.neighborhood}, {order.delivery.city}</span>
         <span><Icon name="clock" size={13} /> {order.delivery.deliveryDate} - {order.delivery.timeSlot}</span>
       </div>

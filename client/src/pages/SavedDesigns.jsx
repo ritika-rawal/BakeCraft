@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 import Icon from '../components/Icon';
 import { cakeImageFor } from '../utils/cakeImages';
+import { formatNpr } from '../utils/currency';
 
 export default function SavedDesigns() {
   const [designs, setDesigns] = useState([]);
@@ -54,6 +55,7 @@ export default function SavedDesigns() {
       toppings: design.toppings,
       message: design.message,
       total: design.total,
+      image: design.image,
     };
     localStorage.setItem('bakecraft_draft_order', JSON.stringify(draftOrder));
     navigate('/checkout', { state: draftOrder });
@@ -78,27 +80,44 @@ export default function SavedDesigns() {
       )}
 
       {!loading && !error && designs.length > 0 && (
-        <div style={styles.grid}>
-          {designs.map((d) => (
-            <div key={d._id} style={styles.card}>
-              <img src={cakeImageFor(`${d.name} ${d.flavor}`)} alt={`${d.name} cake design`} style={styles.thumb} />
-              <p style={styles.name}>{d.name}</p>
-              <p style={styles.details}>
-                {d.shape} - {d.layers} {d.layers > 1 ? 'layers' : 'layer'} - {d.frosting}
-              </p>
-              {d.toppings?.length > 0 && (
-                <p style={styles.toppings}>{d.toppings.join(', ')}</p>
-              )}
-              {d.message && <p style={styles.message}>"{d.message}"</p>}
-              <p style={styles.price}>${d.total?.toFixed(2)}</p>
+        <div className="saved-polaroid-grid" style={styles.grid}>
+          {designs.map((d, index) => (
+            <div
+              key={d._id}
+              className="saved-polaroid-card"
+              style={{
+                ...styles.card,
+                transform: `rotate(${[-1.2, 1, -0.7, 1.3][index % 4]}deg)`,
+              }}
+            >
+              <div style={styles.photoWrap}>
+                <img src={d.image || cakeImageFor(`${d.name} ${d.flavor}`)} alt={`${d.name} cake design`} style={styles.thumb} />
+                <button
+                  type="button"
+                  aria-label={`Unsave ${d.name}`}
+                  title="Remove from saved designs"
+                  style={styles.unsaveBtn}
+                  onClick={() => handleDelete(d._id)}
+                >
+                  <Icon name="heart" size={14} style={{ fill: 'currentColor' }} />
+                </button>
+              </div>
+              <div style={styles.body}>
+                <p style={styles.name}>{d.name}</p>
+                <p style={styles.details}>
+                  {d.shape || 'Custom'} - {d.layers || 1} {(d.layers || 1) > 1 ? 'layers' : 'layer'} - {d.frosting || 'Baker selected'}
+                </p>
+                {d.toppings?.length > 0 && (
+                  <p style={styles.toppings}>{d.toppings.join(', ')}</p>
+                )}
+                {d.message && <p style={styles.message}>"{d.message}"</p>}
 
-              <div style={styles.actions}>
-                <button className="btn-primary" style={styles.orderBtn} onClick={() => handleReorder(d)}>
-                  Order This
-                </button>
-                <button style={styles.deleteBtn} onClick={() => handleDelete(d._id)}>
-                  <Icon name="trash" size={14} />
-                </button>
+                <div style={styles.footer}>
+                  <p style={styles.price}>{formatNpr(d.total)}</p>
+                  <button className="btn-primary" style={styles.orderBtn} onClick={() => handleReorder(d)}>
+                    <Icon name="cart" size={13} /> Order This
+                  </button>
+                </div>
               </div>
             </div>
           ))}
@@ -124,37 +143,55 @@ const styles = {
 
   grid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))',
-    gap: '20px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 230px))',
+    justifyContent: 'start',
+    gap: '24px',
   },
   card: {
     background: '#fff',
-    borderRadius: '16px',
-    padding: '18px',
-    boxShadow: '0 6px 16px rgba(0,0,0,0.04)',
+    borderRadius: '6px',
+    padding: '12px 12px 14px',
+    boxShadow: '0 16px 32px rgba(42,27,34,0.10)',
+    border: '1px solid rgba(139,41,66,0.05)',
+    transformOrigin: 'center',
+    transition: 'transform 180ms ease, box-shadow 180ms ease',
+  },
+  photoWrap: {
+    height: '205px',
+    borderRadius: '3px',
+    overflow: 'hidden',
+    position: 'relative',
+    background: '#f8eef1',
   },
   thumb: {
     width: '100%',
-    height: '110px',
-    borderRadius: '12px',
+    height: '100%',
     objectFit: 'cover',
     display: 'block',
-    marginBottom: '12px',
   },
-  name: { fontSize: '14.5px', fontWeight: 600, marginBottom: '4px' },
+  unsaveBtn: {
+    position: 'absolute',
+    top: '10px',
+    right: '10px',
+    width: '28px',
+    height: '28px',
+    borderRadius: '50%',
+    border: 'none',
+    padding: 0,
+    background: 'var(--rose-deep)',
+    color: '#fff',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    boxShadow: '0 4px 12px rgba(42,27,34,0.16)',
+  },
+  body: { padding: '12px 2px 0' },
+  name: { fontSize: '15px', fontWeight: 700, marginBottom: '5px' },
   details: { fontSize: '12px', color: 'var(--text-muted)', textTransform: 'capitalize', marginBottom: '4px' },
   toppings: { fontSize: '11.5px', color: 'var(--text-muted)', marginBottom: '4px' },
   message: { fontSize: '11.5px', color: 'var(--rose-mid)', fontStyle: 'italic', marginBottom: '8px' },
-  price: { fontSize: '16px', fontWeight: 600, color: 'var(--rose-deep)', marginBottom: '12px' },
-  actions: { display: 'flex', gap: '8px' },
-  orderBtn: { flex: 1, padding: '9px', fontSize: '12.5px' },
-  deleteBtn: {
-    background: '#FDEBEC',
-    color: '#C1121F',
-    border: 'none',
-    borderRadius: '8px',
-    padding: '9px 12px',
-    fontSize: '13px',
-    cursor: 'pointer',
-  },
+  footer: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '10px', marginTop: '12px', paddingTop: '10px', borderTop: '1px solid #f6eef0' },
+  price: { fontFamily: 'var(--font-display)', fontSize: '17px', color: 'var(--rose-deep)' },
+  orderBtn: { padding: '9px 12px', fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap' },
 };

@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 import Icon from '../components/Icon';
+import { formatNpr } from '../utils/currency';
 
 const SHAPES = [
   { id: 'round', label: 'Round', icon: 'track' },
@@ -274,15 +275,15 @@ export default function CakeBuilder() {
             <p style={styles.cardTitle}>Order Summary</p>
             <div style={styles.summaryRow}>
               <span>Base Cake ({layers} Layers)</span>
-              <span>${pricing.base.toFixed(2)}</span>
+              <span>{formatNpr(pricing.base)}</span>
             </div>
             <div style={styles.summaryRow}>
               <span>Flavor: {flavor.label}</span>
-              <span>+${flavor.price.toFixed(2)}</span>
+              <span>+{formatNpr(flavor.price)}</span>
             </div>
             <div style={styles.summaryRow}>
               <span>Toppings</span>
-              <span>+${pricing.toppingsTotal.toFixed(2)}</span>
+              <span>+{formatNpr(pricing.toppingsTotal)}</span>
             </div>
             <div style={styles.summaryRow}>
               <span>Custom Text</span>
@@ -290,7 +291,7 @@ export default function CakeBuilder() {
             </div>
             <div style={styles.summaryTotalRow}>
               <span>Total</span>
-              <span style={styles.totalValue}>${pricing.total.toFixed(2)}</span>
+              <span style={styles.totalValue}>{formatNpr(pricing.total)}</span>
             </div>
 
             <button className="btn-primary" style={styles.orderBtn} onClick={handleOrder}>

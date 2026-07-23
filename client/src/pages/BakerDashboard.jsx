@@ -81,7 +81,7 @@ export default function BakerDashboard() {
       <h1 style={styles.pageTitle}>Welcome back{user?.name ? `, ${user.name}` : ''}</h1>
       <p style={styles.pageSubtitle}>Manage incoming orders and update their status.</p>
 
-      <div style={styles.statsGrid}>
+      <div className="baker-stats-grid" style={styles.statsGrid}>
         <div style={styles.statCard}>
           <p style={styles.statLabel}>Total Orders</p>
           <p style={styles.statValue}>{stats.total}</p>
@@ -100,7 +100,7 @@ export default function BakerDashboard() {
         </div>
       </div>
 
-      <div style={styles.tableCard}>
+      <div className="baker-table-card" style={styles.tableCard}>
         <p style={styles.cardTitle}>Incoming Orders</p>
 
         {loading && <p style={styles.stateText}>Loading orders...</p>}
@@ -110,8 +110,8 @@ export default function BakerDashboard() {
         )}
 
         {!loading && !error && orders.length > 0 && (
-          <div style={styles.table}>
-            <div style={styles.tableHeaderRow}>
+          <div className="baker-table" style={styles.table}>
+            <div className="baker-table-header" style={styles.tableHeaderRow}>
               <span>Customer</span>
               <span>Cake</span>
               <span>Delivery</span>
@@ -120,15 +120,15 @@ export default function BakerDashboard() {
             </div>
 
             {orders.map((order) => (
-              <div key={order._id} style={styles.tableRow}>
-                <div style={styles.cellCustomer}>
+              <div key={order._id} className="baker-table-row" style={styles.tableRow}>
+                <div className="baker-table-cell" data-label="Customer" style={styles.cellCustomer}>
                   <p style={styles.customerName}>
                     {order.delivery.firstName} {order.delivery.lastName}
                   </p>
                   <p style={styles.customerSub}>{order.user?.email}</p>
                 </div>
 
-                <div>
+                <div className="baker-table-cell" data-label="Cake">
                   <p style={styles.cakeName}>
                     {order.cake.flavor} ({order.cake.layers}L)
                   </p>
@@ -137,14 +137,14 @@ export default function BakerDashboard() {
                   </p>
                 </div>
 
-                <div>
+                <div className="baker-table-cell" data-label="Delivery">
                   <p style={styles.deliveryDate}>{order.delivery.deliveryDate}</p>
                   <p style={styles.deliverySlot}>{order.delivery.timeSlot}</p>
                 </div>
 
-                <p style={styles.price}>NPR {order.pricing.grandTotal.toFixed(0)}</p>
+                <p className="baker-table-cell" data-label="Total" style={styles.price}>NPR {order.pricing.grandTotal.toFixed(0)}</p>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <div className="baker-table-cell" data-label="Status" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                  <select
                   value={order.status}
                   onChange={(e) => handleStatusChange(order._id, e.target.value)}
