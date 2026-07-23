@@ -9,10 +9,11 @@ const orderRoutes = require('./src/presentation/routes/orderRoutes');
 const pricingRoutes = require('./src/presentation/routes/pricingRoutes');
 const messageRoutes = require('./src/presentation/routes/messageRoutes');
 const savedDesignRoutes = require('./src/presentation/routes/savedDesignRoutes');
+const productRoutes = require('./src/presentation/routes/productRoutes');
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '8mb' }));
 
 async function initDb() {
   const uri = process.env.MONGO_URI;
@@ -50,6 +51,7 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/pricing', pricingRoutes);
 app.use('/api/messages', messageRoutes);
 app.use('/api/saved-designs', savedDesignRoutes);
+app.use('/api/products', productRoutes);
 
 app.get('/', (req, res) => {
   res.send('BakeCraft API is running');

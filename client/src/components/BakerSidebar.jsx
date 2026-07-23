@@ -3,6 +3,7 @@ import Icon from './Icon';
 
 const NAV_ITEMS = [
   { label: 'Dashboard', icon: 'home', path: '/dashboard/baker' },
+  { label: 'Cake Gallery', icon: 'camera', path: '/baker/products' },
   { label: 'Pricing & Menu', icon: 'money', path: '/baker/pricing' },
   { label: 'My Bakery Profile', icon: 'store', path: '#' },
 ];

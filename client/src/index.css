@@ -133,6 +133,7 @@ input:focus, textarea:focus {
   .customer-product-grid {
     grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)) !important;
   }
+
 }
 
 @media (max-width: 760px) {
@@ -195,11 +196,16 @@ input:focus, textarea:focus {
   }
 
   .customer-product-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+    justify-content: stretch !important;
+  }
+
+  .customer-step-grid {
     grid-template-columns: 1fr !important;
   }
 
   .customer-product-img {
-    height: 180px !important;
+    height: 220px !important;
   }
 
   .dashboard-header {
@@ -247,6 +253,11 @@ input:focus, textarea:focus {
     flex-basis: 100%;
     order: 3;
   }
+
+  .trending-card {
+    border-radius: 16px !important;
+    transform: none !important;
+  }
 }
 
 @media (max-width: 1024px) {
@@ -265,6 +276,10 @@ input:focus, textarea:focus {
 
   .builder-preview-wrap {
     width: 100%;
+  }
+
+  .baker-products-grid {
+    grid-template-columns: 1fr !important;
   }
 }
 
@@ -318,6 +333,21 @@ input:focus, textarea:focus {
     position: sticky;
     bottom: 0;
     z-index: 20;
+  }
+
+  .baker-products-form,
+  .baker-products-gallery {
+    border-radius: 14px !important;
+    padding: 16px !important;
+  }
+
+  .baker-products-fields {
+    flex-direction: column !important;
+    gap: 0 !important;
+  }
+
+  .baker-products-gallery-grid {
+    grid-template-columns: 1fr !important;
   }
 }
 
