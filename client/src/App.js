@@ -1,4 +1,6 @@
 import './index.css';
+import './auth.css';
+import './landing-theme.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import CakeBuilder from './pages/CakeBuilder';

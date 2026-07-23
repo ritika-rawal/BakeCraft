@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import Icon from '../components/Icon';
+import AuthLayout from '../components/AuthLayout';
 import { apiUrl } from '../utils/api';
 
 export default function Login() {
@@ -8,6 +9,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const justRegistered = location.state?.justRegistered;
@@ -42,103 +44,72 @@ export default function Login() {
   };
 
   return (
-    <div style={styles.page}>
-      <div style={styles.card}>
-        <h1 style={styles.heading}>Welcome back</h1>
-        <p style={styles.subtext}>Log in to your BakeCraft account.</p>
-
+    <AuthLayout
+      eyebrow="Welcome back"
+      title="Continue your creation."
+      description="Log in to design, save, and follow every detail of your cake."
+      image="/auth-baker-illustration.png"
+      imageAlt="Baker designing a celebration cake on a tablet"
+    >
         {justRegistered && (
-          <p style={styles.successBanner}><Icon name="check" size={14} /> Account created! Please log in.</p>
+          <p className="auth-status auth-status-success" role="status">
+            <Icon name="check" size={16} /> Account created. You can log in now.
+          </p>
         )}
 
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="login-email" style={styles.label}>Email</label>
-          <input
-            id="login-email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            style={styles.input}
-            required
-          />
+        <form className="auth-form" onSubmit={handleSubmit}>
+          <div className="auth-field">
+            <label htmlFor="login-email">Email address</label>
+            <div className="auth-input-wrap">
+              <Icon name="mail" size={18} />
+              <input
+                id="login-email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                autoComplete="email"
+                required
+              />
+            </div>
+          </div>
 
-          <label htmlFor="login-password" style={styles.label}>Password</label>
-          <input
-            id="login-password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            style={styles.input}
-            required
-          />
+          <div className="auth-field">
+            <label htmlFor="login-password">Password</label>
+            <div className="auth-input-wrap">
+              <Icon name="lock" size={18} />
+              <input
+                id="login-password"
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+                autoComplete="current-password"
+                required
+              />
+              <button
+                type="button"
+                className="auth-password-toggle"
+                onClick={() => setShowPassword((visible) => !visible)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                title={showPassword ? 'Hide password' : 'Show password'}
+              >
+                <Icon name={showPassword ? 'eyeOff' : 'eye'} size={18} />
+              </button>
+            </div>
+          </div>
 
-          {error && <p style={styles.errorText}>{error}</p>}
+          {error && <p className="auth-status auth-status-error" role="alert">{error}</p>}
 
-          <button type="submit" className="btn-primary" style={styles.submitBtn} disabled={loading}>
-            {loading ? 'Logging in...' : 'Log in'}
+          <button type="submit" className="auth-submit" disabled={loading}>
+            <span>{loading ? 'Logging in...' : 'Log in'}</span>
+            {!loading && <Icon name="arrowRight" size={17} />}
           </button>
         </form>
 
-        <p style={styles.footerText}>
-          Don't have an account? <Link to="/signup" style={styles.link}>Sign up</Link>
+        <p className="auth-switch">
+          New to BakeCraft? <Link to="/signup">Create an account</Link>
         </p>
-      </div>
-    </div>
+    </AuthLayout>
   );
 }
-
-const styles = {
-  page: {
-    minHeight: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: 'var(--bg)',
-    padding: '24px',
-  },
-  card: {
-    background: '#fff',
-    borderRadius: '20px',
-    padding: '40px',
-    width: '100%',
-    maxWidth: '400px',
-    boxShadow: '0 10px 30px rgba(0,0,0,0.06)',
-  },
-  heading: { fontSize: '24px', marginBottom: '6px' },
-  subtext: { fontSize: '13px', color: 'var(--text-muted)', marginBottom: '24px' },
-  successBanner: {
-    background: '#E8F5E9',
-    color: '#2E7D32',
-    fontSize: '12.5px',
-    padding: '10px 14px',
-    borderRadius: '8px',
-    marginBottom: '20px',
-  },
-  label: {
-    display: 'block',
-    fontSize: '13px',
-    fontWeight: 500,
-    marginBottom: '6px',
-    marginTop: '14px',
-  },
-  input: {
-    width: '100%',
-    padding: '11px 14px',
-    borderRadius: '8px',
-    border: '1px solid #eee',
-    fontSize: '14px',
-  },
-  errorText: {
-    color: '#C1121F',
-    fontSize: '12.5px',
-    marginTop: '12px',
-  },
-  submitBtn: { width: '100%', marginTop: '24px' },
-  footerText: {
-    fontSize: '13px',
-    color: 'var(--text-muted)',
-    textAlign: 'center',
-    marginTop: '20px',
-  },
-  link: { color: 'var(--rose-deep)', fontWeight: 500 },
-};

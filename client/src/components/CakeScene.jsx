@@ -40,25 +40,25 @@ export default function CakeScene() {
     scene.add(cake);
 
     const ivory = new THREE.MeshPhysicalMaterial({
-      color: '#f7dfce',
+      color: '#f3ebdd',
       roughness: 0.45,
       clearcoat: 0.18,
       clearcoatRoughness: 0.65,
     });
     const berry = new THREE.MeshPhysicalMaterial({
-      color: '#8f4359',
+      color: '#c87558',
       roughness: 0.34,
       clearcoat: 0.48,
       clearcoatRoughness: 0.28,
     });
     const blush = new THREE.MeshPhysicalMaterial({
-      color: '#cf98a5',
+      color: '#c4a176',
       roughness: 0.42,
       clearcoat: 0.26,
     });
     const cream = new THREE.MeshStandardMaterial({ color: '#fff5e9', roughness: 0.72 });
     const gold = new THREE.MeshStandardMaterial({
-      color: '#d9ad57',
+      color: '#b8946d',
       roughness: 0.28,
       metalness: 0.62,
     });

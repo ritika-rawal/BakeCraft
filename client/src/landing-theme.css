@@ -1,0 +1,181 @@
+.landing-page {
+  --soft-paper: #fcfaf6;
+  --soft-white: #fffdf9;
+  --soft-ink: #292623;
+  --soft-muted: #716b66;
+  --soft-rose: #c87558;
+  --soft-sage: #b8946d;
+  --soft-sage-light: #e7d5bb;
+  --soft-line: rgba(41, 38, 35, 0.13);
+  color: #292623 !important;
+  background: #fcfaf6 !important;
+}
+
+.landing-nav {
+  background: rgba(252, 250, 246, 0.76) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.78) !important;
+  box-shadow:
+    0 10px 34px rgba(41, 38, 35, 0.09),
+    inset 0 -1px 0 rgba(200, 117, 88, 0.08);
+}
+
+.landing-nav-links a::after {
+  background: #c87558 !important;
+}
+
+.landing-nav-links a:hover,
+.landing-login-link:hover,
+.landing-text-link:hover,
+.landing-arrow-link:hover {
+  color: #ad5e43 !important;
+}
+
+.landing-brand-mark {
+  background: #c87558 !important;
+}
+
+.landing-nav-cta,
+.landing-primary-link,
+.landing-light-link {
+  color: #fffef9 !important;
+  background: rgba(200, 117, 88, 0.9) !important;
+  border-color: rgba(255, 255, 255, 0.68) !important;
+  box-shadow:
+    0 11px 27px rgba(116, 67, 51, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.44) !important;
+}
+
+.landing-nav-cta:hover,
+.landing-primary-link:hover,
+.landing-light-link:hover {
+  color: #fff !important;
+  background: rgba(184, 95, 69, 0.98) !important;
+  border-color: rgba(255, 255, 255, 0.84) !important;
+  box-shadow:
+    0 15px 32px rgba(116, 67, 51, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.58) !important;
+}
+
+.landing-menu-button {
+  color: #39332f !important;
+  background: rgba(255, 255, 255, 0.52) !important;
+  border-color: rgba(255, 255, 255, 0.8) !important;
+  box-shadow:
+    0 8px 22px rgba(41, 38, 35, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.84) !important;
+}
+
+.landing-hero {
+  background: #fcfaf6 !important;
+}
+
+.landing-hero::before {
+  background: #e7d5bb !important;
+}
+
+.landing-hero-copy .landing-eyebrow,
+.landing-hero-copy h1 em,
+.landing-hero-detail > span,
+.landing-process .landing-eyebrow,
+.landing-studio-content .landing-eyebrow,
+.landing-studio-content h2 em,
+.landing-about h2 em {
+  color: #c87558 !important;
+}
+
+.landing-process {
+  background: #fffdf9 !important;
+}
+
+.landing-process .landing-step-top {
+  color: #c87558 !important;
+}
+
+.landing-process .landing-step-top svg {
+  color: #9e7b59 !important;
+}
+
+.landing-process .landing-step:hover {
+  background: rgba(231, 213, 187, 0.58) !important;
+}
+
+.landing-collection {
+  background: #e7d5bb !important;
+}
+
+.landing-collection .landing-eyebrow,
+.landing-collection .landing-cake-meta span {
+  color: #665d56 !important;
+}
+
+.landing-collection .landing-cake-index,
+.landing-collection .landing-cake-view {
+  color: #3e3732 !important;
+  background: rgba(255, 253, 247, 0.76) !important;
+  border-color: rgba(255, 255, 255, 0.74) !important;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.landing-studio {
+  background: #f1e8dd !important;
+}
+
+.landing-studio-visual::before {
+  border-color: rgba(200, 117, 88, 0.38) !important;
+}
+
+.landing-feature-row > span {
+  color: #c87558 !important;
+  background: rgba(255, 253, 247, 0.7) !important;
+}
+
+.landing-about {
+  background: #ddc6b5 !important;
+}
+
+.landing-about .landing-eyebrow {
+  color: #8f553f !important;
+}
+
+.landing-about p:not(.landing-eyebrow) {
+  color: #5f5149 !important;
+}
+
+.landing-footer {
+  color: #625c57 !important;
+  background: rgba(252, 250, 246, 0.84) !important;
+  border-top-color: rgba(255, 255, 255, 0.82) !important;
+  box-shadow:
+    0 -18px 46px rgba(41, 38, 35, 0.09),
+    inset 0 1px 0 rgba(255, 255, 255, 0.86);
+}
+
+.landing-footer .landing-brand,
+.landing-footer .landing-footer-brand {
+  color: #292623 !important;
+}
+
+.landing-footer-main > div:first-child p,
+.landing-footer-links a,
+.landing-footer-links span,
+.landing-footer-bottom {
+  color: #68615c !important;
+}
+
+.landing-footer-links > div > span:first-child,
+.landing-footer-links a:hover {
+  color: #c87558 !important;
+}
+
+.landing-footer-bottom {
+  border-top-color: rgba(41, 38, 35, 0.14) !important;
+}
+
+@media (max-width: 900px) {
+  .landing-nav-panel {
+    background: rgba(252, 250, 246, 0.94) !important;
+    border-bottom-color: rgba(255, 255, 255, 0.8) !important;
+    box-shadow: 0 18px 38px rgba(41, 38, 35, 0.13) !important;
+  }
+}
