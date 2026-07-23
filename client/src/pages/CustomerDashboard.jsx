@@ -175,7 +175,7 @@ export default function CustomerDashboard() {
             <div style={styles.heroStats}>
               <span style={styles.heroStatPill}>24h pickup</span>
               <span style={styles.heroStatPill}>30+ designs</span>
-              <span style={styles.heroStatPill}>Local bakers</span>
+              <span style={styles.heroStatPill}>BakeCraft kitchen</span>
             </div>
           </div>
         </div>
@@ -198,7 +198,7 @@ export default function CustomerDashboard() {
       <div className="customer-trending-header" style={styles.trendingHeader}>
         <div>
           <h3 style={styles.trendingTitle}>Trending Creations</h3>
-          <p style={styles.trendingSub}>Handcrafted delights from our top master bakers</p>
+          <p style={styles.trendingSub}>Handcrafted delights from the BakeCraft kitchen</p>
           {!loadingUploads && uploadError && <p style={styles.uploadNote}>{uploadError}</p>}
           {saveError && <p style={styles.saveError}>{saveError}</p>}
         </div>

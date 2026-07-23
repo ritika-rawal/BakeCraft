@@ -1,21 +1,21 @@
 import Icon from './Icon';
 
-const bakers = [
-  { name: 'Rose & Rye Bakery', specialty: 'Custom celebration cakes', rating: '4.9', tilt: -2, image: '/cake-strawberry.png' },
-  { name: 'The Sourdough Room', specialty: 'Artisan breads & loaves', rating: '4.8', tilt: 2, image: '/cake-black-forest.png' },
-  { name: 'Little Sugar Studio', specialty: 'Cupcakes & mini desserts', rating: '5.0', tilt: -1, image: '/dessert-assortment.png' },
+const cakes = [
+  { name: 'Velvet Celebration', specialty: 'Fresh berries and rose-piped frosting', rating: '4.9', tilt: -2, image: '/cake-strawberry.png' },
+  { name: 'Midnight Truffle', specialty: 'Dark chocolate layers and ganache', rating: '4.8', tilt: 2, image: '/cake-black-forest.png' },
+  { name: 'Dessert Selection', specialty: 'Mini treats for parties and gifting', rating: '5.0', tilt: -1, image: '/dessert-assortment.png' },
 ];
 
 export default function FeaturedBakers() {
   return (
-    <section id="bakers" style={{ padding: '70px 0' }}>
+    <section id="cakes" style={{ padding: '70px 0' }}>
       <div className="container">
-        <h2 style={{ fontSize: '28px', marginBottom: '8px' }}>Featured bakers</h2>
+        <h2 style={{ fontSize: '28px', marginBottom: '8px' }}>Signature cakes</h2>
         <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '36px' }}>
-          Home and small-batch bakers near you, ready to take your order.
+          Customer favorites handcrafted in the BakeCraft kitchen.
         </p>
         <div style={styles.grid}>
-          {bakers.map((b) => (
+          {cakes.map((b) => (
             <div key={b.name} style={{ ...styles.card, transform: `rotate(${b.tilt}deg)` }}>
               <img src={b.image} alt={`${b.name} featured cake`} style={styles.avatar} />
               <p style={styles.name}>{b.name}</p>

@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const orderSchema = new mongoose.Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    baker: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true, index: true },
     cake: {
       shape: String,
       layers: Number,

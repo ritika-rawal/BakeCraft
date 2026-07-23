@@ -11,5 +11,9 @@ exports.getOrderMessages = async ({ orderId, userId, role }) => {
     throw new Error('You can only view messages for your own orders.');
   }
 
+  if (role === 'baker' && order.baker?.toString() !== userId) {
+    throw new Error('This order is assigned to another baker.');
+  }
+
   return messageRepository.findByOrder(orderId);
 };

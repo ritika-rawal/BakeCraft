@@ -8,8 +8,8 @@ export default function Navbar() {
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchTerm.trim()) {
-      navigate(`/#bakers?search=${encodeURIComponent(searchTerm)}`);
-      document.getElementById('bakers')?.scrollIntoView({ behavior: 'smooth' });
+      navigate(`/#cakes?search=${encodeURIComponent(searchTerm)}`);
+      document.getElementById('cakes')?.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
@@ -19,7 +19,7 @@ export default function Navbar() {
         <Link to="/"><span style={styles.logo}>BakeCraft</span></Link>
         <div style={styles.links}>
           <Link to="/" style={styles.activeLink}>Home</Link>
-          <a href="#bakers" className="nav-link" style={styles.link}>Bakers</a>
+          <a href="#cakes" className="nav-link" style={styles.link}>Cakes</a>
           <Link to="/builder" className="nav-link" style={styles.link}>Cake builder</Link>
         </div>
         <div style={styles.actions}>

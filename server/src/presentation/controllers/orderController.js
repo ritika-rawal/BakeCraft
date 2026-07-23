@@ -30,7 +30,7 @@ exports.myOrders = async (req, res) => {
 
 exports.allOrders = async (req, res) => {
   try {
-    const orders = await getAllOrders();
+    const orders = await getAllOrders(req.user.userId);
     res.status(200).json({ orders });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -40,7 +40,7 @@ exports.allOrders = async (req, res) => {
 exports.changeOrderStatus = async (req, res) => {
   try {
     const { status } = req.body;
-    const order = await updateOrderStatus(req.params.id, status);
+    const order = await updateOrderStatus(req.params.id, status, req.user.userId);
     res.status(200).json({ message: 'Order status updated.', order });
   } catch (error) {
     res.status(400).json({ error: error.message });

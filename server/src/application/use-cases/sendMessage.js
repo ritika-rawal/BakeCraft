@@ -16,6 +16,10 @@ exports.sendMessage = async ({ orderId, senderId, senderRole, text }) => {
     throw new Error('You can only message about your own orders.');
   }
 
+  if (senderRole === 'baker' && order.baker?.toString() !== senderId) {
+    throw new Error('This order is assigned to another baker.');
+  }
+
   const message = await messageRepository.create({
     order: orderId,
     sender: senderId,

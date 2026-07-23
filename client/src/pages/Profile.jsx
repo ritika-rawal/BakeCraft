@@ -137,7 +137,7 @@ export default function Profile() {
 
           <label style={styles.label}>Account type</label>
           <input
-            value={storedUser?.role === 'baker' ? 'Baker' : 'Customer'}
+            value={storedUser?.role === 'baker' ? 'Baker Admin' : 'Customer'}
             disabled
             style={{ ...styles.input, background: '#f7f7f7', color: 'var(--text-muted)' }}
           />

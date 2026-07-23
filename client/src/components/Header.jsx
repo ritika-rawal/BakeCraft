@@ -15,7 +15,7 @@ export default function Header({ greeting, subtext, searchValue, onSearchChange 
           <input
             value={searchValue || ''}
             onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
-            placeholder="Search flavors, themes, or bakers..."
+            placeholder="Search flavors, themes, or cakes..."
             style={styles.search}
           />
         </div>
@@ -26,7 +26,7 @@ export default function Header({ greeting, subtext, searchValue, onSearchChange 
             <div>
               <p style={styles.avatarName}>{user?.name || 'Guest'}</p>
               <p style={styles.avatarTier}>
-                {user?.role === 'baker' ? 'Baker Account' : 'Gold Member'}
+                {user?.role === 'baker' ? 'Baker Admin' : 'Gold Member'}
               </p>
             </div>
           </div>

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
 export default function Signup() {
-  const [role, setRole] = useState('customer');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -19,7 +18,7 @@ export default function Signup() {
       const res = await fetch('http://localhost:5000/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password, role }),
+        body: JSON.stringify({ name, email, password }),
       });
 
       const data = await res.json();
@@ -40,24 +39,7 @@ export default function Signup() {
     <div style={styles.page}>
       <div style={styles.card}>
         <h1 style={styles.heading}>Create your account</h1>
-        <p style={styles.subtext}>Join BakeCraft as a customer or a baker.</p>
-
-        <div style={styles.roleToggle}>
-          <button
-            type="button"
-            onClick={() => setRole('customer')}
-            style={{ ...styles.roleBtn, ...(role === 'customer' ? styles.roleBtnActive : {}) }}
-          >
-            I'm a customer
-          </button>
-          <button
-            type="button"
-            onClick={() => setRole('baker')}
-            style={{ ...styles.roleBtn, ...(role === 'baker' ? styles.roleBtnActive : {}) }}
-          >
-            I'm a baker
-          </button>
-        </div>
+        <p style={styles.subtext}>Create a customer account to design, order, and track your cakes.</p>
 
         <form onSubmit={handleSubmit}>
           <label style={styles.label}>Full name</label>
@@ -121,26 +103,6 @@ const styles = {
   },
   heading: { fontSize: '24px', marginBottom: '6px' },
   subtext: { fontSize: '13px', color: 'var(--text-muted)', marginBottom: '24px' },
-  roleToggle: {
-    display: 'flex',
-    gap: '8px',
-    marginBottom: '24px',
-    background: 'var(--pink-soft)',
-    padding: '4px',
-    borderRadius: '30px',
-  },
-  roleBtn: {
-    flex: 1,
-    padding: '10px',
-    borderRadius: '26px',
-    border: 'none',
-    background: 'transparent',
-    color: 'var(--rose-deep)',
-    fontSize: '13px',
-    fontWeight: 500,
-    cursor: 'pointer',
-  },
-  roleBtnActive: { background: 'var(--rose-deep)', color: '#fff' },
   label: {
     display: 'block',
     fontSize: '13px',

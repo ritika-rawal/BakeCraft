@@ -1,5 +1,5 @@
 const steps = [
-  { num: '1', title: 'Browse bakers', desc: 'Explore local bakers by style, price, and rating.' },
+  { num: '1', title: 'Browse cakes', desc: 'Explore fresh BakeCraft creations by occasion and style.' },
   { num: '2', title: 'Customize with AI', desc: 'Describe your cake in words or design it visually.' },
   { num: '3', title: 'Order & track', desc: 'Confirm your order and follow it right to your door.' },
 ];

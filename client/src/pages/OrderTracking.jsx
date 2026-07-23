@@ -21,7 +21,9 @@ export default function OrderTracking() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const fetchOrders = async () => {
+    let isMounted = true;
+
+    const fetchOrders = async (isInitialLoad = false) => {
       try {
         const token = localStorage.getItem('bakecraft_token');
         if (!token) {
@@ -38,15 +40,24 @@ export default function OrderTracking() {
           throw new Error(data.error || 'Failed to load orders.');
         }
 
-        setOrders(data.orders);
+        if (isMounted) {
+          setOrders(data.orders);
+          setError('');
+        }
       } catch (err) {
-        setError(err.message);
+        if (isMounted && isInitialLoad) setError(err.message);
       } finally {
-        setLoading(false);
+        if (isMounted && isInitialLoad) setLoading(false);
       }
     };
 
-    fetchOrders();
+    fetchOrders(true);
+    const refreshInterval = setInterval(() => fetchOrders(false), 4000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(refreshInterval);
+    };
   }, []);
 
   return (
@@ -152,6 +163,7 @@ function OrderCard({ order }) {
       )}
 
       <div className="order-delivery-info" style={styles.deliveryInfo}>
+        <span><Icon name="store" size={13} /> {order.baker?.name || 'Assigned baker'}</span>
         <span><Icon name="pin" size={13} /> {order.delivery.street}, {order.delivery.neighborhood}, {order.delivery.city}</span>
         <span><Icon name="clock" size={13} /> {order.delivery.deliveryDate} - {order.delivery.timeSlot}</span>
       </div>

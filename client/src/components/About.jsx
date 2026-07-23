@@ -6,10 +6,9 @@ export default function About() {
           Why BakeCraft
         </h2>
         <p style={{ color: 'var(--pink-soft)', fontSize: '15px' }}>
-          Small bakers deserve better than scattered Instagram DMs and guesswork
-          orders. BakeCraft brings local bakers and customers together in one
-          place, with AI helping you describe exactly what you want - so what
-          you imagine is what arrives at your door.
+          Custom cake orders should not require scattered messages and guesswork.
+          BakeCraft brings design, ordering, tracking, and baker communication
+          into one place, with AI helping you describe exactly what you want.
         </p>
       </div>
     </section>

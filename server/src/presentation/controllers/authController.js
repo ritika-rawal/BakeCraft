@@ -3,8 +3,8 @@ const { loginUser } = require('../../application/use-cases/loginUser');
 
 exports.signup = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
-    const user = await registerUser({ name, email, password, role });
+    const { name, email, password } = req.body;
+    const user = await registerUser({ name, email, password });
     res.status(201).json({
       message: 'Account created successfully.',
       user: { name: user.name, email: user.email, role: user.role },

@@ -4,18 +4,18 @@ export default function Hero() {
   return (
     <section style={styles.hero}>
       <div className="container" style={styles.inner}>
-        <span style={styles.badge}>AI-powered bakery marketplace</span>
+        <span style={styles.badge}>AI-powered custom cake studio</span>
         <h1 style={styles.headline}>
-          Find local bakers.<br />
+          Your cake, your way.<br />
           Design your <em style={styles.emphasis}>dream cake</em>.
         </h1>
         <p style={styles.subtext}>
-          Browse home bakers near you, customize your cake with AI, and order
-          in minutes - no more messaging five Instagram pages.
+          Explore our cake collection, customize your design with AI, and order
+          directly from the BakeCraft kitchen in minutes.
         </p>
         <div style={styles.ctaRow}>
           <Link to="/builder"><button className="btn-primary">Design your cake</button></Link>
-          <a href="#bakers"><button className="btn-secondary">Browse bakers</button></a>
+          <a href="#cakes"><button className="btn-secondary">Browse cakes</button></a>
         </div>
       </div>
     </section>
