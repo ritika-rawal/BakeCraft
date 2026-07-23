@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import BakerLayout from '../components/BakerLayout';
 import Icon from '../components/Icon';
+import ConfirmDialog from '../components/ConfirmDialog';
 import { formatNpr } from '../utils/currency';
+import { apiUrl } from '../utils/api';
 
 const CATEGORIES = ['Birthday', 'Anniversary', 'Baby Shower', 'Graduation', 'Cupcakes', 'Custom'];
 
@@ -17,13 +19,15 @@ export default function BakerProducts() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [editingId, setEditingId] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchProducts = async () => {
     setLoading(true);
     setError('');
     try {
       const token = localStorage.getItem('bakecraft_token');
-      const res = await fetch('http://localhost:5000/api/products/mine', {
+      const res = await fetch(apiUrl('/api/products/mine'), {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -91,8 +95,8 @@ export default function BakerProducts() {
     try {
       const token = localStorage.getItem('bakecraft_token');
       const endpoint = editingId
-        ? `http://localhost:5000/api/products/${editingId}`
-        : 'http://localhost:5000/api/products';
+        ? apiUrl(`/api/products/${editingId}`)
+        : apiUrl('/api/products');
       const res = await fetch(endpoint, {
         method: editingId ? 'PUT' : 'POST',
         headers: {
@@ -119,24 +123,29 @@ export default function BakerProducts() {
     }
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
     setError('');
     setMessage('');
 
     try {
       const token = localStorage.getItem('bakecraft_token');
-      const res = await fetch(`http://localhost:5000/api/products/${id}`, {
+      const res = await fetch(apiUrl(`/api/products/${deleteTarget._id}`), {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to delete cake.');
 
-      setProducts((prev) => prev.filter((product) => product._id !== id));
-      if (editingId === id) resetForm();
+      setProducts((prev) => prev.filter((product) => product._id !== deleteTarget._id));
+      if (editingId === deleteTarget._id) resetForm();
       setMessage('Cake removed from Trending Creations.');
+      setDeleteTarget(null);
     } catch (err) {
       setError(err.message);
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -149,32 +158,33 @@ export default function BakerProducts() {
         <form onSubmit={handleSubmit} className="baker-products-form" style={styles.formCard}>
           <p style={styles.cardTitle}><Icon name="camera" size={15} /> {editingId ? 'Edit Cake' : 'Add a Cake'}</p>
 
-          <label style={styles.label}>Cake name</label>
-          <input value={name} onChange={(e) => setName(e.target.value)} style={styles.input} required />
+          <label htmlFor="product-name" style={styles.label}>Cake name</label>
+          <input id="product-name" value={name} onChange={(e) => setName(e.target.value)} style={styles.input} required />
 
           <div className="baker-products-fields" style={styles.fieldRow}>
             <div style={styles.fieldHalf}>
-              <label style={styles.label}>Category</label>
-              <select value={category} onChange={(e) => setCategory(e.target.value)} style={styles.input}>
+              <label htmlFor="product-category" style={styles.label}>Category</label>
+              <select id="product-category" value={category} onChange={(e) => setCategory(e.target.value)} style={styles.input}>
                 {CATEGORIES.map((item) => <option key={item} value={item}>{item}</option>)}
               </select>
             </div>
             <div style={styles.fieldHalf}>
-              <label style={styles.label}>Price (NPR)</label>
-              <input type="number" min="0" value={price} onChange={(e) => setPrice(e.target.value)} style={styles.input} required />
+              <label htmlFor="product-price" style={styles.label}>Price (NPR)</label>
+              <input id="product-price" type="number" min="0" value={price} onChange={(e) => setPrice(e.target.value)} style={styles.input} required />
             </div>
           </div>
 
-          <label style={styles.label}>Short description</label>
+          <label htmlFor="product-description" style={styles.label}>Short description</label>
           <textarea
+            id="product-description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             style={styles.textarea}
             placeholder="Fresh berries, vanilla sponge, custom message..."
           />
 
-          <label style={styles.label}>Cake image</label>
-          <input type="file" accept="image/*" onChange={handleImageChange} style={styles.input} required={!imageData} />
+          <label htmlFor="product-image" style={styles.label}>Cake image</label>
+          <input id="product-image" type="file" accept="image/*" onChange={handleImageChange} style={styles.input} required={!imageData} />
 
           {imageData && <img src={imageData} alt="Cake preview" style={styles.preview} />}
           {error && <p style={styles.errorText}>{error}</p>}
@@ -207,7 +217,7 @@ export default function BakerProducts() {
                     <button type="button" onClick={() => startEdit(product)} style={styles.editBtn}>
                       <Icon name="edit" size={13} /> Edit
                     </button>
-                    <button type="button" onClick={() => handleDelete(product._id)} style={styles.deleteBtn}>
+                    <button type="button" onClick={() => setDeleteTarget(product)} style={styles.deleteBtn}>
                       <Icon name="trash" size={13} /> Delete
                     </button>
                   </div>
@@ -217,6 +227,16 @@ export default function BakerProducts() {
           )}
         </div>
       </div>
+
+      <ConfirmDialog
+        open={Boolean(deleteTarget)}
+        title="Delete this cake?"
+        message={deleteTarget ? `${deleteTarget.name} will disappear from Trending Creations.` : ''}
+        confirmLabel="Delete Cake"
+        busy={deleting}
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </BakerLayout>
   );
 }

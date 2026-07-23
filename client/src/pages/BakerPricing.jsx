@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import BakerLayout from '../components/BakerLayout';
 import Icon from '../components/Icon';
+import { apiUrl } from '../utils/api';
 
 export default function BakerPricing() {
   const [pricing, setPricing] = useState(null);
@@ -10,7 +11,7 @@ export default function BakerPricing() {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/pricing')
+    fetch(apiUrl('/api/pricing'))
       .then((res) => res.json())
       .then((data) => setPricing(data.pricing))
       .catch(() => setError('Failed to load pricing.'))
@@ -43,7 +44,7 @@ export default function BakerPricing() {
     setError('');
     try {
       const token = localStorage.getItem('bakecraft_token');
-      const res = await fetch('http://localhost:5000/api/pricing', {
+      const res = await fetch(apiUrl('/api/pricing'), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -83,8 +84,9 @@ export default function BakerPricing() {
         <p style={styles.cardTitle}>Base Pricing</p>
         <div style={styles.fieldRow}>
           <div style={styles.fieldHalf}>
-            <label style={styles.label}>Price per layer (NPR)</label>
+            <label htmlFor="price-per-layer" style={styles.label}>Price per layer (NPR)</label>
             <input
+              id="price-per-layer"
               type="number"
               value={pricing.basePricePerLayer}
               onChange={(e) => updateField('basePricePerLayer', Number(e.target.value))}
@@ -92,8 +94,9 @@ export default function BakerPricing() {
             />
           </div>
           <div style={styles.fieldHalf}>
-            <label style={styles.label}>Flat base fee (NPR)</label>
+            <label htmlFor="flat-base-fee" style={styles.label}>Flat base fee (NPR)</label>
             <input
+              id="flat-base-fee"
               type="number"
               value={pricing.baseFlatFee}
               onChange={(e) => updateField('baseFlatFee', Number(e.target.value))}
@@ -101,8 +104,9 @@ export default function BakerPricing() {
             />
           </div>
           <div style={styles.fieldHalf}>
-            <label style={styles.label}>Delivery fee (NPR)</label>
+            <label htmlFor="delivery-fee" style={styles.label}>Delivery fee (NPR)</label>
             <input
+              id="delivery-fee"
               type="number"
               value={pricing.deliveryFee}
               onChange={(e) => updateField('deliveryFee', Number(e.target.value))}
@@ -117,8 +121,9 @@ export default function BakerPricing() {
         <div style={styles.grid2}>
           {pricing.flavors.map((f) => (
             <div key={f.id} style={styles.itemRow}>
-              <span style={styles.itemLabel}>{f.label}</span>
+              <label htmlFor={`flavor-${f.id}`} style={styles.itemLabel}>{f.label}</label>
               <input
+                id={`flavor-${f.id}`}
                 type="number"
                 value={f.price}
                 onChange={(e) => updateFlavorPrice(f.id, e.target.value)}
@@ -134,8 +139,9 @@ export default function BakerPricing() {
         <div style={styles.grid2}>
           {pricing.toppings.map((t) => (
             <div key={t.id} style={styles.itemRow}>
-              <span style={styles.itemLabel}>{t.label}</span>
+              <label htmlFor={`topping-${t.id}`} style={styles.itemLabel}>{t.label}</label>
               <input
+                id={`topping-${t.id}`}
                 type="number"
                 value={t.price}
                 onChange={(e) => updateToppingPrice(t.id, e.target.value)}

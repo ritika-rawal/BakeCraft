@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 import { cakeImageFor } from '../utils/cakeImages';
+import { apiUrl } from '../utils/api';
 
 export default function ChatList() {
   const [orders, setOrders] = useState([]);
@@ -12,7 +13,7 @@ export default function ChatList() {
     const fetchOrders = async () => {
       try {
         const token = localStorage.getItem('bakecraft_token');
-        const res = await fetch('http://localhost:5000/api/orders/my-orders', {
+        const res = await fetch(apiUrl('/api/orders/my-orders'), {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();

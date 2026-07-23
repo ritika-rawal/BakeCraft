@@ -13,6 +13,7 @@ const savedDesignSchema = new mongoose.Schema(
     total: Number,
     image: String,
     sourceId: String,
+    source: String,
   },
   { timestamps: true }
 );

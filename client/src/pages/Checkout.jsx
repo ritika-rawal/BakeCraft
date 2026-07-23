@@ -4,13 +4,7 @@ import DashboardLayout from '../components/DashboardLayout';
 import Icon from '../components/Icon';
 import { cakeImageFor } from '../utils/cakeImages';
 import { formatNpr } from '../utils/currency';
-
-const PAYMENT_METHODS = [
-  { id: 'cod', label: 'Cash on Delivery', icon: 'money' },
-  { id: 'esewa', label: 'eSewa', icon: 'card' },
-  { id: 'khalti', label: 'Khalti', icon: 'card' },
-  { id: 'mobile', label: 'Mobile Banking', icon: 'store' },
-];
+import { apiUrl } from '../utils/api';
 
 const TIME_SLOTS = [
   'Morning (08:00 AM - 11:00 AM)',
@@ -31,7 +25,7 @@ export default function Checkout() {
   const [deliveryFee, setDeliveryFee] = useState(150); // fallback until real value loads
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/pricing')
+    fetch(apiUrl('/api/pricing'))
       .then((res) => res.json())
       .then((data) => setDeliveryFee(data.pricing.deliveryFee))
       .catch(() => {}); // keep fallback if this fails
@@ -45,7 +39,6 @@ export default function Checkout() {
   const [neighborhood, setNeighborhood] = useState('');
   const [deliveryDate, setDeliveryDate] = useState('');
   const [timeSlot, setTimeSlot] = useState(TIME_SLOTS[0]);
-  const [paymentMethod, setPaymentMethod] = useState('cod');
   const [promoCode, setPromoCode] = useState('');
   const [placing, setPlacing] = useState(false);
   const [placed, setPlaced] = useState(false);
@@ -80,7 +73,7 @@ export default function Checkout() {
         throw new Error('Please log in before placing an order.');
       }
 
-      const res = await fetch('http://localhost:5000/api/orders', {
+      const res = await fetch(apiUrl('/api/orders'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -109,7 +102,7 @@ export default function Checkout() {
             timeSlot,
           },
           payment: {
-            method: paymentMethod,
+            method: 'cod',
           },
           pricing: {
             subtotal,
@@ -156,14 +149,15 @@ export default function Checkout() {
     <DashboardLayout>
       <div className="checkout-grid" style={styles.grid}>
         {/* Left: forms */}
-        <form onSubmit={handlePlaceOrder} style={styles.column}>
+        <form id="checkout-form" onSubmit={handlePlaceOrder} style={styles.column}>
           <div style={styles.card}>
             <p style={styles.cardTitle}><Icon name="pin" size={15} /> Delivery Details</p>
 
             <div className="checkout-field-row" style={styles.fieldRow}>
               <div style={styles.fieldHalf}>
-                <label style={styles.label}>First Name</label>
+                <label htmlFor="checkout-first-name" style={styles.label}>First Name</label>
                 <input
+                  id="checkout-first-name"
                   value={firstName}
                   onChange={(e) => setFirstName(e.target.value)}
                   placeholder="John"
@@ -172,8 +166,9 @@ export default function Checkout() {
                 />
               </div>
               <div style={styles.fieldHalf}>
-                <label style={styles.label}>Last Name</label>
+                <label htmlFor="checkout-last-name" style={styles.label}>Last Name</label>
                 <input
+                  id="checkout-last-name"
                   value={lastName}
                   onChange={(e) => setLastName(e.target.value)}
                   placeholder="Doe"
@@ -183,8 +178,9 @@ export default function Checkout() {
               </div>
             </div>
 
-            <label style={styles.label}>Contact Number</label>
+            <label htmlFor="checkout-contact" style={styles.label}>Contact Number</label>
             <input
+              id="checkout-contact"
               value={contact}
               onChange={(e) => setContact(e.target.value)}
               placeholder="+977 9800000000"
@@ -192,8 +188,9 @@ export default function Checkout() {
               required
             />
 
-            <label style={styles.label}>Street Address</label>
+            <label htmlFor="checkout-street" style={styles.label}>Street Address</label>
             <input
+              id="checkout-street"
               value={street}
               onChange={(e) => setStreet(e.target.value)}
               placeholder="123 Bakery Lane"
@@ -203,8 +200,9 @@ export default function Checkout() {
 
             <div className="checkout-field-row" style={styles.fieldRow}>
               <div style={styles.fieldHalf}>
-                <label style={styles.label}>City</label>
+                <label htmlFor="checkout-city" style={styles.label}>City</label>
                 <input
+                  id="checkout-city"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
                   style={styles.input}
@@ -212,8 +210,9 @@ export default function Checkout() {
                 />
               </div>
               <div style={styles.fieldHalf}>
-                <label style={styles.label}>Location/Neighborhood</label>
+                <label htmlFor="checkout-neighborhood" style={styles.label}>Location/Neighborhood</label>
                 <input
+                  id="checkout-neighborhood"
                   value={neighborhood}
                   onChange={(e) => setNeighborhood(e.target.value)}
                   placeholder="Jhamsikhel"
@@ -224,18 +223,21 @@ export default function Checkout() {
 
             <div className="checkout-field-row" style={styles.fieldRow}>
               <div style={styles.fieldHalf}>
-                <label style={styles.label}>Delivery Date</label>
+                <label htmlFor="checkout-date" style={styles.label}>Delivery Date</label>
                 <input
+                  id="checkout-date"
                   type="date"
                   value={deliveryDate}
                   onChange={(e) => setDeliveryDate(e.target.value)}
+                  min={new Date().toISOString().split('T')[0]}
                   style={styles.input}
                   required
                 />
               </div>
               <div style={styles.fieldHalf}>
-                <label style={styles.label}>Time Slot</label>
+                <label htmlFor="checkout-time-slot" style={styles.label}>Time Slot</label>
                 <select
+                  id="checkout-time-slot"
                   value={timeSlot}
                   onChange={(e) => setTimeSlot(e.target.value)}
                   style={styles.select}
@@ -250,21 +252,12 @@ export default function Checkout() {
 
           <div style={styles.card}>
             <p style={styles.cardTitle}><Icon name="card" size={15} /> Payment Method</p>
-            <div className="checkout-payment-grid" style={styles.paymentGrid}>
-              {PAYMENT_METHODS.map((pm) => (
-                <button
-                  key={pm.id}
-                  type="button"
-                  onClick={() => setPaymentMethod(pm.id)}
-                  style={{
-                    ...styles.paymentCard,
-                    ...(paymentMethod === pm.id ? styles.paymentCardActive : {}),
-                  }}
-                >
-                  <span style={styles.paymentIcon}><Icon name={pm.icon} size={18} /></span>
-                  {pm.label}
-                </button>
-              ))}
+            <div style={{ ...styles.paymentCard, ...styles.paymentCardActive }}>
+              <span style={styles.paymentIcon}><Icon name="money" size={18} /></span>
+              <div>
+                <p style={styles.paymentTitle}>Cash on Delivery</p>
+                <p style={styles.paymentText}>Pay the Baker Admin when your cake is delivered.</p>
+              </div>
             </div>
           </div>
 
@@ -321,14 +314,15 @@ export default function Checkout() {
           <p style={styles.taxNote}>Inclusive of taxes</p>
 
           <button
-            onClick={handlePlaceOrder}
+            type="submit"
+            form="checkout-form"
             className="btn-primary"
             style={styles.placeOrderBtn}
             disabled={placing}
           >
             {placing ? 'Placing order...' : 'Place Order'}
           </button>
-          <p style={styles.secureNote}><Icon name="lock" size={13} /> Secure checkout by BakeCraft Pay</p>
+          <p style={styles.secureNote}><Icon name="lock" size={13} /> No online payment or card details required</p>
 
           <div style={styles.freshNote}>
             <Icon name="sparkle" size={13} /> Every cake is freshly baked and hand-delivered within your selected time slot to
@@ -419,6 +413,8 @@ const styles = {
   paymentIcon: {
     fontSize: '18px',
   },
+  paymentTitle: { fontSize: '13px', fontWeight: 600 },
+  paymentText: { fontSize: '11.5px', color: 'var(--text-muted)', marginTop: '2px' },
 
   errorText: {
     color: '#C1121F',

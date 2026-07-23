@@ -7,7 +7,7 @@ const steps = [
 export default function HowItWorks() {
   return (
     <section style={{ padding: '50px 0' }}>
-      <div className="container" style={styles.grid}>
+      <div className="container landing-steps-grid" style={styles.grid}>
         {steps.map((s) => (
           <div key={s.num} style={styles.step}>
             <div style={styles.numCircle}>{s.num}</div>

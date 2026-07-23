@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { apiUrl } from '../utils/api';
 
 export default function Signup() {
   const [name, setName] = useState('');
@@ -15,7 +16,7 @@ export default function Signup() {
     setLoading(true);
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/signup', {
+      const res = await fetch(apiUrl('/api/auth/signup'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password }),
@@ -42,16 +43,18 @@ export default function Signup() {
         <p style={styles.subtext}>Create a customer account to design, order, and track your cakes.</p>
 
         <form onSubmit={handleSubmit}>
-          <label style={styles.label}>Full name</label>
+          <label htmlFor="signup-name" style={styles.label}>Full name</label>
           <input
+            id="signup-name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             style={styles.input}
             required
           />
 
-          <label style={styles.label}>Email</label>
+          <label htmlFor="signup-email" style={styles.label}>Email</label>
           <input
+            id="signup-email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -59,8 +62,9 @@ export default function Signup() {
             required
           />
 
-          <label style={styles.label}>Password</label>
+          <label htmlFor="signup-password" style={styles.label}>Password</label>
           <input
+            id="signup-password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}

@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 import Icon from '../components/Icon';
+import ConfirmDialog from '../components/ConfirmDialog';
 import { cakeImageFor } from '../utils/cakeImages';
+import { apiUrl } from '../utils/api';
 
 const STATUS_STEPS = ['pending', 'confirmed', 'baking', 'out-for-delivery', 'delivered'];
 
@@ -19,6 +21,10 @@ export default function OrderTracking() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [actionError, setActionError] = useState('');
+  const [actionMessage, setActionMessage] = useState('');
+  const [cancelTarget, setCancelTarget] = useState(null);
+  const [cancelling, setCancelling] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -30,7 +36,7 @@ export default function OrderTracking() {
           throw new Error('Please log in to see your orders.');
         }
 
-        const res = await fetch('http://localhost:5000/api/orders/my-orders', {
+        const res = await fetch(apiUrl('/api/orders/my-orders'), {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -60,10 +66,39 @@ export default function OrderTracking() {
     };
   }, []);
 
+  const handleCancelOrder = async () => {
+    if (!cancelTarget) return;
+    setCancelling(true);
+    setActionError('');
+    setActionMessage('');
+
+    try {
+      const token = localStorage.getItem('bakecraft_token');
+      const res = await fetch(apiUrl(`/api/orders/${cancelTarget._id}/cancel`), {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to cancel order.');
+
+      setOrders((current) => current.map((order) => (
+        order._id === cancelTarget._id ? { ...order, status: 'cancelled' } : order
+      )));
+      setActionMessage(`Order #${cancelTarget._id.slice(-6).toUpperCase()} was cancelled.`);
+      setCancelTarget(null);
+    } catch (err) {
+      setActionError(err.message);
+    } finally {
+      setCancelling(false);
+    }
+  };
+
   return (
     <DashboardLayout>
       <h1 style={styles.pageTitle}>Order Tracking</h1>
       <p style={styles.pageSubtitle}>Track the status of your cake orders in real time.</p>
+      {actionMessage && <p className="status-banner status-banner-success" role="status"><Icon name="check" size={14} /> {actionMessage}</p>}
+      {actionError && <p className="status-banner status-banner-error" role="alert">{actionError}</p>}
 
       {loading && <p style={styles.stateText}>Loading your orders...</p>}
 
@@ -82,15 +117,25 @@ export default function OrderTracking() {
       {!loading && !error && orders.length > 0 && (
         <div style={styles.list}>
           {orders.map((order) => (
-            <OrderCard key={order._id} order={order} />
+            <OrderCard key={order._id} order={order} onRequestCancel={setCancelTarget} />
           ))}
         </div>
       )}
+
+      <ConfirmDialog
+        open={Boolean(cancelTarget)}
+        title="Cancel this order?"
+        message="The Baker Admin will stop receiving this request. This action is only available before the order is confirmed."
+        confirmLabel="Cancel Order"
+        busy={cancelling}
+        onConfirm={handleCancelOrder}
+        onCancel={() => setCancelTarget(null)}
+      />
     </DashboardLayout>
   );
 }
 
-function OrderCard({ order }) {
+function OrderCard({ order, onRequestCancel }) {
   const isCancelled = order.status === 'cancelled';
   const currentStepIndex = STATUS_STEPS.indexOf(order.status);
 
@@ -168,9 +213,16 @@ function OrderCard({ order }) {
         <span><Icon name="clock" size={13} /> {order.delivery.deliveryDate} - {order.delivery.timeSlot}</span>
       </div>
 
-      <Link to={`/chat/${order._id}`}>
-        <button style={styles.chatBtn}><Icon name="message" size={14} /> Message Baker</button>
-      </Link>
+      <div style={styles.orderActions}>
+        <Link to={`/chat/${order._id}`} style={{ flex: 1 }}>
+          <button type="button" style={styles.chatBtn}><Icon name="message" size={14} /> Message Baker</button>
+        </Link>
+        {order.status === 'pending' && (
+          <button type="button" onClick={() => onRequestCancel(order)} style={styles.cancelOrderBtn}>
+            <Icon name="trash" size={14} /> Cancel Order
+          </button>
+        )}
+      </div>
     </div>
   );
 }
@@ -317,5 +369,20 @@ const styles = {
     fontSize: '12.5px',
     fontWeight: 500,
     cursor: 'pointer',
+  },
+  orderActions: { display: 'flex', flexWrap: 'wrap', gap: '10px' },
+  cancelOrderBtn: {
+    background: '#fff',
+    color: '#A33A46',
+    border: '1px solid #E9BCC4',
+    borderRadius: '20px',
+    padding: '10px 16px',
+    fontSize: '12.5px',
+    fontWeight: 500,
+    cursor: 'pointer',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '6px',
   },
 };

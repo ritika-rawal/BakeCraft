@@ -8,10 +8,32 @@ dist/
 # Environment files
 .env
 .env.*
+!.env.example
 
 # Logs and local extraction notes
 *.log
 *.txt
+
+# Coursework and UX research artefacts
+*.pdf
+*.doc
+*.docx
+*.ppt
+*.pptx
+*.csv
+*.xlsx
+/coursework/
+/research/
+/testing/
+/screenshots/
+/wireframes/
+/personas/
+/reports/
+
+# Temporary local output
+/.tmp-*/
+/tmp/
+/coverage/
 
 # OS/editor files
 .DS_Store

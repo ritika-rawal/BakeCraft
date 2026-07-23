@@ -17,6 +17,7 @@ import SavedDesigns from './pages/SavedDesigns';
 import Profile from './pages/Profile';
 import BakerProducts from './pages/BakerProducts';
 import ProtectedRoute from './components/ProtectedRoute';
+import NotFound from './pages/NotFound';
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
         <Route path="/chat" element={<ProtectedRoute role="customer"><ChatList /></ProtectedRoute>} />
         <Route path="/saved-designs" element={<ProtectedRoute role="customer"><SavedDesigns /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   );

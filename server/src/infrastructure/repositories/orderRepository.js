@@ -19,4 +19,14 @@ exports.findAll = () => OrderModel.find().populate('user', 'name email').sort({ 
 exports.findByBaker = (bakerId) =>
   OrderModel.find({ baker: bakerId }).populate('user', 'name email').sort({ createdAt: -1 });
 exports.updateStatus = (orderId, bakerId, status) =>
-  OrderModel.findOneAndUpdate({ _id: orderId, baker: bakerId }, { status }, { new: true });
+  OrderModel.findOneAndUpdate(
+    { _id: orderId, baker: bakerId },
+    { status },
+    { returnDocument: 'after' }
+  );
+exports.cancelByCustomer = (orderId, userId) =>
+  OrderModel.findOneAndUpdate(
+    { _id: orderId, user: userId, status: 'pending' },
+    { status: 'cancelled' },
+    { returnDocument: 'after' }
+  );

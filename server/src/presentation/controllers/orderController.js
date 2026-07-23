@@ -2,6 +2,7 @@ const { createOrder } = require('../../application/use-cases/createOrder');
 const { getMyOrders } = require('../../application/use-cases/getMyOrders');
 const { getAllOrders } = require('../../application/use-cases/getAllOrders');
 const { updateOrderStatus } = require('../../application/use-cases/updateOrderStatus');
+const { cancelOrder } = require('../../application/use-cases/cancelOrder');
 
 exports.placeOrder = async (req, res) => {
   try {
@@ -42,6 +43,18 @@ exports.changeOrderStatus = async (req, res) => {
     const { status } = req.body;
     const order = await updateOrderStatus(req.params.id, status, req.user.userId);
     res.status(200).json({ message: 'Order status updated.', order });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+exports.cancelMyOrder = async (req, res) => {
+  try {
+    const order = await cancelOrder({
+      orderId: req.params.id,
+      userId: req.user.userId,
+    });
+    res.status(200).json({ message: 'Order cancelled.', order });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

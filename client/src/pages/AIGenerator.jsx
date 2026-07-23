@@ -2,17 +2,12 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 import Icon from '../components/Icon';
+import { apiUrl } from '../utils/api';
 
 const SUGGESTIONS = [
   'Pink birthday cake with butterflies',
   'Tropical beach cake with waves',
   'Enchanted forest cake',
-];
-
-const RECENT_CREATIONS = [
-  { id: 1, name: 'Ethereal Pink Butterfly', desc: 'Velvet pink sponge with raspberry filling and hand-piped sugar butterflies.', tag: 'New match', image: '/cake-strawberry.png' },
-  { id: 2, name: 'Ocean Whisper Tier', desc: 'Coconut cream layers with pineapple glaze and blue curacao waves.', tag: 'New match', image: '/cake-lavender.png' },
-  { id: 3, name: 'Midnight Forest Moss', desc: 'Dark chocolate fudge with pistachio moss and forest berry compote.', tag: 'New match', image: '/cake-black-forest.png' },
 ];
 
 export default function AIGenerator() {
@@ -34,6 +29,7 @@ export default function AIGenerator() {
     if (!prompt.trim()) return;
     setGenerating(true);
     setError('');
+    setSaveMessage('');
     setGeneratedImage(null);
 
     const imageUrl = buildImageUrl();
@@ -68,23 +64,6 @@ export default function AIGenerator() {
     navigate('/checkout', { state: draftOrder });
   };
 
-  const handleOrderRecent = (creation) => {
-    const draftOrder = {
-      source: 'ai-gallery',
-      shape: 'custom',
-      layers: 1,
-      flavor: creation.name,
-      frosting: 'Baker selected',
-      toppings: [],
-      message: '',
-      total: 1800,
-      image: creation.image,
-    };
-
-    localStorage.setItem('bakecraft_draft_order', JSON.stringify(draftOrder));
-    navigate('/checkout', { state: draftOrder });
-  };
-
   const handleSaveGenerated = async () => {
     if (!generatedImage) return;
     setSaveMessage('');
@@ -95,14 +74,14 @@ export default function AIGenerator() {
       if (!token) throw new Error('Please log in to save this design.');
 
       const draftOrder = buildDraftOrder();
-      const res = await fetch('http://localhost:5000/api/saved-designs', {
+      const res = await fetch(apiUrl('/api/saved-designs'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          name: 'AI Cake Design',
+          name: prompt.trim().slice(0, 60) || 'AI Cake Design',
           ...draftOrder,
         }),
       });
@@ -119,7 +98,7 @@ export default function AIGenerator() {
     <DashboardLayout>
       <div style={styles.hero}>
         <h1 style={styles.title}>
-          <span style={styles.titleAccent}>CakeCraft</span> AI
+          <span style={styles.titleAccent}>BakeCraft</span> AI
         </h1>
         <p style={styles.subtitle}>
           Turn your wildest dessert fantasies into reality. Describe your dream
@@ -168,13 +147,15 @@ export default function AIGenerator() {
           )}
 
           {generatedImage && (
-            <div style={styles.resultWrap}>
+            <div className="ai-result-panel" style={styles.resultWrap}>
               <img src={generatedImage} alt="AI generated cake" style={styles.resultImg} />
               <div style={styles.resultActions}>
                 <button onClick={handleOrderGenerated} className="btn-primary" style={styles.resultBtn}>
                   <Icon name="cart" size={16} /> Order This Cake
                 </button>
-                <button onClick={handleSaveGenerated} style={styles.resultBtnGhost}><Icon name="bookmark" size={16} /> Save Design</button>
+                <button onClick={handleSaveGenerated} style={styles.resultBtnGhost} disabled={Boolean(saveMessage)}>
+                  <Icon name={saveMessage ? 'check' : 'bookmark'} size={16} /> {saveMessage ? 'Saved' : 'Save Design'}
+                </button>
                 <button onClick={handleGenerate} style={styles.resultBtnGhost}>
                   <Icon name="refresh" size={16} /> Try Again
                 </button>
@@ -185,28 +166,6 @@ export default function AIGenerator() {
         </div>
       </div>
 
-      <div style={styles.recentHeader}>
-        <h3 style={styles.recentTitle}>Recent Creations</h3>
-        <span style={styles.filterLink}>Filter</span>
-      </div>
-
-      <div style={styles.grid}>
-        {RECENT_CREATIONS.map((c) => (
-          <div key={c.id} style={styles.card}>
-            <div style={styles.imgPlaceholder}>
-              <img src={c.image} alt={c.name} style={styles.cardImg} />
-              <span style={styles.tag}>{c.tag}</span>
-            </div>
-            <p style={styles.cardName}>{c.name}</p>
-            <p style={styles.cardDesc}>{c.desc}</p>
-            <div style={styles.cardFooter}>
-              <button onClick={() => handleOrderRecent(c)} style={styles.orderSmallBtn}><Icon name="cart" size={14} /> Order</button>
-              <span style={styles.iconBtn}><Icon name="edit" size={14} /></span>
-              <span style={styles.iconBtn}><Icon name="bookmark" size={14} /></span>
-            </div>
-          </div>
-        ))}
-      </div>
     </DashboardLayout>
   );
 }
@@ -333,93 +292,10 @@ const styles = {
     cursor: 'pointer',
   },
 
-  recentHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '18px',
-  },
-  recentTitle: {
-    fontSize: '17px',
-    color: 'var(--rose-deep)',
-  },
-  filterLink: {
-    fontSize: '13px',
-    color: 'var(--text-muted)',
-    cursor: 'pointer',
-  },
-
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-    gap: '20px',
-  },
-  card: {
-    background: '#fff',
-    borderRadius: '16px',
-    padding: '14px',
-    boxShadow: '0 6px 16px rgba(0,0,0,0.04)',
-  },
-  imgPlaceholder: {
-    borderRadius: '12px',
-    height: '150px',
-    marginBottom: '12px',
-    position: 'relative',
-    overflow: 'hidden',
-  },
   saveText: {
     color: '#2E7D32',
     marginTop: '12px',
     fontSize: '13px',
     textAlign: 'center',
-  },
-  cardImg: {
-    width: '100%',
-    height: '100%',
-    objectFit: 'cover',
-    display: 'block',
-  },
-  tag: {
-    position: 'absolute',
-    top: '10px',
-    left: '10px',
-    background: '#fff',
-    borderRadius: '12px',
-    padding: '4px 10px',
-    fontSize: '10px',
-    fontWeight: 500,
-    color: 'var(--rose-deep)',
-  },
-  cardName: {
-    fontSize: '14.5px',
-    fontWeight: 500,
-    marginBottom: '4px',
-  },
-  cardDesc: {
-    fontSize: '12px',
-    color: 'var(--text-muted)',
-    marginBottom: '12px',
-    lineHeight: 1.4,
-  },
-  cardFooter: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '10px',
-  },
-  orderSmallBtn: {
-    background: 'var(--rose-deep)',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '16px',
-    padding: '8px 14px',
-    fontSize: '12px',
-    fontWeight: 500,
-    cursor: 'pointer',
-    flex: 1,
-  },
-  iconBtn: {
-    fontSize: '14px',
-    color: 'var(--text-muted)',
-    cursor: 'pointer',
   },
 };

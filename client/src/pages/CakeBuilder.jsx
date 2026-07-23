@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 import Icon from '../components/Icon';
 import { formatNpr } from '../utils/currency';
+import { apiUrl } from '../utils/api';
 
 const SHAPES = [
   { id: 'round', label: 'Round', icon: 'track' },
@@ -44,7 +45,7 @@ export default function CakeBuilder() {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/pricing')
+    fetch(apiUrl('/api/pricing'))
       .then((res) => res.json())
       .then((data) => {
         setPricingConfig(data.pricing);
@@ -97,7 +98,7 @@ export default function CakeBuilder() {
         throw new Error('Please log in to save a design.');
       }
 
-      const res = await fetch('http://localhost:5000/api/saved-designs', {
+      const res = await fetch(apiUrl('/api/saved-designs'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

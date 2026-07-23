@@ -14,7 +14,7 @@ export default function FeaturedBakers() {
         <p style={{ color: 'var(--text-muted)', fontSize: '14px', marginBottom: '36px' }}>
           Customer favorites handcrafted in the BakeCraft kitchen.
         </p>
-        <div style={styles.grid}>
+        <div className="landing-cake-grid" style={styles.grid}>
           {cakes.map((b) => (
             <div key={b.name} style={{ ...styles.card, transform: `rotate(${b.tilt}deg)` }}>
               <img src={b.image} alt={`${b.name} featured cake`} style={styles.avatar} />

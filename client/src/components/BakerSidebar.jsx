@@ -28,8 +28,8 @@ export default function BakerSidebar({ collapsed, onToggle }) {
             style={collapsed ? styles.logoImgSmall : styles.logoImgLarge}
           />
         </div>
-        <button onClick={onToggle} style={styles.toggleBtn}>
-          {collapsed ? '>' : '<'}
+        <button type="button" aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'} onClick={onToggle} style={styles.toggleBtn}>
+          <Icon name={collapsed ? 'chevronRight' : 'chevronLeft'} size={13} />
         </button>
       </div>
 

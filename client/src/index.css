@@ -29,6 +29,7 @@ body {
   background: var(--bg);
   color: var(--text-dark);
   line-height: 1.6;
+  overflow-x: hidden;
 }
 
 h1, h2, h3 {
@@ -51,7 +52,7 @@ input, textarea {
   transition: border-color var(--transition), box-shadow var(--transition);
 }
 
-input:focus, textarea:focus {
+input:focus, textarea:focus, select:focus {
   outline: none;
   border-color: var(--rose-mid) !important;
   box-shadow: 0 0 0 3px rgba(200, 107, 133, 0.15);
@@ -111,6 +112,22 @@ input:focus, textarea:focus {
   background: var(--pink-soft);
 }
 
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid rgba(139, 41, 66, 0.28);
+  outline-offset: 2px;
+}
+
+button:disabled {
+  cursor: not-allowed !important;
+  opacity: 0.58;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
 .card-icon-text,
 .btn-primary,
 .btn-secondary {
@@ -135,6 +152,106 @@ input:focus, textarea:focus {
   min-width: 0;
 }
 
+.status-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  border-radius: 8px;
+  padding: 11px 14px;
+  margin-bottom: 16px;
+  font-size: 12.5px;
+  border: 1px solid transparent;
+}
+
+.status-banner-success {
+  background: #edf8f0;
+  color: #245f35;
+  border-color: #cde8d4;
+}
+
+.status-banner-error {
+  background: #fff0f1;
+  color: #a12636;
+  border-color: #f1ccd1;
+}
+
+.status-banner-highlight {
+  background: #fff8e5;
+  color: #71551f;
+  border-color: #ead9a5;
+}
+
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(42, 27, 34, 0.48);
+}
+
+.confirm-dialog {
+  width: min(100%, 410px);
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 24px 60px rgba(42, 27, 34, 0.24);
+}
+
+.confirm-dialog h2 {
+  font-size: 20px;
+  margin: 12px 0 6px;
+}
+
+.confirm-dialog p {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.confirm-dialog-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confirm-dialog-icon-danger {
+  color: #a12636;
+  background: #fff0f1;
+}
+
+.confirm-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.dialog-cancel-btn,
+.dialog-danger-btn {
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dialog-cancel-btn {
+  background: #fff;
+  color: var(--text-dark);
+  border: 1px solid #e6dadd;
+}
+
+.dialog-danger-btn {
+  background: #a12636;
+  color: #fff;
+  border: 1px solid #a12636;
+}
+
 @media (max-width: 1024px) {
   .customer-hero-row,
   .customer-bottom-row {
@@ -152,6 +269,43 @@ input:focus, textarea:focus {
 }
 
 @media (max-width: 760px) {
+  .landing-nav-inner {
+    flex-wrap: wrap;
+    gap: 12px !important;
+  }
+
+  .landing-nav-links {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+    gap: 18px !important;
+  }
+
+  .landing-nav-actions {
+    gap: 10px !important;
+  }
+
+  .landing-hero {
+    padding: 48px 0 !important;
+  }
+
+  .landing-hero-image {
+    object-position: center !important;
+  }
+
+  .landing-hero-title {
+    font-size: 36px !important;
+  }
+
+  .landing-steps-grid {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+  }
+
+  .landing-cake-grid {
+    grid-template-columns: 1fr !important;
+  }
+
   .dashboard-shell {
     display: block !important;
   }
@@ -253,6 +407,44 @@ input:focus, textarea:focus {
 }
 
 @media (max-width: 520px) {
+  .container {
+    padding: 0 16px;
+  }
+
+  .landing-hero-title {
+    font-size: 31px !important;
+  }
+
+  .landing-hero-actions {
+    flex-direction: column !important;
+    align-items: stretch;
+  }
+
+  .landing-hero-actions a,
+  .landing-hero-actions button {
+    width: 100%;
+  }
+
+  .landing-nav-actions .btn-primary {
+    padding: 9px 14px !important;
+  }
+
+  .confirm-dialog-actions {
+    flex-direction: column-reverse;
+  }
+
+  .confirm-dialog-actions button {
+    width: 100%;
+  }
+
+  .dashboard-notification-wrap > div {
+    position: fixed !important;
+    top: 84px !important;
+    left: 14px !important;
+    right: 14px !important;
+    width: auto !important;
+  }
+
   .customer-hero-banner {
     min-height: 300px !important;
   }
@@ -282,6 +474,17 @@ input:focus, textarea:focus {
 
   .saved-polaroid-card {
     transform: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
   }
 }
 

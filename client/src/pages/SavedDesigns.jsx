@@ -2,20 +2,26 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 import Icon from '../components/Icon';
+import ConfirmDialog from '../components/ConfirmDialog';
 import { cakeImageFor } from '../utils/cakeImages';
 import { formatNpr } from '../utils/currency';
+import { apiUrl } from '../utils/api';
 
 export default function SavedDesigns() {
   const [designs, setDesigns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [actionError, setActionError] = useState('');
+  const [actionMessage, setActionMessage] = useState('');
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleting, setDeleting] = useState(false);
   const navigate = useNavigate();
 
   const fetchDesigns = async () => {
     setLoading(true);
     try {
       const token = localStorage.getItem('bakecraft_token');
-      const res = await fetch('http://localhost:5000/api/saved-designs', {
+      const res = await fetch(apiUrl('/api/saved-designs'), {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -32,17 +38,26 @@ export default function SavedDesigns() {
     fetchDesigns();
   }, []);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    setActionError('');
+    setActionMessage('');
     try {
       const token = localStorage.getItem('bakecraft_token');
-      const res = await fetch(`http://localhost:5000/api/saved-designs/${id}`, {
+      const res = await fetch(apiUrl(`/api/saved-designs/${deleteTarget._id}`), {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` },
       });
-      if (!res.ok) throw new Error('Failed to delete.');
-      setDesigns((prev) => prev.filter((d) => d._id !== id));
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to remove design.');
+      setDesigns((prev) => prev.filter((d) => d._id !== deleteTarget._id));
+      setActionMessage(`${deleteTarget.name} was removed from saved designs.`);
+      setDeleteTarget(null);
     } catch (err) {
-      alert(err.message);
+      setActionError(err.message);
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -65,6 +80,8 @@ export default function SavedDesigns() {
     <DashboardLayout>
       <h1 style={styles.pageTitle}>Saved Designs</h1>
       <p style={styles.pageSubtitle}>Your saved cake ideas - order one anytime.</p>
+      {actionMessage && <p className="status-banner status-banner-success" role="status"><Icon name="check" size={14} /> {actionMessage}</p>}
+      {actionError && <p className="status-banner status-banner-error" role="alert">{actionError}</p>}
 
       {loading && <p style={styles.stateText}>Loading...</p>}
       {!loading && error && <p style={styles.errorText}>{error}</p>}
@@ -97,7 +114,7 @@ export default function SavedDesigns() {
                   aria-label={`Unsave ${d.name}`}
                   title="Remove from saved designs"
                   style={styles.unsaveBtn}
-                  onClick={() => handleDelete(d._id)}
+                  onClick={() => setDeleteTarget(d)}
                 >
                   <Icon name="heart" size={14} style={{ fill: 'currentColor' }} />
                 </button>
@@ -123,6 +140,16 @@ export default function SavedDesigns() {
           ))}
         </div>
       )}
+
+      <ConfirmDialog
+        open={Boolean(deleteTarget)}
+        title="Remove saved design?"
+        message={deleteTarget ? `${deleteTarget.name} will be removed from your saved cakes.` : ''}
+        confirmLabel="Remove Design"
+        busy={deleting}
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </DashboardLayout>
   );
 }

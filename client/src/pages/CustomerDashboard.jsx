@@ -4,6 +4,7 @@ import DashboardLayout from '../components/DashboardLayout';
 import Header from '../components/Header';
 import Icon from '../components/Icon';
 import { formatNpr } from '../utils/currency';
+import { apiUrl } from '../utils/api';
 
 const CATEGORIES = ['All', 'Birthday', 'Anniversary', 'Baby Shower', 'Graduation'];
 
@@ -21,7 +22,7 @@ export default function CustomerDashboard() {
   useEffect(() => {
     const fetchUploadedCakes = async () => {
       try {
-        const res = await fetch('http://localhost:5000/api/products');
+        const res = await fetch(apiUrl('/api/products'));
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Failed to load uploaded cakes.');
 
@@ -50,7 +51,7 @@ export default function CustomerDashboard() {
     const fetchSavedCreations = async () => {
       try {
         const token = localStorage.getItem('bakecraft_token');
-        const res = await fetch('http://localhost:5000/api/saved-designs', {
+        const res = await fetch(apiUrl('/api/saved-designs'), {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -99,7 +100,7 @@ export default function CustomerDashboard() {
 
     try {
       if (savedDesignId) {
-        const res = await fetch(`http://localhost:5000/api/saved-designs/${savedDesignId}`, {
+        const res = await fetch(apiUrl(`/api/saved-designs/${savedDesignId}`), {
           method: 'DELETE',
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -112,7 +113,7 @@ export default function CustomerDashboard() {
           return next;
         });
       } else {
-        const res = await fetch('http://localhost:5000/api/saved-designs', {
+        const res = await fetch(apiUrl('/api/saved-designs'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

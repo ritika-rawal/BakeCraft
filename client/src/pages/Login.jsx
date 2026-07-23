@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import Icon from '../components/Icon';
+import { apiUrl } from '../utils/api';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -17,7 +18,7 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const res = await fetch('http://localhost:5000/api/auth/login', {
+      const res = await fetch(apiUrl('/api/auth/login'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
@@ -51,8 +52,9 @@ export default function Login() {
         )}
 
         <form onSubmit={handleSubmit}>
-          <label style={styles.label}>Email</label>
+          <label htmlFor="login-email" style={styles.label}>Email</label>
           <input
+            id="login-email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -60,8 +62,9 @@ export default function Login() {
             required
           />
 
-          <label style={styles.label}>Password</label>
+          <label htmlFor="login-password" style={styles.label}>Password</label>
           <input
+            id="login-password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}

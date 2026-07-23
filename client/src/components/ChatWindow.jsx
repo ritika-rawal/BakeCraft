@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import Icon from './Icon';
+import { apiUrl } from '../utils/api';
 
 export default function ChatWindow({ orderId }) {
   const [messages, setMessages] = useState([]);
@@ -14,7 +15,7 @@ export default function ChatWindow({ orderId }) {
   const fetchMessages = async () => {
     try {
       const token = localStorage.getItem('bakecraft_token');
-      const res = await fetch(`http://localhost:5000/api/messages/${orderId}`, {
+      const res = await fetch(apiUrl(`/api/messages/${orderId}`), {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
@@ -44,7 +45,7 @@ export default function ChatWindow({ orderId }) {
     setSending(true);
     try {
       const token = localStorage.getItem('bakecraft_token');
-      const res = await fetch('http://localhost:5000/api/messages', {
+      const res = await fetch(apiUrl('/api/messages'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

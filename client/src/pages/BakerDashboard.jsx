@@ -1,9 +1,17 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import BakerLayout from '../components/BakerLayout';
 import { Link } from 'react-router-dom';
 import Icon from '../components/Icon';
+import { apiUrl } from '../utils/api';
 
-const STATUS_OPTIONS = ['pending', 'confirmed', 'baking', 'out-for-delivery', 'delivered', 'cancelled'];
+const STATUS_TRANSITIONS = {
+  pending: ['pending', 'confirmed', 'cancelled'],
+  confirmed: ['confirmed', 'baking', 'cancelled'],
+  baking: ['baking', 'out-for-delivery', 'cancelled'],
+  'out-for-delivery': ['out-for-delivery', 'delivered'],
+  delivered: ['delivered'],
+  cancelled: ['cancelled'],
+};
 
 const STATUS_LABELS = {
   pending: 'Order Placed',
@@ -19,36 +27,67 @@ export default function BakerDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [updatingId, setUpdatingId] = useState(null);
+  const [actionMessage, setActionMessage] = useState('');
+  const [actionError, setActionError] = useState('');
+  const [newOrderNotice, setNewOrderNotice] = useState('');
+  const knownOrderIds = useRef(new Set());
+  const hasLoadedOrders = useRef(false);
 
   const user = JSON.parse(localStorage.getItem('bakecraft_user') || 'null');
 
   useEffect(() => {
-    fetchOrders();
-  }, []);
+    let isMounted = true;
 
-  const fetchOrders = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const token = localStorage.getItem('bakecraft_token');
-      const res = await fetch('http://localhost:5000/api/orders/all', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to load orders.');
-      setOrders(data.orders);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const fetchOrders = async (isInitialLoad = false) => {
+      if (isInitialLoad) setLoading(true);
+      try {
+        const token = localStorage.getItem('bakecraft_token');
+        const res = await fetch(apiUrl('/api/orders/all'), {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to load orders.');
+        if (!isMounted) return;
+
+        if (hasLoadedOrders.current) {
+          const newOrders = data.orders.filter((order) => !knownOrderIds.current.has(order._id));
+          if (newOrders.length > 0) {
+            const latest = newOrders[0];
+            setNewOrderNotice(
+              newOrders.length === 1
+                ? `New order from ${latest.delivery.firstName || 'a customer'}.`
+                : `${newOrders.length} new orders received.`
+            );
+          }
+        }
+
+        knownOrderIds.current = new Set(data.orders.map((order) => order._id));
+        hasLoadedOrders.current = true;
+        setOrders(data.orders);
+        setError('');
+      } catch (err) {
+        if (isMounted && isInitialLoad) setError(err.message);
+      } finally {
+        if (isMounted && isInitialLoad) setLoading(false);
+      }
+    };
+
+    fetchOrders(true);
+    const refreshInterval = setInterval(() => fetchOrders(false), 4000);
+
+    return () => {
+      isMounted = false;
+      clearInterval(refreshInterval);
+    };
+  }, []);
 
   const handleStatusChange = async (orderId, newStatus) => {
     setUpdatingId(orderId);
+    setActionError('');
+    setActionMessage('');
     try {
       const token = localStorage.getItem('bakecraft_token');
-      const res = await fetch(`http://localhost:5000/api/orders/${orderId}/status`, {
+      const res = await fetch(apiUrl(`/api/orders/${orderId}/status`), {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -62,8 +101,9 @@ export default function BakerDashboard() {
       setOrders((prev) =>
         prev.map((o) => (o._id === orderId ? { ...o, status: newStatus } : o))
       );
+      setActionMessage(`Order #${orderId.slice(-6).toUpperCase()} updated to ${STATUS_LABELS[newStatus]}.`);
     } catch (err) {
-      alert(err.message);
+      setActionError(err.message);
     } finally {
       setUpdatingId(null);
     }
@@ -78,8 +118,24 @@ export default function BakerDashboard() {
 
   return (
     <BakerLayout>
-      <h1 style={styles.pageTitle}>Welcome back{user?.name ? `, ${user.name}` : ''}</h1>
-      <p style={styles.pageSubtitle}>Manage incoming orders and update their status.</p>
+      <div style={styles.pageHeadingRow}>
+        <div>
+          <h1 style={styles.pageTitle}>Welcome back{user?.name ? `, ${user.name}` : ''}</h1>
+          <p style={styles.pageSubtitle}>Manage incoming orders and update their status.</p>
+        </div>
+        <span style={styles.liveStatus}><span style={styles.liveDot} /> Live orders</span>
+      </div>
+
+      {newOrderNotice && (
+        <div className="status-banner status-banner-highlight" role="status">
+          <Icon name="bell" size={16} />
+          <span>{newOrderNotice}</span>
+          <button type="button" aria-label="Dismiss notification" onClick={() => setNewOrderNotice('')} style={styles.dismissBtn}><Icon name="close" size={15} /></button>
+        </div>
+      )}
+      {actionMessage && <p className="status-banner status-banner-success" role="status"><Icon name="check" size={14} /> {actionMessage}</p>}
+      {actionError && <p className="status-banner status-banner-error" role="alert">{actionError}</p>}
+      {!loading && error && <p className="status-banner status-banner-error" role="alert">{error}</p>}
 
       <div className="baker-stats-grid" style={styles.statsGrid}>
         <div style={styles.statCard}>
@@ -104,7 +160,6 @@ export default function BakerDashboard() {
         <p style={styles.cardTitle}>Incoming Orders</p>
 
         {loading && <p style={styles.stateText}>Loading orders...</p>}
-        {!loading && error && <p style={styles.errorText}>{error}</p>}
         {!loading && !error && orders.length === 0 && (
           <p style={styles.stateText}>No orders yet.</p>
         )}
@@ -151,7 +206,7 @@ export default function BakerDashboard() {
                   disabled={updatingId === order._id}
                   style={styles.statusSelect}
                    >
-                   {STATUS_OPTIONS.map((s) => (
+                   {STATUS_TRANSITIONS[order.status].map((s) => (
                    <option key={s} value={s}>{STATUS_LABELS[s]}</option>
                   ))}
                 </select>
@@ -169,8 +224,23 @@ export default function BakerDashboard() {
 }
 
 const styles = {
+  pageHeadingRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px', flexWrap: 'wrap' },
   pageTitle: { fontSize: '22px', marginBottom: '6px' },
   pageSubtitle: { fontSize: '13.5px', color: 'var(--text-muted)', marginBottom: '28px' },
+  liveStatus: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '7px',
+    background: '#fff',
+    border: '1px solid #EADDE0',
+    borderRadius: '999px',
+    padding: '7px 12px',
+    color: 'var(--text-muted)',
+    fontSize: '11.5px',
+    fontWeight: 600,
+  },
+  liveDot: { width: '8px', height: '8px', borderRadius: '50%', background: '#2E7D32', boxShadow: '0 0 0 3px rgba(46,125,50,0.12)' },
+  dismissBtn: { marginLeft: 'auto', border: 'none', background: 'transparent', color: 'inherit', fontSize: '18px', lineHeight: 1, cursor: 'pointer' },
 
   statsGrid: {
     display: 'grid',

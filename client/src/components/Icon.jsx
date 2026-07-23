@@ -163,6 +163,18 @@ const paths = {
       <path d="M4 21c1.5-4 14.5-4 16 0" />
     </>
   ),
+  close: (
+    <>
+      <path d="M6 6l12 12" />
+      <path d="M18 6L6 18" />
+    </>
+  ),
+  chevronLeft: (
+    <path d="M15 5l-7 7 7 7" />
+  ),
+  chevronRight: (
+    <path d="M9 5l7 7-7 7" />
+  ),
 };
 
 export default function Icon({ name, size = 18, style }) {

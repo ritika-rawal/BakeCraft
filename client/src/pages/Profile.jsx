@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import DashboardLayout from '../components/DashboardLayout';
 import BakerLayout from '../components/BakerLayout';
 import Icon from '../components/Icon';
+import { apiUrl } from '../utils/api';
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ export default function Profile() {
     const fetchProfile = async () => {
       try {
         const token = localStorage.getItem('bakecraft_token');
-        const res = await fetch('http://localhost:5000/api/auth/me', {
+        const res = await fetch(apiUrl('/api/auth/me'), {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await res.json();
@@ -54,7 +55,7 @@ export default function Profile() {
     setProfileError('');
     try {
       const token = localStorage.getItem('bakecraft_token');
-      const res = await fetch('http://localhost:5000/api/auth/me', {
+      const res = await fetch(apiUrl('/api/auth/me'), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -81,7 +82,7 @@ export default function Profile() {
     setPasswordError('');
     try {
       const token = localStorage.getItem('bakecraft_token');
-      const res = await fetch('http://localhost:5000/api/auth/change-password', {
+      const res = await fetch(apiUrl('/api/auth/change-password'), {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -118,16 +119,18 @@ export default function Profile() {
       <div style={styles.card}>
         <p style={styles.cardTitle}>Profile Information</p>
         <form onSubmit={handleProfileSave}>
-          <label style={styles.label}>Full name</label>
+          <label htmlFor="profile-name" style={styles.label}>Full name</label>
           <input
+            id="profile-name"
             value={name}
             onChange={(e) => setName(e.target.value)}
             style={styles.input}
             required
           />
 
-          <label style={styles.label}>Email</label>
+          <label htmlFor="profile-email" style={styles.label}>Email</label>
           <input
+            id="profile-email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -135,8 +138,9 @@ export default function Profile() {
             required
           />
 
-          <label style={styles.label}>Account type</label>
+          <label htmlFor="profile-role" style={styles.label}>Account type</label>
           <input
+            id="profile-role"
             value={storedUser?.role === 'baker' ? 'Baker Admin' : 'Customer'}
             disabled
             style={{ ...styles.input, background: '#f7f7f7', color: 'var(--text-muted)' }}
@@ -154,8 +158,9 @@ export default function Profile() {
       <div style={styles.card}>
         <p style={styles.cardTitle}>Change Password</p>
         <form onSubmit={handlePasswordSave}>
-          <label style={styles.label}>Current password</label>
+          <label htmlFor="profile-current-password" style={styles.label}>Current password</label>
           <input
+            id="profile-current-password"
             type="password"
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
@@ -163,8 +168,9 @@ export default function Profile() {
             required
           />
 
-          <label style={styles.label}>New password</label>
+          <label htmlFor="profile-new-password" style={styles.label}>New password</label>
           <input
+            id="profile-new-password"
             type="password"
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}

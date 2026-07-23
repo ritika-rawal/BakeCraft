@@ -31,8 +31,8 @@ export default function Sidebar({ collapsed, onToggle }) {
             style={collapsed ? styles.logoImgSmall : styles.logoImgLarge}
           />
         </div>
-        <button onClick={onToggle} style={styles.toggleBtn}>
-          {collapsed ? '>' : '<'}
+        <button type="button" aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'} onClick={onToggle} style={styles.toggleBtn}>
+          <Icon name={collapsed ? 'chevronRight' : 'chevronLeft'} size={13} />
         </button>
       </div>
 
@@ -70,7 +70,7 @@ export default function Sidebar({ collapsed, onToggle }) {
           {!collapsed && 'Logout'}
         </div>
         <button className="btn-primary" style={styles.startBtn} onClick={() => navigate('/builder')}>
-          {collapsed ? '+' : '+ Start New Design'}
+          <Icon name="edit" size={14} /> {!collapsed && 'Start New Design'}
         </button>
       </div>
     </aside>
