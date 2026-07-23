@@ -4,13 +4,13 @@ export default function Header({ greeting, subtext, searchValue, onSearchChange 
   const user = JSON.parse(localStorage.getItem('bakecraft_user') || 'null');
 
   return (
-    <div style={styles.topbar}>
+    <div className="dashboard-header" style={styles.topbar}>
       <div>
         <p style={styles.greeting}>{greeting || `Hello, ${user?.name || 'there'}`}</p>
         <p style={styles.greetingSub}>{subtext || 'Ready for something sweet today?'}</p>
       </div>
-      <div style={styles.topbarRight}>
-        <div style={styles.searchWrap}>
+      <div className="dashboard-header-actions" style={styles.topbarRight}>
+        <div className="dashboard-search" style={styles.searchWrap}>
           <SearchIcon style={styles.searchIcon} />
           <input
             value={searchValue || ''}
@@ -21,7 +21,7 @@ export default function Header({ greeting, subtext, searchValue, onSearchChange 
         </div>
         <span className="icon-btn" style={styles.bell}><BellIcon /></span>
         <Link to="/profile" style={{ textDecoration: 'none' }}>
-          <div className="avatar-block" style={styles.avatarBlock}>
+          <div className="avatar-block dashboard-avatar-block" style={styles.avatarBlock}>
             <div style={styles.avatar} />
             <div>
               <p style={styles.avatarName}>{user?.name || 'Guest'}</p>

@@ -18,7 +18,7 @@ export default function BakerSidebar({ collapsed, onToggle }) {
   };
 
   return (
-    <aside style={{ ...styles.sidebar, width: collapsed ? '72px' : '230px' }}>
+    <aside className="app-sidebar" style={{ ...styles.sidebar, width: collapsed ? '72px' : '230px' }}>
       <div style={styles.topRow}>
         <div style={styles.brand}>
           <img
@@ -34,10 +34,11 @@ export default function BakerSidebar({ collapsed, onToggle }) {
 
       {!collapsed && <p style={styles.badge}>BAKER ADMIN</p>}
 
-      <nav style={styles.nav}>
+      <nav className="app-sidebar-nav" style={styles.nav}>
         {NAV_ITEMS.map((item) => (
           <Link key={item.label} to={item.path} style={{ textDecoration: 'none' }}>
             <div
+              className="app-sidebar-item"
               style={{
                 ...styles.navItem,
                 ...(location.pathname === item.path ? styles.navItemActive : {}),
@@ -52,7 +53,7 @@ export default function BakerSidebar({ collapsed, onToggle }) {
         ))}
       </nav>
 
-      <div style={styles.sidebarBottom}>
+      <div className="app-sidebar-bottom" style={styles.sidebarBottom}>
         <Link to="/profile" style={{ textDecoration: 'none' }}>
         <div style={{ ...styles.navItem, justifyContent: collapsed ? 'center' : 'flex-start' }}>
           <span style={styles.navIcon}><Icon name="settings" size={16} /></span>

@@ -110,3 +110,224 @@ input:focus, textarea:focus {
 .avatar-block:hover {
   background: var(--pink-soft);
 }
+
+.card-icon-text,
+.btn-primary,
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+@media (max-width: 1024px) {
+  .customer-hero-row,
+  .customer-bottom-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  .customer-ai-card {
+    min-height: 150px;
+  }
+
+  .customer-product-grid {
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)) !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .dashboard-shell {
+    display: block !important;
+  }
+
+  .dashboard-main {
+    padding: 18px 14px 28px !important;
+    overflow: visible !important;
+  }
+
+  .app-sidebar {
+    width: 100% !important;
+    min-height: auto !important;
+    border-right: none !important;
+    border-bottom: 1px solid #f1e5e8 !important;
+    padding: 12px 10px !important;
+    position: sticky;
+    top: 0;
+    z-index: 60;
+  }
+
+  .app-sidebar > div:first-child {
+    margin-bottom: 10px !important;
+  }
+
+  .app-sidebar-nav,
+  .app-sidebar-bottom {
+    flex-direction: row !important;
+    overflow-x: auto;
+    gap: 8px !important;
+    padding-bottom: 2px;
+  }
+
+  .app-sidebar-item {
+    min-width: max-content;
+    padding: 9px 11px !important;
+  }
+
+  .customer-hero-banner {
+    min-height: 260px !important;
+    border-radius: 14px !important;
+  }
+
+  .customer-trending-header {
+    align-items: flex-start !important;
+  }
+
+  .customer-tabs {
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap !important;
+    padding-bottom: 4px;
+  }
+
+  .customer-tabs button {
+    min-height: 40px;
+    white-space: nowrap;
+  }
+
+  .customer-product-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .customer-product-img {
+    height: 180px !important;
+  }
+
+  .dashboard-header {
+    align-items: flex-start !important;
+  }
+
+  .dashboard-header-actions {
+    width: 100%;
+    gap: 10px !important;
+    align-items: stretch !important;
+  }
+
+  .dashboard-search {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .dashboard-search input {
+    width: 100% !important;
+  }
+
+  .dashboard-avatar-block {
+    padding-right: 6px !important;
+  }
+
+  .dashboard-avatar-block > div:last-child {
+    display: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .customer-hero-banner {
+    min-height: 300px !important;
+  }
+
+  .customer-bottom-row {
+    gap: 14px !important;
+  }
+
+  .dashboard-header-actions {
+    flex-wrap: wrap;
+  }
+
+  .dashboard-search {
+    flex-basis: 100%;
+    order: 3;
+  }
+}
+
+@media (max-width: 1024px) {
+  .builder-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .builder-preview-column {
+    grid-column: 1 / -1;
+    order: -1;
+  }
+
+  .builder-preview-card {
+    min-height: 360px;
+  }
+
+  .builder-preview-wrap {
+    width: 100%;
+  }
+}
+
+@media (max-width: 760px) {
+  .builder-topbar {
+    align-items: flex-start !important;
+  }
+
+  .builder-topbar-actions {
+    width: 100%;
+    gap: 10px !important;
+    flex-wrap: wrap;
+  }
+
+  .builder-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  .builder-card,
+  .builder-preview-card,
+  .builder-summary-card {
+    border-radius: 14px !important;
+    padding: 16px !important;
+  }
+
+  .builder-shape-row {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .builder-flavor-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .builder-topping-row button,
+  .builder-shape-row button,
+  .builder-flavor-grid button {
+    min-height: 42px;
+  }
+
+  .builder-preview-card {
+    min-height: auto;
+  }
+
+  .builder-preview-wrap {
+    min-height: 230px !important;
+  }
+
+  .builder-summary-card {
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+  }
+}
+
+@media (max-width: 520px) {
+  .builder-shape-row {
+    grid-template-columns: 1fr !important;
+  }
+
+  .builder-topbar-actions > span:first-child {
+    width: 100%;
+    justify-content: center;
+  }
+}

@@ -147,9 +147,9 @@ export default function CakeBuilder() {
   return (
     <DashboardLayout>
       {/* Top bar */}
-      <div style={styles.topbar}>
+      <div className="builder-topbar" style={styles.topbar}>
         <h1 style={styles.pageTitle}>Custom Cake Studio</h1>
-        <div style={styles.topbarRight}>
+        <div className="builder-topbar-actions" style={styles.topbarRight}>
           <span style={styles.pickupBadge}><Icon name="clock" size={15} /> Estimated Pickup: Tomorrow, 2:00 PM</span>
           <span style={styles.icon}><Icon name="heart" size={17} /></span>
           <span style={styles.icon}><Icon name="bell" size={17} /></span>
@@ -157,14 +157,14 @@ export default function CakeBuilder() {
         </div>
       </div>
 
-      <div style={styles.grid}>
+      <div className="builder-grid" style={styles.grid}>
         {/* Left column */}
-        <div style={styles.column}>
-          <div style={styles.card}>
+        <div className="builder-column" style={styles.column}>
+          <div className="builder-card" style={styles.card}>
             <p style={styles.cardTitle}><Icon name="cake" size={15} /> Base Structure</p>
 
             <p style={styles.label}>Cake Shape</p>
-            <div style={styles.shapeRow}>
+            <div className="builder-shape-row" style={styles.shapeRow}>
               {SHAPES.map((s) => (
                 <button
                   key={s.id}
@@ -190,7 +190,7 @@ export default function CakeBuilder() {
             />
 
             <p style={styles.label}>Cake Flavor</p>
-            <div style={styles.flavorGrid}>
+            <div className="builder-flavor-grid" style={styles.flavorGrid}>
               {pricingConfig.flavors.map((f) => (
                 <button
                   key={f.id}
@@ -203,7 +203,7 @@ export default function CakeBuilder() {
             </div>
           </div>
 
-          <div style={styles.card}>
+          <div className="builder-card" style={styles.card}>
             <p style={styles.cardTitle}><Icon name="sparkle" size={15} /> Frosting Style</p>
             {FROSTINGS.map((f) => (
               <label key={f} style={styles.radioRow}>
@@ -221,12 +221,12 @@ export default function CakeBuilder() {
         </div>
 
         {/* Center column */}
-        <div style={styles.column}>
-          <div style={styles.previewCard}>
+        <div className="builder-column builder-preview-column" style={styles.column}>
+          <div className="builder-preview-card" style={styles.previewCard}>
             <div style={styles.previewHeader}>
               <span><Icon name="refresh" size={15} /> Live Preview</span>
             </div>
-            <div style={styles.previewCircleWrap}>
+            <div className="builder-preview-wrap" style={styles.previewCircleWrap}>
               <CakePreview
                 shape={shape}
                 layers={layers}
@@ -245,10 +245,10 @@ export default function CakeBuilder() {
         </div>
 
         {/* Right column */}
-        <div style={styles.column}>
-          <div style={styles.card}>
+        <div className="builder-column" style={styles.column}>
+          <div className="builder-card" style={styles.card}>
             <p style={styles.cardTitle}><Icon name="sparkle" size={15} /> Toppings</p>
-            <div style={styles.toppingRow}>
+            <div className="builder-topping-row" style={styles.toppingRow}>
               {pricingConfig.toppings.map((t) => (
                 <button
                   key={t.id}
@@ -270,7 +270,7 @@ export default function CakeBuilder() {
             />
           </div>
 
-          <div style={styles.summaryCard}>
+          <div className="builder-summary-card" style={styles.summaryCard}>
             <p style={styles.cardTitle}>Order Summary</p>
             <div style={styles.summaryRow}>
               <span>Base Cake ({layers} Layers)</span>

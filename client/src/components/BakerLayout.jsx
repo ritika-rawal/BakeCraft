@@ -5,9 +5,12 @@ export default function BakerLayout({ children }) {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <div style={{ ...styles.page, gridTemplateColumns: collapsed ? '72px 1fr' : '230px 1fr' }}>
+    <div
+      className="dashboard-shell"
+      style={{ ...styles.page, gridTemplateColumns: collapsed ? '72px 1fr' : '230px 1fr' }}
+    >
       <BakerSidebar collapsed={collapsed} onToggle={() => setCollapsed((c) => !c)} />
-      <main style={styles.main}>{children}</main>
+      <main className="dashboard-main" style={styles.main}>{children}</main>
     </div>
   );
 }

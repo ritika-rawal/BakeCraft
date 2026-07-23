@@ -28,8 +28,8 @@ export default function CustomerDashboard() {
       <Header searchValue={searchTerm} onSearchChange={setSearchTerm} />
 
       {/* Hero banner + AI card */}
-      <div style={styles.heroRow}>
-        <div style={styles.heroBanner}>
+      <div className="customer-hero-row" style={styles.heroRow}>
+        <div className="customer-hero-banner" style={styles.heroBanner}>
           <img src="/Cake1.jpg" alt="Chocolate raspberry cake" style={styles.heroImg} />
           <div style={styles.heroOverlay} />
           <div style={styles.heroText}>
@@ -44,7 +44,7 @@ export default function CustomerDashboard() {
           </div>
         </div>
 
-        <div style={styles.aiCard}>
+        <div className="customer-ai-card" style={styles.aiCard}>
           <p style={styles.aiCardIcon}><Icon name="sparkle" size={20} /></p>
           <p style={styles.aiCardTitle}>AI Cake Magic</p>
           <p style={styles.aiCardDesc}>
@@ -56,12 +56,12 @@ export default function CustomerDashboard() {
       </div>
 
       {/* Trending creations */}
-      <div style={styles.trendingHeader}>
+      <div className="customer-trending-header" style={styles.trendingHeader}>
         <div>
           <h3 style={styles.trendingTitle}>Trending Creations</h3>
           <p style={styles.trendingSub}>Handcrafted delights from our top master bakers</p>
         </div>
-        <div style={styles.tabs}>
+        <div className="customer-tabs" style={styles.tabs}>
           {CATEGORIES.map((c) => (
             <button
               key={c}
@@ -77,10 +77,10 @@ export default function CustomerDashboard() {
       {filtered.length === 0 ? (
         <p style={styles.noResults}>No creations match "{searchTerm}". Try a different search.</p>
       ) : (
-        <div style={styles.productGrid}>
+        <div className="customer-product-grid" style={styles.productGrid}>
           {filtered.map((item) => (
             <div key={item.id} style={styles.productCard}>
-              <div style={styles.productImgWrap}>
+              <div className="customer-product-img" style={styles.productImgWrap}>
                 <img src={item.image} alt={item.name} style={styles.productImg} />
                 <span style={styles.heartIcon}><Icon name="heart" size={13} /></span>
               </div>
@@ -96,7 +96,7 @@ export default function CustomerDashboard() {
       )}
 
       {/* Bottom row: activity + recommendation */}
-      <div style={styles.bottomRow}>
+      <div className="customer-bottom-row" style={styles.bottomRow}>
         <div style={styles.activityCard}>
           <p style={styles.cardHeading}>Recent Activity</p>
           <div style={styles.activityItem}>
