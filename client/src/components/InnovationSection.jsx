@@ -1,86 +1,58 @@
+import { Link } from 'react-router-dom';
 import Icon from './Icon';
 
 const features = [
   {
     title: '3D cake builder',
-    desc: 'Visualize your dream cake in 3D. Experiment with layers, textures, and toppings in real time before we bake it.',
-    icon: 'track',
+    desc: 'Shape layers, flavours, colours, and finishes while your cake updates in real time.',
+    icon: 'edit',
   },
   {
     title: 'AI cake magic',
-    desc: 'Share your theme or mood board and our AI will suggest flavor and design concepts tailored to your event.',
+    desc: 'Describe a mood or celebration and turn your words into a visual cake concept.',
     icon: 'sparkle',
   },
   {
     title: 'Handcrafted quality',
-    desc: 'Every design is executed by our pastry chefs using only the finest organic ingredients and artisan skill.',
+    desc: 'Your digital idea is finished by hand with careful details and a baker you can talk to.',
     icon: 'cake',
   },
 ];
 
 export default function InnovationSection() {
   return (
-    <section style={{ padding: '80px 0', textAlign: 'center' }}>
-      <div className="container">
-        <h2 style={styles.heading}>Innovation in every bite</h2>
-        <p style={styles.subtext}>
-          We combine cutting-edge technology with traditional baking
-          techniques to deliver perfection for every celebration.
-        </p>
-        <div style={styles.grid}>
+    <section className="landing-studio">
+      <div className="container landing-studio-grid">
+        <div className="landing-studio-visual" data-reveal>
+          <img src="/cake.jpg" alt="Chocolate cake being prepared in the BakeCraft studio" />
+          <div className="landing-studio-caption">
+            <Icon name="sparkle" size={18} />
+            <span>Where imagination becomes edible</span>
+          </div>
+        </div>
+
+        <div className="landing-studio-content" data-reveal>
+          <p className="landing-eyebrow landing-eyebrow-light">Creativity meets craft</p>
+          <h2>Designed digitally.<br /><em>Finished by hand.</em></h2>
+          <p className="landing-studio-intro">
+            Modern tools make your idea easy to see. Our baker makes every detail feel personal.
+          </p>
+          <div className="landing-feature-list">
           {features.map((f) => (
-            <div key={f.title} style={styles.card}>
-              <div style={styles.iconCircle}><Icon name={f.icon} size={20} /></div>
-              <h3 style={styles.cardTitle}>{f.title}</h3>
-              <p style={styles.cardDesc}>{f.desc}</p>
-            </div>
+              <div key={f.title} className="landing-feature-row">
+                <span><Icon name={f.icon} size={19} /></span>
+                <div>
+                  <h3>{f.title}</h3>
+                  <p>{f.desc}</p>
+                </div>
+              </div>
           ))}
+          </div>
+          <Link to="/builder" className="landing-primary-link landing-light-link">
+            Open the cake builder <Icon name="arrowRight" size={17} />
+          </Link>
         </div>
       </div>
     </section>
   );
 }
-
-const styles = {
-  heading: {
-    fontSize: '30px',
-    marginBottom: '14px',
-  },
-  subtext: {
-    color: 'var(--text-muted)',
-    fontSize: '15px',
-    maxWidth: '480px',
-    margin: '0 auto 48px',
-  },
-  grid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-    gap: '28px',
-    textAlign: 'left',
-  },
-  card: {
-    background: 'var(--card-bg)',
-    borderRadius: '16px',
-    padding: '28px',
-  },
-  iconCircle: {
-    width: '44px',
-    height: '44px',
-    borderRadius: '12px',
-    background: '#fff',
-    color: 'var(--rose-mid)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '18px',
-    marginBottom: '18px',
-  },
-  cardTitle: {
-    fontSize: '17px',
-    marginBottom: '10px',
-  },
-  cardDesc: {
-    fontSize: '13.5px',
-    color: 'var(--text-muted)',
-  },
-};

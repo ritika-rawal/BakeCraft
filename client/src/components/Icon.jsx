@@ -175,6 +175,28 @@ const paths = {
   chevronRight: (
     <path d="M9 5l7 7-7 7" />
   ),
+  chevronDown: (
+    <path d="M5 9l7 7 7-7" />
+  ),
+  arrowRight: (
+    <>
+      <path d="M5 12h14" />
+      <path d="M14 7l5 5-5 5" />
+    </>
+  ),
+  arrowUpRight: (
+    <>
+      <path d="M7 17 17 7" />
+      <path d="M8 7h9v9" />
+    </>
+  ),
+  menu: (
+    <>
+      <path d="M4 7h16" />
+      <path d="M4 12h16" />
+      <path d="M4 17h16" />
+    </>
+  ),
 };
 
 export default function Icon({ name, size = 18, style }) {

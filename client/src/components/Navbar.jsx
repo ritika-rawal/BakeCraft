@@ -1,45 +1,44 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Icon from './Icon';
 
 export default function Navbar() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const closeMenu = () => setMenuOpen(false);
+
   return (
-    <nav className="landing-nav" style={styles.nav}>
-      <div className="container landing-nav-inner" style={styles.inner}>
-        <Link to="/"><span style={styles.logo}>BakeCraft</span></Link>
-        <div className="landing-nav-links" style={styles.links}>
-          <Link to="/" style={styles.activeLink}>Home</Link>
-          <a href="#cakes" className="nav-link" style={styles.link}>Cakes</a>
-          <Link to="/builder" className="nav-link" style={styles.link}>Cake builder</Link>
-        </div>
-        <div className="landing-nav-actions" style={styles.actions}>
-          <Link to="/login">
-            <span className="nav-link" style={styles.loginLink}>Log in</span>
-          </Link>
-          <Link to="/signup">
-            <button className="btn-primary" style={styles.orderBtn}>Sign up</button>
-          </Link>
+    <header className="landing-nav">
+      <div className="container landing-nav-inner">
+        <Link to="/" className="landing-brand" onClick={closeMenu} aria-label="BakeCraft home">
+          <img className="landing-brand-logo" src="/logo-v2.png" alt="BakeCraft" />
+        </Link>
+
+        <button
+          type="button"
+          className="landing-menu-button"
+          onClick={() => setMenuOpen((open) => !open)}
+          aria-expanded={menuOpen}
+          aria-controls="landing-navigation"
+          aria-label={menuOpen ? 'Close navigation' : 'Open navigation'}
+        >
+          <Icon name={menuOpen ? 'close' : 'menu'} size={21} />
+        </button>
+
+        <div id="landing-navigation" className={`landing-nav-panel ${menuOpen ? 'is-open' : ''}`}>
+          <nav className="landing-nav-links" aria-label="Main navigation">
+            <a href="#cakes" onClick={closeMenu}>Collection</a>
+            <a href="#how-it-works" onClick={closeMenu}>How it works</a>
+            <a href="#about" onClick={closeMenu}>Our studio</a>
+          </nav>
+          <div className="landing-nav-actions">
+            <Link to="/login" className="landing-login-link" onClick={closeMenu}>Log in</Link>
+            <Link to="/signup" className="landing-nav-cta" onClick={closeMenu}>
+              Start creating <Icon name="arrowUpRight" size={15} />
+            </Link>
+          </div>
         </div>
       </div>
-    </nav>
+    </header>
   );
 }
-
-const styles = {
-  nav: {
-    background: 'rgba(255,255,255,0.85)',
-    backdropFilter: 'blur(10px)',
-    WebkitBackdropFilter: 'blur(10px)',
-    borderBottom: '1px solid rgba(139,41,66,0.06)',
-    padding: '16px 0',
-    position: 'sticky',
-    top: 0,
-    zIndex: 50,
-  },
-  inner: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '24px' },
-  logo: { fontFamily: 'var(--font-display)', fontSize: '22px', fontWeight: 600, color: 'var(--rose-deep)' },
-  links: { display: 'flex', gap: '24px', fontSize: '14px', color: 'var(--text-muted)' },
-  link: { transition: 'color var(--transition)' },
-  activeLink: { color: 'var(--rose-deep)', fontWeight: 500 },
-  actions: { display: 'flex', alignItems: 'center', gap: '18px' },
-  loginLink: { fontSize: '14px', color: 'var(--text-muted)', cursor: 'pointer', transition: 'color var(--transition)' },
-  orderBtn: { padding: '10px 22px', fontSize: '14px' },
-};

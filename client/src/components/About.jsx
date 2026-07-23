@@ -1,15 +1,18 @@
+import { Link } from 'react-router-dom';
+import Icon from './Icon';
+
 export default function About() {
   return (
-    <section id="about" style={{ background: 'var(--rose-deep)', padding: '70px 0' }}>
-      <div className="container" style={{ maxWidth: '650px' }}>
-        <h2 style={{ color: '#fff', fontSize: '28px', marginBottom: '18px' }}>
-          Why BakeCraft
-        </h2>
-        <p style={{ color: 'var(--pink-soft)', fontSize: '15px' }}>
-          Custom cake orders should not require scattered messages and guesswork.
-          BakeCraft brings design, ordering, tracking, and baker communication
-          into one place, with AI helping you describe exactly what you want.
+    <section id="about" className="landing-about">
+      <div className="container landing-about-inner" data-reveal>
+        <p className="landing-eyebrow">Made for your moment</p>
+        <h2>Something beautiful<br /><em>is about to happen.</em></h2>
+        <p>
+          Begin with an idea, a favourite design, or simply a feeling. We will help shape the rest.
         </p>
+        <Link to="/signup" className="landing-primary-link">
+          Start your creation <Icon name="arrowRight" size={17} />
+        </Link>
       </div>
     </section>
   );
